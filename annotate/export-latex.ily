@@ -118,8 +118,9 @@
            (format "~a. ~a" part-numerator
              (lilyglyphs-lookup sub-beat-length)))))))
 
-% Generate and write annotations to a LaTeX file
-#(define (export-annotations-latex)
+\register-export-routine plaintext
+#(lambda ()
+   ;; Generate and write annotations to LaTeX input file
    ;
    ; TODO::
    ; - implement configurable grouping options
@@ -206,4 +207,3 @@
    ;; write to output file
    (write-output-file "inp"))
 
-\register-export-routine plaintext #export-annotations-latex

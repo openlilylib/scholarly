@@ -29,8 +29,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-% Generate and write annotations to one or more log files
-#(define (export-annotations-plaintext)
+\register-export-routine plaintext
+#(lambda ()
+   ;; Generate and write annotations to one or more log files
    ;
    ; TODO::
    ; - implement configurable grouping options
@@ -74,4 +75,3 @@
    ;; write to output file
    (write-output-file "log"))
 
-\register-export-routine plaintext #export-annotations-plaintext
