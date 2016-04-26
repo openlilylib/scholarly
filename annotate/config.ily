@@ -50,7 +50,8 @@
    (define-void-function (name proc)(symbol? procedure?)
      (let ((opt (getOption '(scholarly annotate export-routines))))
        (set! opt
-             (assq-set! opt name proc)))))
+             (assq-set! opt name proc))
+       (setOption '(scholarly annotate export-routines) opt))))
 
 
 %%%%%%%%%%%%%%%%%
