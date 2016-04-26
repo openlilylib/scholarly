@@ -77,7 +77,7 @@ annotationCollector =
                    (set! (ly:grob-property grob 'color)
                          (getChildOption
                             '(scholarly annotate colors)
-                            #(assoc-ref annotation "type"))))
+                            (assoc-ref annotation "type"))))
                (if (or
                     (getOption '(scholarly annotate print))
                     (not (null? (getOption '(scholarly annotate export-targets)))))
