@@ -118,7 +118,7 @@
            (format "~a. ~a" part-numerator
              (lilyglyphs-lookup sub-beat-length)))))))
 
-\register-export-routine plaintext
+\register-export-routine latex
 #(lambda ()
    ;; Generate and write annotations to LaTeX input file
    ;
