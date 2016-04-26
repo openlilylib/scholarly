@@ -54,7 +54,7 @@
 % flt is a list of property names that should *not* be rendered
 #(define (format-property-message prop)
    (let
-    ((prop-key (string->symbol (car prop)))
+    ((prop-key (car prop))
      (prop-value (cdr prop)))
     (format "    ~a: ~a"
       (or (getChildOptionWithFallback '(scholarly annotate property-labels) prop-key #f)
@@ -78,5 +78,5 @@
               ""))
      (sort ann
        (lambda (a b)
-         (string<? (car a) (car b))))))
+         (symbol<? (car a) (car b))))))
 

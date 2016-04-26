@@ -63,7 +63,7 @@
       (append-to-output-stringlist
        (getChildOption
           '(scholarly annotate export plaintext labels)
-          (assoc-ref ann "type")))
+          (assq-ref ann 'type)))
       ;; print properties list
       (append-to-output-stringlist
        (format-property-messages ann

@@ -65,10 +65,10 @@
 % By default sort annotations in chronological order.
 % For other sorting options set this option to a stringlist.
 % Available sort criteria:
-% - "rhythmic-location"
-% - "type"
-% - "author"
-\registerOption scholarly.annotate.sort-criteria #'("rhythmic-location")
+% - rhythmic-location
+% - type
+% - author
+\registerOption scholarly.annotate.sort-criteria #'(rhythmic-location)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Coloring annotations

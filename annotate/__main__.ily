@@ -44,6 +44,7 @@
 
 % From oll-core
 \include "util/consist-to-contexts.ily"
+\include "util/context-mod->props.ily"
 
 % Global object storing all annotations
 #(define annotations '())
@@ -74,7 +75,7 @@ annotate =
 
    (let*
     ( ;; create empty alist to hold the annotation
-      (props '())
+      (props (context-mod->props properties))
       ;; retrieve a pair with containing directory and input file
       (input-file (string-split (car (ly:input-file-line-char-column location)) #\/ ))
       (ctx (list-tail input-file (- (length input-file) 2)))
@@ -89,28 +90,20 @@ annotate =
     ;; we don't set a type at all to ensure proper predicate checking
     ;; (the annotation must then have an explicit 'type' property)
     (if (symbol? type)
-        (set! props (assoc-set! props "type" type)))
-
-    ;; Add or replace props entries taken from the properties argument
-    (for-each
-     (lambda (mod)
-       (set! props
-             (assoc-set! props
-               (symbol->string (cadr mod)) (caddr mod))))
-     (ly:get-context-mods properties))
+        (set! props (assq-set! props 'type type)))
 
     ;; pass along the input location to the engraver
-    (set! props (assoc-set! props "location" location))
+    (set! props (assq-set! props 'location location))
 
     ;; The 'context-id' property is the name of the musical context
     ;; the annotation refers to. As our fallthrough solution we
     ;; initially set this to the name of the enclosing directory
-    (set! props (assoc-set! props "context-id" input-directory))
+    (set! props (assq-set! props 'context-id input-directory))
 
     ; The input file name is not used so far (as it was a remnant of
     ; the Oskar Fried project). As this may become useful for somebody
     ; one day we'll keep it here.
-    (set! props (assoc-set! props "input-file-name" input-file-name))
+    (set! props (assq-set! props 'input-file-name input-file-name))
 
     ;; Check if we do have a valid annotation,
     ;; then process it.

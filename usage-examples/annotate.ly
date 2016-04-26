@@ -9,7 +9,7 @@
 
 \markup \vspace #1
 
-\setOption scholarly.annotate.export-targets #'("plaintext" "latex")
+\setOption scholarly.annotate.export-targets #'(plaintext latex)
 
 music = \relative c'{
   c4 d e

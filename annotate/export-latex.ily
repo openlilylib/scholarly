@@ -42,7 +42,7 @@
 % formatted as a list of key=value arguments
 #(define (format-latex-remaining-properties type props loc-props)
    (let ((cmd
-          (or (assoc-ref annotation-type-latex-commands type)
+          (or (assq-ref annotation-type-latex-commands type)
               "\\annotation"))
          (props
           (map
@@ -101,13 +101,13 @@
 % If requested format the measure position using lilyglyphs commands
 #(define (lilyglyphs-beat-string loc-props)
    (let*
-    ((meter (assoc-ref loc-props "meter"))
+    ((meter (assq-ref loc-props 'meter))
      (beat-length (/ 1 (cdr meter)))
      (beat-lily (lilyglyphs-lookup beat-length))
-     (our-beat (assoc-ref loc-props "our-beat"))
+     (our-beat (assq-ref loc-props 'our-beat))
      (beat-string (format "~a.\\,~a" our-beat beat-lily))
-     (beat-fraction (assoc-ref loc-props "beat-fraction"))
-     (beat-part (assoc-ref loc-props "beat-part")))
+     (beat-fraction (assq-ref loc-props 'beat-fraction))
+     (beat-part (assq-ref loc-props 'beat-part)))
 
     (if (= 0 beat-fraction)
         beat-string
@@ -144,14 +144,14 @@
     ;
     (lambda (ann)
       (let*
-       ((loc-props (assoc-ref ann "grob-location"))
+       ((loc-props (assq-ref ann 'grob-location))
         (rem-props (list-copy ann)))
 
        ;; Create a list rem-props with "remaining properties"
        ;; that are not used explicitly.
        (for-each
         (lambda (p)
-          (set! rem-props (assoc-remove! rem-props p)))
+          (set! rem-props (assq-remove! rem-props p)))
         (list "type" "grob-type" "context-id" "input-file-name"
           "message" "location" "grob" "grob-location"))
 
@@ -161,17 +161,17 @@
        (if (> (length rem-props) 0)
            (append-to-output-stringlist
             (format-latex-remaining-properties
-             (assoc-ref ann "type") rem-props loc-props))
+             (assq-ref ann 'type) rem-props loc-props))
            ;; start entry with LaTeX command and rhythmic location
            (append-to-output-stringlist
             (format "~a"
               ;                     (format "~a{~a}{~a}"
-              (assoc-ref annotation-type-latex-commands
-                (assoc-ref ann "type")))))
+              (assq-ref annotation-type-latex-commands
+                (assq-ref ann 'type)))))
        ;; output location arguments
        (append-to-output-stringlist
         (format "    {~a}{~a}"
-          (assoc-ref loc-props "measure-no")
+          (assq-ref loc-props 'measure-no)
           (if (getOption '(scholarly annotate export latex use-lilyglyphs))
               (lilyglyphs-beat-string loc-props)
               (beat-string loc-props))))
@@ -179,11 +179,11 @@
        ;; Affected context
        (append-to-output-stringlist
         (format "    {~a}"
-          (assoc-ref ann "context-id")))
+          (assq-ref ann 'context-id)))
        ;; Affected grob type
        (append-to-output-stringlist
         (format "    {~a}"
-          (assoc-ref ann "grob-type")))
+          (assq-ref ann 'grob-type)))
 
        ;; The actual message
        ;; Invalid characters are escaped except for intended
@@ -191,15 +191,15 @@
        (append-to-output-stringlist
         (format "    {~a}"
           (indent-multiline-latex-string
-           (assoc-ref ann "message"))))
+           (assq-ref ann 'message))))
 
        ;; For a custom annotation we have to append
        ;; the type as 7th argument
-       (let ((type (assoc-ref annotation-type-latex-commands
-                     (assoc-ref ann "type"))))
+       (let ((type (assq-ref annotation-type-latex-commands
+                     (assq-ref ann 'type))))
          (if (not type)
              (append-to-output-stringlist
-              (format "    {~a}" (assoc-ref ann "type")))))
+              (format "    {~a}" (assq-ref ann 'type)))))
        ;; add newline to annotation entry
        (append-to-output-stringlist " ")))
     annotations)

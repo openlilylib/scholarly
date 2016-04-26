@@ -29,9 +29,9 @@
 
 #(define (get-rhythmic-location ann)
    "Retrieve 'rhythmic-location' from 'grob-location'"
-   (assoc-ref
-    (assoc-ref ann "grob-location")
-    "rhythmic-location"))
+   (assq-ref
+    (assq-ref ann 'grob-location)
+    'rhythmic-location))
 
 % compare by rhythmic location
 #(define (annotation-earlier? ann-a ann-b)
@@ -50,20 +50,20 @@
 % compare by author
 #(define (annotation-less-than-by-author? ann-a ann-b)
    (string<?
-    (assoc-ref ann-a "author")
-    (assoc-ref ann-b "author")))
+    (assq-ref ann-a 'author)
+    (assq-ref ann-b 'author)))
 
 % compare by annotation type
 #(define (annotation-less-than-by-type? ann-a ann-b)
    (string<?
-    (assoc-ref ann-a "type")
-    (assoc-ref ann-b "type")))
+    (assq-ref ann-a 'type)
+    (assq-ref ann-b 'type)))
 
 % Lookup list from which the predicate procedures are retrieved
 #(define annotation-comparison-predicates
-   `(("rhythmic-location" . ,annotation-earlier?)
-     ("author" . ,annotation-less-than-by-author?)
-     ("type" . ,annotation-less-than-by-type?)))
+   `((rhythmic-location . ,annotation-earlier?)
+     (author . ,annotation-less-than-by-author?)
+     (type . ,annotation-less-than-by-type?)))
 
 % Return a sorted list of annotations
 %

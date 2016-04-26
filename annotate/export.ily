@@ -105,20 +105,20 @@ setAnnotationOutputBasename =
 % used when printing to the console or exporting to plain text
 #(define (format-location ann)
    "Return a string representation of the annotations rhythmic location"
-   (let* ((props (assoc-ref ann "grob-location"))
-          (measure-no (assoc-ref props "measure-no"))
+   (let* ((props (assq-ref ann 'grob-location))
+          (measure-no (assq-ref props 'measure-no))
           )
      (if (= 0 measure-no)
          ;; workaround for a problem that sometimes the paperColumn gets
          ;; lost along the way. In that case the location is manually
          ;; set to measure zero - which is impossible.
          (format "Sorry, rhythmic position could not be determined.\nInput location at ~a"
-           (assoc-ref ann "location"))
+           (assq-ref ann 'location))
          (format "Measure ~a, beat ~a"
-           (assoc-ref props "measure-no")
+           (assq-ref props 'measure-no)
            (let*
-            ((beat-fraction (assoc-ref props "beat-fraction"))
-             (our-beat (assoc-ref props "our-beat"))
+            ((beat-fraction (assq-ref props 'beat-fraction))
+             (our-beat (assq-ref props 'our-beat))
              (beat-string (beat-string props)))
             beat-string)))))
 
@@ -132,7 +132,7 @@ setAnnotationOutputBasename =
    (for-each
     (lambda (ann)
       (begin
-       (ly:input-message (assoc-ref ann "location") "\nAnnotation:")
+       (ly:input-message (assq-ref ann 'location) "\nAnnotation:")
        (ly:message (format "    ~a" (format-location ann)))
        (write-lines
         (format-property-messages ann

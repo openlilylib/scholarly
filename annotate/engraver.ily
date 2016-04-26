@@ -37,9 +37,9 @@
    (and
     (list? obj)
     (every pair? obj)
-    (assoc-ref obj "message")
-    (assoc-ref obj "type")
-    (assoc-ref obj "location")))
+    (assq-ref obj 'message)
+    (assq-ref obj 'type)
+    (assq-ref obj 'location)))
 
 % Create custom property 'annotation
 % to pass information from the music function to the engraver
@@ -68,7 +68,7 @@ annotationCollector =
           (if (and (not (null-list? annotation))
                    ;; filter annotations the user has excluded
                    (not (member
-                         (assoc-ref annotation "type")
+                         (assq-ref annotation 'type)
                          (getOption '(scholarly annotate ignored-types)))))
               ;; add more properties that are only now available
               (begin
@@ -77,7 +77,7 @@ annotationCollector =
                    (set! (ly:grob-property grob 'color)
                          (getChildOption
                             '(scholarly annotate colors)
-                            (assoc-ref annotation "type"))))
+                            (assq-ref annotation 'type))))
                (if (or
                     (getOption '(scholarly annotate print))
                     (not (null? (getOption '(scholarly annotate export-targets)))))
@@ -88,29 +88,29 @@ annotationCollector =
                           ;; a) an explicit context name defined or
                           ;; b) an implicit context name through the named Staff context or
                           ;; c) the directory name (as determined in the \annotate function)
-                          (or (assoc-ref annotation "context")
+                          (or (assq-ref annotation 'context)
                               (let ((actual-context-id (ly:context-id context)))
                                 (if (not (string=? actual-context-id "\\new"))
                                     actual-context-id
                                     #f))
-                              (assoc-ref annotation "context-id"))))
+                              (assq-ref annotation 'context-id))))
                      ;; Look up a context-name label from the options if one is set,
                      ;; otherwise use the retrieved context-name.
                      (set! annotation
-                           (assoc-set! annotation
-                             "context-id"
+                           (assq-set! annotation
+                             'context-id
                              (getChildOptionWithFallback
                                 '(scholarly annotate context-names)
                                 (string->symbol ctx-id)
                                 ctx-id)))
                      ;; Get the name of the annotated grob type
                      (set! annotation
-                           (assoc-set! annotation "grob-type" (grob::name grob)))
+                           (assq-set! annotation 'grob-type (grob::name grob)))
                      ;; Initialize a 'grob-location' property as a sub-alist,
                      ;; for now with a 'meter' property. This will be populated in 'finalize'.
                      (set! annotation
-                           (assoc-set! annotation "grob-location"
-                             (assoc-set! '() "meter"
+                           (assq-set! annotation 'grob-location
+                             (assq-set! '() 'meter
                                (ly:context-property context 'timeSignatureFraction))))
                      (set! grobs (cons (list grob annotation) grobs)))))))))
 
@@ -122,15 +122,15 @@ annotationCollector =
          (lambda (g)
            (let* ((annotation (last g)))
              ;; Add location info, which seems only possible here
-             (set! annotation (assoc-set! annotation "grob" (first g)))
+             (set! annotation (assq-set! annotation 'grob (first g)))
 
              ;; retrieve rhythmical properties of the grob and
              ;; store them in 'grob-location' alist
              (set! annotation
-                   (assoc-set! annotation "grob-location"
+                   (assq-set! annotation 'grob-location
                      (grob-location-properties
                       (first g)
-                      (assoc-ref annotation "grob-location"))))
+                      (assq-ref annotation 'grob-location))))
 
              ;; add current annotation to the list of annotations
              (set! annotations (append annotations (list annotation)))))
@@ -149,7 +149,7 @@ annotationProcessor =
       (lambda (s)
         (set! annotations
               (sort-annotations annotations
-                (assoc-ref annotation-comparison-predicates s))))
+                (assq-ref annotation-comparison-predicates s))))
       (reverse (getOption '(scholarly annotate sort-criteria))))
 
      ;; Optionally print annotations
