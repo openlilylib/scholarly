@@ -244,46 +244,42 @@ todo =
 %%%% Set default integration in the layout contexts.
 %%%% All settings can be overridden in individual scores.
 
+%TODO: Move this to oll-core
+% Install the given engraver (procedure) in the contexts
+% specified by the argument list
+consistToContexts =
+#(define-scheme-function (proc contexts)(procedure? symbol-list?)
+   #{
+     \layout {
+       #(map
+         (lambda (ctx)
+           (if (and (defined? ctx)
+                    (ly:context-def? (module-ref (current-module) ctx)))
+               #{
+                 \context {
+                   #(module-ref (current-module) ctx)
+                   \consists #proc
+                 }
+               #}
+               ; TODO: Make the input location point to the location of the *caller*
+               (oll:warn (format "Trying to install edition-engraver to non-existent context ~a" ctx))))
+         contexts)
+     }
+   #})
+
+#{ \consistToContexts #annotationCollector
+  #'(Staff
+     DrumStaff
+     RhythmicStaff
+     TabStaff
+     GregorianTranscriptionStaff
+     MensuralStaff
+     VaticanaStaff
+     Dynamics
+     Lyrics)
+#}
+
 \layout {
-  % In each Staff-like context an annotation collector
-  % parses annotations and appends them to the global
-  % annotations object.
-  \context {
-    \Staff
-    \consists \annotationCollector
-  }
-  \context {
-    \DrumStaff
-    \consists \annotationCollector
-  }
-  \context {
-    \RhythmicStaff
-    \consists \annotationCollector
-  }
-  \context {
-    \TabStaff
-    \consists \annotationCollector
-  }
-  \context {
-    \GregorianTranscriptionStaff
-    \consists \annotationCollector
-  }
-  \context {
-    \MensuralStaff
-    \consists \annotationCollector
-  }
-  \context {
-    \VaticanaStaff
-    \consists \annotationCollector
-  }
-  \context {
-    \Dynamics
-    \consists \annotationCollector
-  }
-  \context {
-    \Lyrics
-    \consists \annotationCollector
-  }
   \context {
     \Score
     % The annotation processor living in the Score context
@@ -292,4 +288,3 @@ todo =
     \consists \annotationProcessor
   }
 }
-
