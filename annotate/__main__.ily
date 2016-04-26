@@ -85,17 +85,10 @@
          (assq-ref (ly:grob-property x 'meta) 'name)
          (ly:error "~a is not a grob" x))))
 
-% Create custom grob properties
-% Modified function from "scm/define-grob-properties.scm" (provided by Paul Morris)
-#(define (cn-define-grob-property symbol type?)
-   (set-object-property! symbol 'backend-type? type?)
-   (set-object-property! symbol 'backend-doc "custom grob property")
-   symbol)
-
 % Create custom property 'annotation
 % to pass information from the music function to the engraver
-#(cn-define-grob-property 'input-annotation input-annotation?)
-
+#(set-object-property! 'input-annotation 'backend-type? input-annotation?)
+#(set-object-property! 'input-annotation 'backend-doc "custom grob property")
 
 
 %%%%%%%%%%%%%%%%%%%%%
