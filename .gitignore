@@ -1,6 +1,17 @@
 *.pdf
+*.eps
 *.ps
 *.midi
 *.mid
 *.log
 *~
+*.zip
+
+*.pyc
+
+# We don't generally want to track HTML files
+# as they can still be added manually
+*.html
+
+# log files by ScholarLY
+*.inp
