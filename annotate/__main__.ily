@@ -45,15 +45,13 @@
 % From oll-core
 \include "util/consist-to-contexts.ily"
 \include "util/context-mod->props.ily"
+\include "util/grob-location.ily"
 
 % Global object storing all annotations
 #(define annotations '())
 
 % Include factored out functionality
 \include "config.ily"
-%TODO: This seems problematic:
-\include "utility/rhythmic-location.ily"
-
 \include "sort.ily"
 \include "format.ily"
 \include "export.ily"
