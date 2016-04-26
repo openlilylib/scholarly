@@ -57,7 +57,7 @@
     ((prop-key (string->symbol (car prop)))
      (prop-value (cdr prop)))
     (format "    ~a: ~a"
-      (or #{ \getChildOptionWithFallback scholarly.annotate.property-labels #prop-key ##f #}
+      (or (getChildOptionWithFallback '(scholarly annotate property-labels) prop-key #f)
           prop-key)
       ;; display a placeholder for music expressions
       ;; because these are cluttering the output.

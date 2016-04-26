@@ -104,18 +104,18 @@ annotationCollector =
                    ;; filter annotations the user has excluded
                    (not (member
                          (assoc-ref annotation "type")
-                         #{ \getOption scholarly.annotate.ignored-types #})))
+                         (getOption '(scholarly annotate ignored-types)))))
               ;; add more properties that are only now available
               (begin
-               (if #{ \getOption scholarly.colorize #}
+               (if (getOption '(scholarly colorize))
                    ;; colorize grob, retrieving color from sub-option
                    (set! (ly:grob-property grob 'color)
-                         #{ \getChildOption
-                            scholarly.annotate.colors
-                            #(assoc-ref annotation "type") #}))
+                         (getChildOption
+                            '(scholarly annotate colors)
+                            #(assoc-ref annotation "type"))))
                (if (or
-                    #{ \getOption scholarly.annotate.print #}
-                    (not (null? #{ \getOption scholarly.annotate.export-targets #} )))
+                    (getOption '(scholarly annotate print))
+                    (not (null? (getOption '(scholarly annotate export-targets)))))
                    ;; only add to the list of grobs in the engraver
                    ;; when we actually process them afterwards
                    (let ((ctx-id
@@ -134,10 +134,10 @@ annotationCollector =
                      (set! annotation
                            (assoc-set! annotation
                              "context-id"
-                             #{ \getChildOptionWithFallback
-                                scholarly.annotate.context-names
-                                #(string->symbol ctx-id)
-                                #ctx-id #}))
+                             (getChildOptionWithFallback
+                                '(scholarly annotate context-names)
+                                (string->symbol ctx-id)
+                                ctx-id)))
                      ;; Get the name of the annotated grob type
                      (set! annotation
                            (assoc-set! annotation "grob-type" (grob::name grob)))
@@ -185,10 +185,10 @@ annotationProcessor =
         (set! annotations
               (sort-annotations annotations
                 (assoc-ref annotation-comparison-predicates s))))
-      (reverse #{ \getOption scholarly.annotate.sort-criteria #}))
+      (reverse (getOption '(scholarly annotate sort-criteria))))
 
      ;; Optionally print annotations
-     (if #{ \getOption scholarly.annotate.print #}
+     (if (getOption '(scholarly annotate print))
          (do-print-annotations))
      ;; Export iterating over all entries in the
      ;; annotation-export-targets configuration list
@@ -200,7 +200,7 @@ annotationProcessor =
          (if er
              (er)
              (ly:warning (format "Invalid annotation export target: ~a" t)))))
-      #{ \getOption scholarly.annotate.export-targets #}))))
+      (getOption '(scholarly annotate export-targets))))))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -60,9 +60,9 @@
        (format-location ann))
       ;; add annotation type
       (append-to-output-stringlist
-       #{ \getChildOption
-          scholarly.annotate.export.plaintext.labels
-          #(assoc-ref ann "type") #})
+       (getChildOption
+          '(scholarly annotate export plaintext labels)
+          (assoc-ref ann "type")))
       ;; print properties list
       (append-to-output-stringlist
        (format-property-messages ann

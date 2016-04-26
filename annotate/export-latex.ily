@@ -171,7 +171,7 @@
        (append-to-output-stringlist
         (format "    {~a}{~a}"
           (assoc-ref loc-props "measure-no")
-          (if #{ \getOption scholarly.annotate.export.latex.use-lilyglyphs #}
+          (if (getOption '(scholarly annotate export latex use-lilyglyphs))
               (lilyglyphs-beat-string loc-props)
               (beat-string loc-props))))
 
