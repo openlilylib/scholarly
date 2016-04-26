@@ -42,6 +42,9 @@
 
 \version "2.19.22"
 
+% From oll-core
+\include "util/consist-to-contexts.ily"
+
 % Global object storing all annotations
 #(define annotations '())
 
@@ -244,30 +247,7 @@ todo =
 %%%% Set default integration in the layout contexts.
 %%%% All settings can be overridden in individual scores.
 
-%TODO: Move this to oll-core
-% Install the given engraver (procedure) in the contexts
-% specified by the argument list
-consistToContexts =
-#(define-scheme-function (proc contexts)(procedure? symbol-list?)
-   #{
-     \layout {
-       #(map
-         (lambda (ctx)
-           (if (and (defined? ctx)
-                    (ly:context-def? (module-ref (current-module) ctx)))
-               #{
-                 \context {
-                   #(module-ref (current-module) ctx)
-                   \consists #proc
-                 }
-               #}
-               ; TODO: Make the input location point to the location of the *caller*
-               (oll:warn (format "Trying to install edition-engraver to non-existent context ~a" ctx))))
-         contexts)
-     }
-   #})
-
-#{ \consistToContexts #annotationCollector
+\consistToContexts #annotationCollector
   #'(Staff
      DrumStaff
      RhythmicStaff
@@ -277,7 +257,6 @@ consistToContexts =
      VaticanaStaff
      Dynamics
      Lyrics)
-#}
 
 \layout {
   \context {
