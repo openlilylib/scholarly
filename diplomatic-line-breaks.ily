@@ -1,4 +1,4 @@
-\version "2.17.10"
+\version "2.19.22"
 
 \header {
   oll-title = "Indicator for original line breaks in diplomatic editions."
