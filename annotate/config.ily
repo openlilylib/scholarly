@@ -87,6 +87,10 @@
    (question . ,blue)
    (todo . ,magenta))
 
+% By default coloring is turned on.
+% Only for publication one will want to turn it off
+\registerOption scholarly.colorize ##t
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Handling of annotation types for plain text output

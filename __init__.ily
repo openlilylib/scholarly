@@ -38,10 +38,6 @@ printed or exported and post-processed, e.g. with critical reports in LaTeX
 documents."
 }
 
-% By default coloring is turned on.
-% Only for publication one will want to turn it off
-\registerOption scholarly.colorize ##t
-
 \registerOption scholarly.colors.editorial-addition #darkred
 
 #(oll:log "Initialized ScholarLY~a" "")
