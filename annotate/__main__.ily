@@ -56,13 +56,6 @@
 \include "export-latex.ily"
 \include "export-plaintext.ily"
 
-% Define a lookup list for existing export procedures.
-% While this might be expected to be defined in the configuration
-% file it has to be inserted *after* the procedures have been defined
-#(define export-routines
-   `(("latex" . ,export-annotations-latex)
-     ("plaintext" . ,export-annotations-plaintext)))
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Helper functions to manage the annotation objects
@@ -195,7 +188,7 @@ annotationProcessor =
      (for-each
       (lambda (t)
         (let
-         ((er (assoc-ref export-routines t)))
+         ((er (assq-ref (getOption '(scholarly annotate export-routines)) t)))
          ;; skip invalid entries
          (if er
              (er)

@@ -206,3 +206,4 @@
    ;; write to output file
    (write-output-file "inp"))
 
+\register-export-routine plaintext #export-annotations-latex

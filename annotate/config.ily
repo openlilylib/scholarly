@@ -43,6 +43,15 @@
 
 % By default annotations are not exported
 \registerOption scholarly.annotate.export-targets #'()
+% Internal options where available routines are registered
+\registerOption scholarly.annotate.export-routines #'()
+% Convenience method for registering routines
+#(define register-export-routine
+   (define-void-function (name proc)(symbol? procedure?)
+     (let ((opt (getOption '(scholarly annotate export-routines))))
+       (set! opt
+             (assq-set! opt name proc)))))
+
 
 %%%%%%%%%%%%%%%%%
 % Limiting output

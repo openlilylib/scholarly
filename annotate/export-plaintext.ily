@@ -74,3 +74,4 @@
    ;; write to output file
    (write-output-file "log"))
 
+\register-export-routine plaintext #export-annotations-plaintext
