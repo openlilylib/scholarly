@@ -1,10 +1,6 @@
 \version "2.18.0"
 
-\include "openlilylib"
-
-\useLibrary ScholarLY
-
-\useModule scholarly.annotate
+\include "../__main__.ily"
 
 #(display "loaded\n")
 
