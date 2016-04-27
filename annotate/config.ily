@@ -100,6 +100,10 @@
 
 % For retrieving values and registering custom annotation types
 % see above at the coloring section
+% For custom annotation types this alist has to be extended using
+% \setOption scholarly.annotate.export.plaintext.labels
+%  #(assq-set! (getOption '(scholarly annotage export plaintext labels))
+%    <annotation-type> <label>)
 \registerOption scholarly.annotate.export.plaintext.labels
 #`((critical-remark . "Critical Remark:")
    (musical-issue . "Musical Issue:")
