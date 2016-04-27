@@ -29,6 +29,6 @@
   currently only the annotate module is implemented
 %}
 
-\include "oll-core.ily"
+\include "../oll-core/oll-core.ily"
 
 \include "annotate/__main__.ily"
