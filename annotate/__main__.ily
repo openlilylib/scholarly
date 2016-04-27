@@ -63,13 +63,11 @@
 \include "export-plaintext.ily"
 \include "engraver.ily"
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% Helper functions to manage the annotation objects
-
 annotate =
 #(define-music-function (name properties type item)
    ((symbol?) ly:context-mod? symbol? symbol-list-or-music?)
-   ;; annotates a musical object for use with lilypond-doc
+   ;; generic function to annotate a score item
+   ;; not to be called by input documents
 
    (let*
     ( ;; read properties from the \with {} clause
