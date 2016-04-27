@@ -60,11 +60,12 @@
 % By default all annotation types are processed
 \registerOption scholarly.annotate.ignored-types #'()
 
-%%%%%%%%%%%%%%%%%%%%%%%
-% Filtering annotations
+%%%%%%%%%%%%%%%%%%%%%
+% Sorting annotations
 
 % By default sort annotations in chronological order.
-% For other sorting options set this option to a stringlist.
+% For other sorting options set this option to a symbol-list.
+% Sorting should be cumulative, so the order of criteria is relevant.
 % Available sort criteria:
 % - rhythmic-location
 % - type
