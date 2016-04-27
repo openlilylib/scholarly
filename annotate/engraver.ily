@@ -160,7 +160,7 @@ annotationProcessor =
      (for-each
       (lambda (t)
         (let
-         ((er (assq-ref (getOption '(scholarly annotate export-routines)) t)))
+         ((er (assq-ref (getOption '(scholarly annotate internal export-routines)) t)))
          ;; skip invalid entries
          (if er
              (er)
