@@ -79,8 +79,8 @@
 % create a basename string to be used when building output file names
 #(define annotation-out-basename "")
 setAnnotationOutputBasename =
-#(define-void-function (parser location)()
-   (set! annotation-out-basename (ly:parser-output-name parser)))
+#(define-void-function ()()
+   (set! annotation-out-basename (ly:parser-output-name (*parser*))))
 \setAnnotationOutputBasename
 
 

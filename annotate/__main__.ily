@@ -67,7 +67,7 @@
 %%%% Helper functions to manage the annotation objects
 
 annotate =
-#(define-music-function (parser location name properties type item)
+#(define-music-function (name properties type item)
    ((symbol?) ly:context-mod? list-or-symbol? symbol-list-or-music?)
    ;; annotates a musical object for use with lilypond-doc
 
@@ -75,7 +75,7 @@ annotate =
     ( ;; create empty alist to hold the annotation
       (props (context-mod->props properties))
       ;; retrieve a pair with containing directory and input file
-      (input-file (string-split (car (ly:input-file-line-char-column location)) #\/ ))
+      (input-file (string-split (car (ly:input-file-line-char-column (*location*))) #\/ ))
       (ctx (list-tail input-file (- (length input-file) 2)))
       ;; extract directory name (-> part/voice name)
       (input-directory (car ctx))
@@ -91,7 +91,7 @@ annotate =
         (set! props (assq-set! props 'type type)))
 
     ;; pass along the input location to the engraver
-    (set! props (assq-set! props 'location location))
+    (set! props (assq-set! props 'location (*location*)))
 
     ;; The 'context-id' property is the name of the musical context
     ;; the annotation refers to. As our fallthrough solution we
@@ -144,7 +144,7 @@ annotate =
 annotation =
 % Generic annotation, can be used to "create" custom annotation types
 % Note: a 'type' property is mandatory for this command
-#(define-music-function (parser location name properties item)
+#(define-music-function (name properties item)
    ((symbol?) ly:context-mod? symbol-list-or-music?)
    (if (symbol? name)
        #{ \annotate
@@ -159,7 +159,7 @@ annotation =
 
 criticalRemark =
 % Final annotation about an editorial decision
-#(define-music-function (parser location name properties item)
+#(define-music-function (name properties item)
    ((symbol?) ly:context-mod? symbol-list-or-music?)
    (if (symbol? name)
        #{ \annotate
@@ -174,7 +174,7 @@ criticalRemark =
 
 lilypondIssue =
 % Annotate a LilyPond issue that hasn't been resolved yet
-#(define-music-function (parser location name properties item)
+#(define-music-function (name properties item)
    ((symbol?) ly:context-mod? symbol-list-or-music?)
    (if (symbol? name)
        #{ \annotate
@@ -189,7 +189,7 @@ lilypondIssue =
 
 musicalIssue =
 % Annotate a musical issue that hasn't been resolved yet
-#(define-music-function (parser location name properties item)
+#(define-music-function (name properties item)
    ((symbol?) ly:context-mod? symbol-list-or-music?)
    (if (symbol? name)
        #{ \annotate
@@ -204,7 +204,7 @@ musicalIssue =
 
 question =
 % Annotation about a general question
-#(define-music-function (parser location name properties item)
+#(define-music-function (name properties item)
    ((symbol?) ly:context-mod? symbol-list-or-music?)
    (if (symbol? name)
        #{ \annotate
@@ -219,7 +219,7 @@ question =
 
 todo =
 % Annotate a task that *has* to be finished
-#(define-music-function (parser location name properties item)
+#(define-music-function (name properties item)
    ((symbol?) ly:context-mod? symbol-list-or-music?)
    (if (symbol? name)
        #{ \annotate
