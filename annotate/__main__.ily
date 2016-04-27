@@ -68,7 +68,7 @@
 
 annotate =
 #(define-music-function (name properties type item)
-   ((symbol?) ly:context-mod? list-or-symbol? symbol-list-or-music?)
+   ((symbol?) ly:context-mod? symbol? symbol-list-or-music?)
    ;; annotates a musical object for use with lilypond-doc
 
    (let*
@@ -84,10 +84,11 @@ annotate =
       (input-file-name (cdr ctx)))
 
     ;; The "type" is passed as an argument from the wrapper functions
-    ;; An empty string refers to the generic \annotation function. In this case
+    ;; The symbol 'none refers to the generic \annotation function. In this case
     ;; we don't set a type at all to ensure proper predicate checking
-    ;; (the annotation must then have an explicit 'type' property)
-    (if (symbol? type)
+    ;; (the annotation must then have an explicit 'type' property passed in
+    ;; the properties argument)
+    (if (not (eq? type 'none))
         (set! props (assq-set! props 'type type)))
 
     ;; pass along the input location to the engraver
@@ -127,7 +128,7 @@ annotate =
             \once \override #item #'input-annotation = #props
           #}))
         (begin
-         (ly:input-warning location "Improper annotation. Maybe there are mandatory properties missing?")
+         (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
          #{ #}))))
 
 
@@ -150,11 +151,11 @@ annotation =
        #{ \annotate
           #name
           #properties
-          #'()
+          #'none
           #item #}
        #{ \annotate
           #properties
-          #'()
+          #'none
           #item #}))
 
 criticalRemark =
