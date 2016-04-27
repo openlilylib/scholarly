@@ -66,10 +66,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Helper functions to manage the annotation objects
 
-#(define (list-or-symbol? obj)
-   (or (list? obj)
-       (symbol? obj)))
-
 annotate =
 #(define-music-function (parser location name properties type item)
    ((symbol?) ly:context-mod? list-or-symbol? symbol-list-or-music?)
