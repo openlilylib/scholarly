@@ -72,7 +72,7 @@ annotate =
    ;; annotates a musical object for use with lilypond-doc
 
    (let*
-    ( ;; create empty alist to hold the annotation
+    ( ;; read properties from the \with {} clause
       (props (context-mod->props properties))
       ;; retrieve a pair with containing directory and input file
       (input-file (string-split (car (ly:input-file-line-char-column (*location*))) #\/ ))
