@@ -42,6 +42,10 @@
 
 \version "2.19.22"
 
+% TODO:
+% Once the module handling system in oll-core has been updated
+% (see https://github.com/openlilylib/oll-core/issues/9)
+% change the following includes accordingly
 % From oll-core
 \include "util/consist-to-contexts.ily"
 \include "util/context-mod->props.ily"
