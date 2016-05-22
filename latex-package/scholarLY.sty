@@ -1,0 +1,77 @@
+\ProvidesPackage{scholarLY}
+
+\usepackage{verbatim}
+\usepackage{enumitem}
+\setlist[enumerate]{leftmargin=*}
+
+% \RequirePackage{} none yet...
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% OPTIONS ... the customizable part of the package
+
+% -ORIENTATION
+% noindent + stacked
+% hanging + stacked
+% noindent + inline
+% hanging + inline
+
+% ...
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ENVIRONMENTS and COMMANDS ... the main part of the package
+
+%% ~ ~ ~ ENVIRONMENTS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+\renewcommand\labelenumi{\theenumi)}
+% \renewcommand\labelenumi{(\theenumi)}
+
+\newenvironment{scholarLYannotations}
+{\begin{enumerate}\setlength\parindent{0pt}}{\end{enumerate}}
+
+%% ~ ~ ~ THE COMMANDS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+% if a parameter is not defined, the '.inp' should still create a {} in its place.
+% TODO - remove empty line if parameter is empty... 
+
+\newcommand{\criticalRemark}[4]
+  {\item{\textit{(Critical Remark)}\\
+  \textbf{#1}} {#2}\\
+  {#3}\\
+  {``#4''}}
+
+\newcommand{\musicalIssue}[5]
+  {\item{\textit{(Musical Issue)}\\
+  \textbf{#1}} {#2}\\
+  {#3}\\
+  {Affects: }{#4}\\
+  {``#5''}}
+
+\newcommand{\lilypondIssue}[4]
+  {\item{\textit{(LilyPond Issue)}\\
+  \textbf{#1}} {#2}\\
+  {#3}\\
+  {``#4''}}
+
+\newcommand{\question}[5] % does nothing
+  {{}{}{}{}{}}
+
+\newcommand{\todo}[5] % does nothing
+  {{}{}{}{}{}}
+
+\newcommand{\annotations}[1]{\input{scholarLYannotations.inp}} % the main command
+
+
+% ...
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% TODO and TO CONSIDER ... and MISC
+
+- Draft vs. Final mode... http://mirrors.rit.edu/CTAN/macros/latex/contrib/oberdiek/ifdraft.pdf
+
+\renewcommand\labelenumi{\theenumi)} % makes 1) text text 2) text, etc.
+\renewcommand\labelenumi{(\theenumi)} % makes (1) text text (2) text, etc.
+
+% ...
+\end{comment} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\endinput
