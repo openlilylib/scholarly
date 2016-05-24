@@ -3,17 +3,27 @@
 \usepackage{verbatim}
 \usepackage{enumitem}
 \setlist[enumerate]{leftmargin=*}
+\usepackage{ifthen}
 
 % \RequirePackage{} none yet...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OPTIONS ... the customizable part of the package
 
-% -ORIENTATION
-% noindent + stacked
-% hanging + stacked
-% noindent + inline
-% hanging + inline
+
+\newif\ifex@draft % (implicitly false) ... i.e. draft mode if set, otherwise final mode,
+                  % which can also be explicitly set: \usepackage[final]{scholarLY}
+
+\DeclareOption{draft}{\ex@drafttrue}
+\DeclareOption{final}{\ex@draftfalse}
+\ProcessOptions*
+
+\ifex@draft
+  \newcommand\skipornot{\par}
+\else
+  \newcommand\skipornot{, }
+\fi
+
 
 % ...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -21,35 +31,47 @@
 
 %% ~ ~ ~ ENVIRONMENTS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-\renewcommand\labelenumi{\theenumi)}
-% \renewcommand\labelenumi{(\theenumi)}
-
 \newenvironment{scholarLYannotations}
 {\begin{enumerate}\setlength\parindent{0pt}}{\end{enumerate}}
 
+
+\renewcommand\labelenumi{\theenumi)}     % This should be easily customizable by
+% \renewcommand\labelenumi{(\theenumi)}  % the user. Either recommend in the documentation
+                                         % that it can be changed as such, or create an
+                                         % abbreviated command for the user.
+
 %% ~ ~ ~ THE COMMANDS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-% if a parameter is not defined, the '.inp' should still create a {} in its place.
-% TODO - remove empty line if parameter is empty... 
+% The LAST parameter in each set is footnote. If empty, one won't be created. If
+% other optional parameters are added in the future, these places (#1, #2, etc)
+% may shift. Non-defined parameters should always make the list as {}, otherwise
+% latex will assume the next argument (whether {} or {argument}) in that place.
 
-\newcommand{\criticalRemark}[4]
-  {\item{\textit{(Critical Remark)}\\
-  \textbf{#1}} {#2}\\
-  {#3}\\
-  {``#4''}}
 
-\newcommand{\musicalIssue}[5]
-  {\item{\textit{(Musical Issue)}\\
-  \textbf{#1}} {#2}\\
-  {#3}\\
-  {Affects: }{#4}\\
-  {``#5''}}
+\newcommand{\criticalRemark}[5]
+  {
+  \item{\textit{(Critical Remark)}\skipornot
+  \textbf{#1}} {#2}\skipornot
+  {#3}\skipornot
+  {``#4''}\ifthenelse{\equal{#5}{}}{}{\footnotemark\footnotetext{#5}}
+  }
 
-\newcommand{\lilypondIssue}[4]
-  {\item{\textit{(LilyPond Issue)}\\
-  \textbf{#1}} {#2}\\
-  {#3}\\
-  {``#4''}}
+\newcommand{\musicalIssue}[6]
+  {
+  \item{\textit{(Musical Issue)}\skipornot
+  \textbf{#1}} {#2}\skipornot
+  {#3}\skipornot
+  {Affects: }{#4}\skipornot
+  {``#5''}\ifthenelse{\equal{#6}{}}{}{\footnotemark\footnotetext{#6}}
+  }
+
+\newcommand{\lilypondIssue}[5]
+  {
+  \item{\textit{(LilyPond Issue)}\skipornot
+  \textbf{#1}} {#2}\skipornot
+  {#3}\skipornot
+  {``#4''}\ifthenelse{\equal{#5}{}}{}{\footnotemark\footnotetext{#5}}
+  }
 
 \newcommand{\question}[5] % does nothing
   {{}{}{}{}{}}
@@ -65,10 +87,13 @@
 \begin{comment} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% TODO and TO CONSIDER ... and MISC
 
-- Draft vs. Final mode... http://mirrors.rit.edu/CTAN/macros/latex/contrib/oberdiek/ifdraft.pdf
-
 \renewcommand\labelenumi{\theenumi)} % makes 1) text text 2) text, etc.
 \renewcommand\labelenumi{(\theenumi)} % makes (1) text text (2) text, etc.
+
+ look into this for comments.
+ if/else ... american standard   ."   or otherwise   ".
+         ... american standard   ."7   or otherwise   ".7
+                      ... if "7" were a footnote superscript
 
 % ...
 \end{comment} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
