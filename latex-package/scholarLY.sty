@@ -1,17 +1,22 @@
 \ProvidesPackage{scholarLY}
 
-\usepackage{verbatim}
-\usepackage{enumitem}
-\setlist[enumerate]{leftmargin=*}
-\usepackage{ifthen}
+\RequirePackage{verbatim}
+\RequirePackage{ifthen}
+\RequirePackage{enumitem}
+  \setlist[enumerate]{leftmargin=*}
+  \setlength{\parskip}{0em}
+  \setlist{parsep=0pt}
 
-% \RequirePackage{} none yet...
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OPTIONS ... the customizable part of the package
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ DRAFT or FINAL MODE  ~
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-\newif\ifex@draft % (implicitly false) ... i.e. draft mode if set, otherwise final mode,
+\newif\ifex@draft % (implicitly final) ... i.e. draft mode if set, otherwise final mode,
                   % which can also be explicitly set: \usepackage[final]{scholarLY}
 
 \DeclareOption{draft}{\ex@drafttrue}
@@ -21,24 +26,55 @@
 \ifex@draft
   \newcommand\skipornot{\par}
 \else
-  \newcommand\skipornot{, }
-\fi
+  \newcommand\skipornot{, } % TODO: leave empty here, add conditional comma for
+\fi                         % each parameter (exist if used; none/empty if not)
 
-
-% ...
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% ENVIRONMENTS and COMMANDS ... the main part of the package
-
-%% ~ ~ ~ ENVIRONMENTS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-\newenvironment{scholarLYannotations}
-{\begin{enumerate}\setlength\parindent{0pt}}{\end{enumerate}}
-
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ ENUMERATION STYLE: (1) OR 1) ~
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 \renewcommand\labelenumi{\theenumi)}     % This should be easily customizable by
 % \renewcommand\labelenumi{(\theenumi)}  % the user. Either recommend in the documentation
                                          % that it can be changed as such, or create an
                                          % abbreviated command for the user.
+
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ CONTINUE or RESET FOOTNOTE COUNT ~
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+% TODO ..
+
+% LaTeX will automatically restart the footnote counter following the last
+% lilypond-encoded footnote if: \paper { reset-footnotes-on-new-page = ##t } (default)
+% ... by prepending: \lastfootnote{} :to the latex export (.inp) list.
+%
+% If: { reset-footnotes... = ##f } :is set by the user, LilyPond prepends, for
+% example:: \lastfootnote{#}  :... "#" being the last LilyPond footnote number
+
+% \newif\ifex@resetfootnote
+\newcommand{\lastfootnote}[1]{\setcounter{footnote}{#1}}
+
+% To manually reset (overriding continuation, if applicable) the user writes the
+% following before the \annotations{filename} command in their LaTeX document:
+% \setcounter{footnote}
+% { the code to reset }
+
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ STYLING OPTIONS  ~
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+% TODO ..
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% ENVIRONMENTS and COMMANDS ... the main part of the package
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% ~ ~ ~ ENVIRONMENTS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+% TODO .. automatically wrap the list in this environment:
+\newenvironment{scholarLYannotations}
+  {\begin{enumerate}\setlength\parindent{0pt}}{\end{enumerate}}
 
 %% ~ ~ ~ THE COMMANDS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -47,56 +83,42 @@
 % may shift. Non-defined parameters should always make the list as {}, otherwise
 % latex will assume the next argument (whether {} or {argument}) in that place.
 
-
-\newcommand{\criticalRemark}[5]
-  {
+\newcommand{\criticalRemark}[5]{
   \item{\textit{(Critical Remark)}\skipornot
-  \textbf{#1}} {#2}\skipornot
+  \textbf{M.#1,}} {beat #2}\skipornot
   {#3}\skipornot
   {``#4''}\ifthenelse{\equal{#5}{}}{}{\footnotemark\footnotetext{#5}}
-  }
+}
 
-\newcommand{\musicalIssue}[6]
-  {
+\newcommand{\musicalIssue}[6]{
   \item{\textit{(Musical Issue)}\skipornot
-  \textbf{#1}} {#2}\skipornot
+  \textbf{M.#1,}} {beat #2}\skipornot
   {#3}\skipornot
-  {Affects: }{#4}\skipornot
+  {#4}\skipornot
   {``#5''}\ifthenelse{\equal{#6}{}}{}{\footnotemark\footnotetext{#6}}
-  }
+}
 
-\newcommand{\lilypondIssue}[5]
-  {
+\newcommand{\lilypondIssue}[5]{
   \item{\textit{(LilyPond Issue)}\skipornot
-  \textbf{#1}} {#2}\skipornot
+  \textbf{M.#1,}} {beat #2}\skipornot
   {#3}\skipornot
   {``#4''}\ifthenelse{\equal{#5}{}}{}{\footnotemark\footnotetext{#5}}
-  }
+}
 
-\newcommand{\question}[5] % does nothing
-  {{}{}{}{}{}}
+\newcommand{\question}[5]{
+  \item{\textit{(Question)}\skipornot
+  \textbf{M.#1,}} {beat #2}\skipornot
+  {#3}\skipornot
+  {``#4''}\ifthenelse{\equal{#5}{}}{}{\footnotemark\footnotetext{#5}}
+}
 
-\newcommand{\todo}[5] % does nothing
-  {{}{}{}{}{}}
+\newcommand{\todo}[5]{
+  \item{\textit{(TODO)}\skipornot
+  \textbf{M.#1,}} {beat #2}\skipornot
+  {#3}\skipornot
+  {``#4''}\ifthenelse{\equal{#5}{}}{}{\footnotemark\footnotetext{#5}}
+}
 
-\newcommand{\annotations}[1]{\input{scholarLYannotations.inp}} % the main command
-
-
-% ...
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{comment} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% TODO and TO CONSIDER ... and MISC
-
-\renewcommand\labelenumi{\theenumi)} % makes 1) text text 2) text, etc.
-\renewcommand\labelenumi{(\theenumi)} % makes (1) text text (2) text, etc.
-
- look into this for comments.
- if/else ... american standard   ."   or otherwise   ".
-         ... american standard   ."7   or otherwise   ".7
-                      ... if "7" were a footnote superscript
-
-% ...
-\end{comment} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\annotations}[1]{\input{#1}} % the main command
 
 \endinput
