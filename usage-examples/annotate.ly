@@ -1,6 +1,6 @@
 \version "2.19.22"
 
-\include "../__main__.ily"
+\include "scholarly/package.ly"
 
 #(display "loaded\n")
 
