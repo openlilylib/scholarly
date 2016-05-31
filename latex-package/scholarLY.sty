@@ -38,6 +38,30 @@
                                          % that it can be changed as such, or create an
                                          % abbreviated command for the user.
 
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ FORMAT FOOTNOTES ~
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+\newcommand{\fnOneText}[1]{#1}
+\newcommand{\fnTwoText}[1]{#1}
+\newcommand{\fnThreeText}[1]{#1}
+\newcommand{\fnFourText}[1]{#1}
+\newcommand{\fnFiveText}[1]{#1}
+
+\newcommand{\fnOne}[1]{\footnotemark\footnotetext{\fnOneText}}
+\newcommand{\fnTwo}[1]{\footnotemark\footnotetext{\fnTwoText}}
+\newcommand{\fnThree}[1]{\footnotemark\footnotetext{\fnThreeText}}
+\newcommand{\fnFour}[1]{\footnotemark\footnotetext{\fnFourText}}
+\newcommand{\fnFive}[1]{\footnotemark\footnotetext{\fnFiveText}}
+
+%example: ... NOTE: remove this later, after testing
+%
+% \musicalIssue \with {
+%   message = "This is my message\fnOne, and it has two footnotes."
+%   fnOneText = "This is the text of the footnote"
+%   annotation-footnote = "This automatically tagged to end of message"
+% }
+
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ CONTINUE or RESET FOOTNOTE COUNT ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
