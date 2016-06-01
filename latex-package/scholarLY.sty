@@ -12,6 +12,14 @@
 %% OPTIONS ... the customizable part of the package
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Some options can be applied by wrapping the \annotations{filename.annotations.inp} in
+% respective environment, such as {multicols}, {xcolor}, etc.
+%
+% If specific changes are made to items with either the \renewcommand options (see Global
+% Styling Options below) or otherwise within the text of the actual .inp lists (written
+% by the user in the LilyPond document), they will override wrappers as applicable.
+
+
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ DRAFT or FINAL MODE  ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -29,6 +37,7 @@
   \newcommand\skipornot{, } % TODO: leave empty here, add conditional comma for
 \fi                         % each parameter (exist if used; none/empty if not)
 
+
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ ENUMERATION STYLE: (1) OR 1) ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -37,6 +46,7 @@
 % \renewcommand\labelenumi{(\theenumi)}  % the user. Either recommend in the documentation
                                          % that it can be changed as such, or create an
                                          % abbreviated command for the user.
+
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ FORMAT FOOTNOTES ~
@@ -54,7 +64,7 @@
 \newcommand{\fnFour}[1]{\footnotemark\footnotetext{\fnFourText}}
 \newcommand{\fnFive}[1]{\footnotemark\footnotetext{\fnFiveText}}
 
-%example: ... NOTE: remove this later, after testing
+% example: ... NOTE: remove this later, after testing
 %
 % \musicalIssue \with {
 %   message = "This is my message\fnOne, and it has two footnotes."
@@ -83,11 +93,18 @@
 % \setcounter{footnote}
 % { the code to reset }
 
+
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ GLOBAL FORMATTING OPTIONS  ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-% TODO
+% TODO MULTI-COLUMNs
+% multicols package is applicable
+% BUT, make condition to avoid breaking arguments inside an annotation
+%
+% [twocolumn] option is applicable, but also breaks (allow or avoid?; or optional?)
+%
+% Also, note these each also break the footnotes; want this? Make optional?
 
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
