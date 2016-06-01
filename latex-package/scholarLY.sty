@@ -87,7 +87,28 @@
 %% ~ ~ ~ STYLING OPTIONS  ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-% TODO ..
+% DEFAULTS
+\newcommand{\annType}[1]{\textit{#1}} % Annotation Type; just italics
+\newcommand{\annMeasure}[1]{\textbf{#1}} % just bold
+\newcommand{\annBeat}[1]{#1} % none
+\newcommand{\annVoice}[1]{#1} % none ; this is Voice or Instrument (e.g. Viola)
+\newcommand{\annMessage}[1]{#1} % none
+\newcommand{\annFootnote}[1]{#1} % none
+\newcommand{\annFnOne}[1]{#1} % none
+\newcommand{\annFnTwo}[1]{#1} % none
+\newcommand{\annFnThree}[1]{#1} % none
+\newcommand{\annFnFour}[1]{#1} % none
+\newcommand{\annFnFive}[1]{#1} % none
+
+
+% temporary INSTRUCTIONS
+% to change these, 'renew' the command, such as
+%
+% \renewcommand{\annType}[1]{#1} % no formatting
+% \renewcommand{\annType}[1]{\textbf{#1}} % just bold
+% \renewcommand{\annType}[1]{\textit{\textbf{#1}}} % bold and italics
+%
+% In short, each additional style must be wrapped by (or wrap) the rest
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -108,10 +129,10 @@
 % latex will assume the next argument (whether {} or {argument}) in that place.
 
 \newcommand{\criticalRemark}[5]{
-  \item{\textit{(Critical Remark)}\skipornot
-  \textbf{M.#1,}} {beat #2}\skipornot
-  {#3}\skipornot
-  {``#4''}\ifthenelse{\equal{#5}{}}{}{\footnotemark\footnotetext{#5}}
+  \item{{\annType{(Critical Remark)}}\skipornot
+  {\annMeasure{M.#1,}}} {\annBeat{beat #2}}\skipornot
+  {\annVoice{#3}}\skipornot
+  {\annMessage{``#4''}}\ifthenelse{\equal{#5}{}}{\annFootnote{}}{\annFootnote{\footnotemark\footnotetext{#5}}}
 }
 
 \newcommand{\musicalIssue}[6]{
