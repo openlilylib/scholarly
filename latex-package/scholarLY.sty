@@ -53,9 +53,8 @@
                                          % abbreviated command for the user.
 %%% SPACING
 \setlist[enumerate]{leftmargin=*} % left-justified (to each margin)
-\setlist{parsep=10pt} % spacing between different annotations
-
-\setlength{\parskip}{10em} % line-spacing within each annotation
+\setlist{parsep=0pt} % spacing between different annotations
+\setlength{\parskip}{0em} % line-spacing within each annotation
 
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -144,49 +143,52 @@
 % other optional parameters are added in the future, these places (#1, #2, etc)
 % may shift. Non-defined parameters should always make the list as {}, otherwise
 % latex will assume the next argument (whether {} or {argument}) in that place.
-
-% TODO change each item (except the last) in each list to:
-%   ifthenelse{\equal{#}{}}{}{{#}\skipornot}
-% - this *should* avoid
+%
+% Requires annotation type and measure number, all other arguments optional
 
 \newcommand{\criticalRemark}[6]{
   \item{\annType{(Critical Remark)}\skipornot
-  {\annMeasure{M.#1,}}} {\annBeat{beat #2}}\skipornot
-  {\annVoice{#3}}\skipornot
-  {\annAffected{#4}}\skipornot
-  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}
+  {\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{}{\annBeat{beat #2}\skipornot}
+  \ifthenelse{\equal{#3}{}}{}{\annVoice{#3}\skipornot}
+  \ifthenelse{\equal{#4}{}}{}{\annAffected{#4}\skipornot}
+  \ifthenelse{\equal{#5}{}}{}
+    {{\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
 }
 
 \newcommand{\musicalIssue}[6]{
   \item{\annType{(Musical Issue)}\skipornot
-  {\annMeasure{M.#1,}}} {\annBeat{beat #2}}\skipornot
-  {\annVoice{#3}}\skipornot
-  {\annAffected{#4}}\skipornot
-  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}
+  {\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{}{\annBeat{beat #2}\skipornot}
+  \ifthenelse{\equal{#3}{}}{}{\annVoice{#3}\skipornot}
+  \ifthenelse{\equal{#4}{}}{}{\annAffected{#4}\skipornot}
+  \ifthenelse{\equal{#5}{}}{}
+    {{\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
 }
 
 \newcommand{\lilypondIssue}[6]{
-  \item{\annType{(Musical Issue)}\skipornot
-  {\annMeasure{M.#1,}}} {\annBeat{beat #2}}\skipornot
-  {\annVoice{#3}}\skipornot
-  {\annAffected{#4}}\skipornot
-  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}
+  \item{\annType{(Lilypond Issue)}\skipornot
+  {\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{}{\annBeat{beat #2}\skipornot}
+  \ifthenelse{\equal{#3}{}}{}{\annVoice{#3}\skipornot}
+  \ifthenelse{\equal{#4}{}}{}{\annAffected{#4}\skipornot}
+  \ifthenelse{\equal{#5}{}}{}
+    {{\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
 }
 
 \newcommand{\question}[6]{
   \item{\annType{(Question)}\skipornot
-  {\annMeasure{M.#1,}}} {\annBeat{beat #2}}\skipornot
-  {\annVoice{#3}}\skipornot
-  {\annAffected{#4}}\skipornot
-  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}
+  {\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{}{\annBeat{beat #2}\skipornot}
+  \ifthenelse{\equal{#3}{}}{}{\annVoice{#3}\skipornot}
+  \ifthenelse{\equal{#4}{}}{}{\annAffected{#4}\skipornot}
+  \ifthenelse{\equal{#5}{}}{}
+    {{\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
 }
 
 \newcommand{\todo}[6]{
   \item{\annType{(Todo)}\skipornot
-  {\annMeasure{M.#1,}}} {\annBeat{beat #2}}\skipornot
-  {\annVoice{#3}}\skipornot
-  {\annAffected{#4}}\skipornot
-  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}
+  {\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{}{\annBeat{beat #2}\skipornot}
+  \ifthenelse{\equal{#3}{}}{}{\annVoice{#3}\skipornot}
+  \ifthenelse{\equal{#4}{}}{}{\annAffected{#4}\skipornot}
+  \ifthenelse{\equal{#5}{}}{}
+    {{\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
 }
 
 \endinput
