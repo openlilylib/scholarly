@@ -3,9 +3,6 @@
 \RequirePackage{verbatim}
 \RequirePackage{ifthen}
 \RequirePackage{enumitem}
-  \setlist[enumerate]{leftmargin=*}
-  \setlength{\parskip}{0em}
-  \setlist{parsep=0pt}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -23,6 +20,8 @@
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ DRAFT or FINAL MODE  ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%
+% So far, this only affects horizontal/vertical arrangement. What else?
 
 \newif\ifex@draft % (implicitly final) ... i.e. draft mode if set, otherwise final mode,
                   % which can also be explicitly set: \usepackage[final]{scholarLY}
@@ -38,31 +37,30 @@
 \fi                         % each parameter (exist if used; none/empty if not)
 
 
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%% ~ ~ ~ ENUMERATION STYLE: (1) OR 1) ~
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ ENUMERATION STYLE: ~
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%
+% This package (currently) uses the 'enumitem' package for listing/formatting
+% the annotations. These options can be place at the top of the document (will
+% affect the entire document, unless changed) or just before the annotations.
+% More info: https://www.ctan.org/pkg/enumerate?lang=en
 
+%%% ONE or TWO PARENS, or other
 \renewcommand\labelenumi{\theenumi)}     % This should be easily customizable by
 % \renewcommand\labelenumi{(\theenumi)}  % the user. Either recommend in the documentation
                                          % that it can be changed as such, or create an
                                          % abbreviated command for the user.
+%%% SPACING
+\setlist[enumerate]{leftmargin=*} % left-justified (to each margin)
+\setlist{parsep=10pt} % spacing between different annotations
+
+\setlength{\parskip}{10em} % line-spacing within each annotation
 
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ FORMAT FOOTNOTES ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-\newcommand{\fnOneText}[1]{#1}
-\newcommand{\fnTwoText}[1]{#1}
-\newcommand{\fnThreeText}[1]{#1}
-\newcommand{\fnFourText}[1]{#1}
-\newcommand{\fnFiveText}[1]{#1}
-
-\newcommand{\fnOne}[1]{\footnotemark\footnotetext{\fnOneText}}
-\newcommand{\fnTwo}[1]{\footnotemark\footnotetext{\fnTwoText}}
-\newcommand{\fnThree}[1]{\footnotemark\footnotetext{\fnThreeText}}
-\newcommand{\fnFour}[1]{\footnotemark\footnotetext{\fnFourText}}
-\newcommand{\fnFive}[1]{\footnotemark\footnotetext{\fnFiveText}}
 
 % example: ... NOTE: remove this later, after testing
 %
@@ -76,22 +74,17 @@
 %% ~ ~ ~ CONTINUE or RESET FOOTNOTE COUNT ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-% TODO ..
 
-% LaTeX will automatically restart the footnote counter following the last
-% lilypond-encoded footnote if: \paper { reset-footnotes-on-new-page = ##t } (default)
-% ... by prepending: \lastfootnote{} :to the latex export (.inp) list.
-%
-% If: { reset-footnotes... = ##f } :is set by the user, LilyPond prepends, for
-% example:: \lastfootnote{#}  :... "#" being the last LilyPond footnote number
-
-% \newif\ifex@resetfootnote
 \newcommand{\lastfootnote}[1]{\setcounter{footnote}{#1}}
-
-% To manually reset (overriding continuation, if applicable) the user writes the
-% following before the \annotations{filename} command in their LaTeX document:
-% \setcounter{footnote}
-% { the code to reset }
+\newcommand{\resetfootnotes}{\setcounter{footnote}{0}}
+%
+\resetfootnotes % default
+%
+% To manually reset (overriding continuation, if applicable) prepend the
+% following to \annotations{filename.annotations.inp} command:
+%   \lastfootnote{#}
+% To reset the count (at any time):
+%   \resetfootnotes
 
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -119,11 +112,13 @@
 \newcommand{\annAffected}[1]{#1} % none
 \newcommand{\annMessage}[1]{#1} % none
 \newcommand{\annFootnote}[1]{#1} % none
-\newcommand{\annFnOne}[1]{#1} % none
-\newcommand{\annFnTwo}[1]{#1} % none
-\newcommand{\annFnThree}[1]{#1} % none
-\newcommand{\annFnFour}[1]{#1} % none
-\newcommand{\annFnFive}[1]{#1} % none
+
+% TODO a cleaner way to write this; and footnote text styling; and other footnote mark styling
+\newcommand{\footnotemarkcolor}{red} % abbreviated footnote color command
+\makeatletter
+\renewcommand{\@makefnmark}{\hbox{\@textsuperscript{%
+  \color{\footnotemarkcolor}\normalfont\@thefnmark}}}
+\makeatother
 %
 % temporary INSTRUCTIONS
 % to change these, 'renew' the command, such as
@@ -139,31 +134,27 @@
 %% ENVIRONMENTS and COMMANDS ... the main part of the package
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% ~ ~ ~ ENVIRONMENTS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-% TODO .. automatically wrap the list in this environment:
-\newcommand{\enumerateList}{\begin{enumerate}}
-\newcommand{\sigh}{\end{enumerate}}
-\newcommand{\annotationsLY}[1]{\enumerateList\input{#1}\sigh} % ideal workaround.. but not working yet
+\newcommand{\annotations}[1]{\begin{enumerate}{\input{#1}}\end{enumerate}}
 
-% current working (but less preferable) method
-\newenvironment{scholarLYannotations}
-{\begin{enumerate}\setlength\parindent{0pt}}{\end{enumerate}} % the main environment
-\newcommand{\annotations}[1]{\input{#1}} % the main command
-
-%% ~ ~ ~ THE COMMANDS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 % The LAST parameter in each set is footnote. If empty, one won't be created. If
 % other optional parameters are added in the future, these places (#1, #2, etc)
 % may shift. Non-defined parameters should always make the list as {}, otherwise
 % latex will assume the next argument (whether {} or {argument}) in that place.
 
+% TODO change each item (except the last) in each list to:
+%   ifthenelse{\equal{#}{}}{}{{#}\skipornot}
+% - this *should* avoid
+
 \newcommand{\criticalRemark}[6]{
   \item{\annType{(Critical Remark)}\skipornot
   {\annMeasure{M.#1,}}} {\annBeat{beat #2}}\skipornot
   {\annVoice{#3}}\skipornot
   {\annAffected{#4}}\skipornot
-  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnotemark\footnotetext{#6}}}
+  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}
 }
 
 \newcommand{\musicalIssue}[6]{
@@ -171,7 +162,7 @@
   {\annMeasure{M.#1,}}} {\annBeat{beat #2}}\skipornot
   {\annVoice{#3}}\skipornot
   {\annAffected{#4}}\skipornot
-  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnotemark\footnotetext{#6}}}
+  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}
 }
 
 \newcommand{\lilypondIssue}[6]{
@@ -179,7 +170,7 @@
   {\annMeasure{M.#1,}}} {\annBeat{beat #2}}\skipornot
   {\annVoice{#3}}\skipornot
   {\annAffected{#4}}\skipornot
-  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnotemark\footnotetext{#6}}}
+  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}
 }
 
 \newcommand{\question}[6]{
@@ -187,7 +178,7 @@
   {\annMeasure{M.#1,}}} {\annBeat{beat #2}}\skipornot
   {\annVoice{#3}}\skipornot
   {\annAffected{#4}}\skipornot
-  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnotemark\footnotetext{#6}}}
+  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}
 }
 
 \newcommand{\todo}[6]{
@@ -195,8 +186,7 @@
   {\annMeasure{M.#1,}}} {\annBeat{beat #2}}\skipornot
   {\annVoice{#3}}\skipornot
   {\annAffected{#4}}\skipornot
-  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnotemark\footnotetext{#6}}}
+  {\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}
 }
-
 
 \endinput
