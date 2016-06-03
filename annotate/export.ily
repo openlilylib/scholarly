@@ -136,7 +136,7 @@ setAnnotationOutputBasename =
        (ly:message (format "    ~a" (format-location ann)))
        (write-lines
         (format-property-messages ann
-          (list "type" "location" "input-file-name" "grob" "grob-location"))
+          '(context type location input-file-name grob grob-location))
         ly:message)
        (ly:message "")))
     annotations))
