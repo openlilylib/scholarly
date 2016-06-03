@@ -52,7 +52,7 @@
                                          % that it can be changed as such, or create an
                                          % abbreviated command for the user.
 
-%%% SPACING, TODO optionally put within list
+%%% SPACING, TODO optionally. - put within list via \enumOptions
 \setlist[enumerate]{leftmargin=*} % left-justified (to each margin)
 \setlist{parsep=0pt} % spacing between different annotations
 \setlength{\parskip}{0em} % line-spacing within each annotation
@@ -97,8 +97,6 @@
 % BUT, make condition to avoid breaking arguments inside an annotation
 %
 % [twocolumn] option is applicable, but also breaks (allow or avoid?; or optional?)
-%
-% Also, note these each also break the footnotes; want this? Make optional?
 
 \newcommand{\postannType}{} % add vspace, hspace, characters, etc. *after* type
 % NOTE: add \par to correct vspace behavior, i.e. \postannType{\par\vspace{1cm}}
