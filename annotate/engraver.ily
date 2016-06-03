@@ -90,7 +90,7 @@ annotationCollector =
                           ;; c) the directory name (as determined in the \annotate function)
                           (or (assq-ref annotation 'context)
                               (let ((actual-context-id (ly:context-id context)))
-                                (if (not (string=? actual-context-id "\\new"))
+                                (if (not (member actual-context-id (list "" "\\new")))
                                     actual-context-id
                                     #f))
                               (assq-ref annotation 'context-id))))
