@@ -3,6 +3,7 @@
 \RequirePackage{verbatim}
 \RequirePackage{ifthen}
 \RequirePackage{enumitem}
+\RequirePackage[stable]{footmisc} % allows footnotes inside arguments
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -55,7 +56,7 @@
                                          % abbreviated command for the user.
 
 %%% SPACING, TODO optionally. - put within list via \enumOptions
-\setlist[enumerate]{leftmargin=*} % left-justified (to each margin)
+% \setlist[enumerate]{leftmargin=*} % left-justified (to each margin)
 \setlist{parsep=0pt} % spacing between different annotations
 \setlength{\parskip}{0em} % line-spacing within each annotation
 \setlength{\itemsep}{0pt}
@@ -88,6 +89,8 @@
 %   \lastfootnote{#}
 % To reset the count (at any time):
 %   \resetfootnotes
+%
+% This can be inserted within annotations in the LilyPond document.
 
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -101,7 +104,7 @@
 % [twocolumn] option is applicable, but also breaks (allow or avoid?; or optional?)
 
 \newcommand{\postannType}{} % add vspace, hspace, characters, etc. *after* type
-% NOTE: add \par to correct vspace behavior, i.e. \postannType{\par\vspace{1cm}}
+% NOTE to user: add \par to correct vspace behavior, i.e. \postannType{\par\vspace{1cm}}
 \newcommand{\preannArg}{}
 
 % TODO type or not ... \excludetype will turn \includeornot (in front of 'type'), so
@@ -129,7 +132,7 @@
 \newcommand{\styleAnnBeat}[1]{\renewcommand{\annBeat}[1]{#1}}
 \newcommand{\styleAnnVoice}[1]{\renewcommand{\annVoice}[1]{#1}}
 \newcommand{\styleAnnAffected}[1]{\renewcommand{\annAffected}[1]{#1}}
-\newcommand{\styleAnnMessage}[1]{\renewcommand{\annVMessage}[1]{#1}}
+\newcommand{\styleAnnMessage}[1]{\renewcommand{\annMessage}[1]{#1}}
 \newcommand{\styleAnnFootnote}[1]{\renewcommand{\annFootnote}[1]{#1}}
 %
 % ex: \styleAnnType{\textit{#1}}
@@ -155,17 +158,27 @@
 %% ENVIRONMENTS and COMMANDS ... the main part of the package
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+% format/style the list of annotations
 \newcommand{\enumOptions}{}
+\newcommand{\setEnumOptions}[1]{\renewcommand{\enumOptions}{#1}}
+%
+% ex: \setEnumOptions{\setlength{\itemsep}{0.5cm}}
 
+
+%% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%
 \newcommand{\annotations}[1]{\begin{enumerate}\enumOptions\input{#1}\end{enumerate}}
+%
+% ex: \annotations{annotate.annotations.inp}
 
+%% ~ ~ ~ ALLOW (default) or AVOID breaking arguments in annotations ~ ~ ~ ~ ~ ~
+%
 \newcommand{\allowAnnBreaks}{
   \newcommand{\noAnnBreaksBegin}{}
   \newcommand{\noAnnBreaksEnd}{}
 }
-\allowAnnBreaks % default
-
+\allowAnnBreaks % default; no need to be entered by user, but may be used within an
+                % annotation to change behavior inline.
 
 \newcommand{\noAnnBreaks}{
   % AVOID annotated breaks, environments
@@ -178,7 +191,8 @@
   \renewcommand{\noAnnBreaksEnd}{\end{absolutelynopagebreak}}
 }
 \newcommand{\avoidAnnBreaks}{\noAnnBreaks}
-
+%
+% ex: \avoidAnnBreaks
 
 
 %% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -190,6 +204,7 @@
 %
 % Requires annotation type and measure number, all other arguments optional
 
+
 \newcommand{\criticalRemark}[6]{\noAnnBreaksBegin
   \item{\annType{(Critical Remark)}\skipornot
   \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
@@ -197,8 +212,7 @@
   \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
   \ifthenelse{\equal{#5}{}}{}
     {{\preannArg\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
-    \noAnnBreaksEnd
-
+\noAnnBreaksEnd
 }
 
 \newcommand{\musicalIssue}[6]{\noAnnBreaksBegin
