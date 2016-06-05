@@ -2,9 +2,11 @@
 
 \RequirePackage{verbatim}
 \RequirePackage{ifthen}
+\RequirePackage{keyval}
 \RequirePackage{enumitem}
 \RequirePackage[stable]{footmisc} % allows footnotes inside arguments
 
+%\usepackage{xparse}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OPTIONS ... the customizable part of the package
@@ -48,6 +50,9 @@
   \newcommand{\TODOname}{\annType{}}
   \newcommand\skipornot{, } % TODO: leave empty here, add conditional comma for
 \fi                         % each parameter (exist if used; none/empty if not)
+
+
+
 
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -213,6 +218,30 @@
 % latex will assume the next argument (whether {} or {argument}) in that place.
 %
 % Requires annotation type and measure number, all other arguments optional
+
+\makeatletter
+\define@key{scholarLYannotations}{grob}{\def\ly@grob{#1}}
+\define@key{scholarLYannotations}{grob-location}{\def\ly@groblocation{#1}}
+\define@key{scholarLYannotations}{grob-type}{\def\ly@grobtype{#1}}
+\define@key{scholarLYannotations}{input-file-name}{\def\ly@inputfilename{#1}}
+\define@key{scholarLYannotations}{context-id}{\def\ly@contextid{#1}}
+\define@key{scholarLYannotations}{location}{\def\ly@location{#1}}
+\define@key{scholarLYannotations}{type}{\def\ly@type{#1}}
+\define@key{scholarLYannotations}{message}{\def\ly@message{#1}}
+\define@key{scholarLYannotations}{context}{\def\ly@context{#1}}
+%%%
+\setkeys{scholarLYannotations}{ % default values
+  grob = no value given,
+  grob-location = no value given,
+  grob-type = no value given,
+  input-file-name = no value given,
+  context-id = no value given,
+  location = no value given,
+  type = no value given,
+  message = no value given,
+  context = no value given
+}
+\makeatother
 
 \newcommand{\hideAnnTypes}{
   \renewcommand{\CRname}{}
