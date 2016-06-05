@@ -16,6 +16,8 @@
 % Styling Options below) or otherwise within the text of the actual .inp lists (written
 % by the user in the LilyPond document), they will override wrappers as applicable.
 
+% TODO recognize optional arguments i.e. how to deal with key/value pairs
+
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ DRAFT or FINAL MODE  ~
@@ -102,6 +104,12 @@
 % NOTE: add \par to correct vspace behavior, i.e. \postannType{\par\vspace{1cm}}
 \newcommand{\preannArg}{}
 
+% TODO type or not ... \excludetype will turn \includeornot (in front of 'type'), so
+% user can *not* print the types easily, if so desired.
+% \newcommand{\excludeType}{\renewcommand{\includeornot}{exclude}}
+%
+% \ifthenelse{\equal{\includeornot}{exclude}}{}{(Critical Remark)}
+
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ GLOBAL STYLING OPTIONS ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -114,6 +122,17 @@
 \newcommand{\annAffected}[1]{#1} % none
 \newcommand{\annMessage}[1]{#1} % none
 \newcommand{\annFootnote}[1]{#1} % none
+
+% To update styles:
+\newcommand{\styleAnnType}[1]{\renewcommand{\annType}[1]{#1}}
+\newcommand{\styleAnnMeasure}[1]{\renewcommand{\annMeasure}[1]{#1}}
+\newcommand{\styleAnnBeat}[1]{\renewcommand{\annBeat}[1]{#1}}
+\newcommand{\styleAnnVoice}[1]{\renewcommand{\annVoice}[1]{#1}}
+\newcommand{\styleAnnAffected}[1]{\renewcommand{\annAffected}[1]{#1}}
+\newcommand{\styleAnnMessage}[1]{\renewcommand{\annVMessage}[1]{#1}}
+\newcommand{\styleAnnFootnote}[1]{\renewcommand{\annFootnote}[1]{#1}}
+%
+% ex: \styleAnnType{\textit{#1}}
 
 % TODO a cleaner way to write this; and footnote text styling; and other footnote mark styling
 \newcommand{\footnotemarkcolor}{red} % abbreviated footnote color command
@@ -141,6 +160,27 @@
 
 \newcommand{\annotations}[1]{\begin{enumerate}\enumOptions\input{#1}\end{enumerate}}
 
+\newcommand{\allowAnnBreaks}{
+  \newcommand{\noAnnBreaksBegin}{}
+  \newcommand{\noAnnBreaksEnd}{}
+}
+\allowAnnBreaks % default
+
+
+\newcommand{\noAnnBreaks}{
+  % AVOID annotated breaks, environments
+  \newenvironment{absolutelynopagebreak}
+    {\par\nobreak\vfil\penalty0\vfilneg
+     \vtop\bgroup}
+    {\par\xdef\tpd{\the\prevdepth}\egroup
+     \prevdepth=\tpd}
+  \renewcommand{\noAnnBreaksBegin}{\begin{absolutelynopagebreak}}
+  \renewcommand{\noAnnBreaksEnd}{\end{absolutelynopagebreak}}
+}
+\newcommand{\avoidAnnBreaks}{\noAnnBreaks}
+
+
+
 %% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 % The LAST parameter in each set is footnote. If empty, one won't be created. If
@@ -150,49 +190,55 @@
 %
 % Requires annotation type and measure number, all other arguments optional
 
-\newcommand{\criticalRemark}[6]{
+\newcommand{\criticalRemark}[6]{\noAnnBreaksBegin
   \item{\annType{(Critical Remark)}\skipornot
   \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
   \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
   \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
   \ifthenelse{\equal{#5}{}}{}
     {{\preannArg\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
+    \noAnnBreaksEnd
+
 }
 
-\newcommand{\musicalIssue}[6]{
+\newcommand{\musicalIssue}[6]{\noAnnBreaksBegin
   \item{\annType{(Musical Issue)}\skipornot
   \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
   \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
   \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
   \ifthenelse{\equal{#5}{}}{}
     {{\preannArg\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
+\noAnnBreaksEnd
 }
 
-\newcommand{\lilypondIssue}[6]{
+\newcommand{\lilypondIssue}[6]{\noAnnBreaksBegin
   \item{\annType{(Lilypond Issue)}\skipornot
   \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
   \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
   \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
   \ifthenelse{\equal{#5}{}}{}
     {{\preannArg\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
+\noAnnBreaksEnd
 }
 
-\newcommand{\question}[6]{
+\newcommand{\question}[6]{\noAnnBreaksBegin
   \item{\annType{(Question)}\skipornot
   \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
   \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
   \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
   \ifthenelse{\equal{#5}{}}{}
     {{\preannArg\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
+\noAnnBreaksEnd
 }
 
-\newcommand{\todo}[6]{
+\newcommand{\todo}[6]{\noAnnBreaksBegin
   \item{\annType{(Todo)}\skipornot
   \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
   \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
   \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
   \ifthenelse{\equal{#5}{}}{}
     {{\preannArg\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
+\noAnnBreaksEnd
 }
 
 \endinput
