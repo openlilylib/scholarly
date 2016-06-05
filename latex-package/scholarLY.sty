@@ -35,7 +35,17 @@
 
 \ifex@draft
   \newcommand\skipornot{\par}
+  \newcommand{\CRname}{\annType{(Critical Remark)}}
+  \newcommand{\MIname}{\annType{(Musical Issue)}}
+  \newcommand{\LIname}{\annType{(LilyPond Issue)}}
+  \newcommand{\Qname}{\annType{(Question)}}
+  \newcommand{\TODOname}{\annType{(TODO)}}
 \else
+  \newcommand{\CRname}{\annType{}}
+  \newcommand{\MIname}{\annType{}}
+  \newcommand{\LIname}{\annType{}}
+  \newcommand{\Qname}{\annType{}}
+  \newcommand{\TODOname}{\annType{}}
   \newcommand\skipornot{, } % TODO: leave empty here, add conditional comma for
 \fi                         % each parameter (exist if used; none/empty if not)
 
@@ -204,9 +214,24 @@
 %
 % Requires annotation type and measure number, all other arguments optional
 
+\newcommand{\hideAnnTypes}{
+  \renewcommand{\CRname}{}
+  \renewcommand{\MIname}{}
+  \renewcommand{\LIname}{}
+  \renewcommand{\Qname}{}
+  \renewcommand{\TODOname}{}
+}
+
+\newcommand{\showAnnTypes}{
+  \newcommand{\CRname}{\annType{(Critical Remark)}}
+  \newcommand{\MIname}{\annType{(Musical Issue)}}
+  \newcommand{\LIname}{\annType{(LilyPond Issue)}}
+  \newcommand{\Qname}{\annType{(Question)}}
+  \newcommand{\TODOname}{\annType{(TODO)}}
+}
 
 \newcommand{\criticalRemark}[6]{\noAnnBreaksBegin
-  \item{\annType{(Critical Remark)}\skipornot
+  \item{\CRname\skipornot
   \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
   \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
   \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
@@ -216,7 +241,7 @@
 }
 
 \newcommand{\musicalIssue}[6]{\noAnnBreaksBegin
-  \item{\annType{(Musical Issue)}\skipornot
+  \item{\MIname\skipornot
   \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
   \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
   \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
@@ -226,7 +251,7 @@
 }
 
 \newcommand{\lilypondIssue}[6]{\noAnnBreaksBegin
-  \item{\annType{(Lilypond Issue)}\skipornot
+  \item{\LIname\skipornot
   \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
   \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
   \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
@@ -236,7 +261,7 @@
 }
 
 \newcommand{\question}[6]{\noAnnBreaksBegin
-  \item{\annType{(Question)}\skipornot
+  \item{\Qname\skipornot
   \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
   \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
   \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
@@ -246,7 +271,7 @@
 }
 
 \newcommand{\todo}[6]{\noAnnBreaksBegin
-  \item{\annType{(Todo)}\skipornot
+  \item{\TODOname\skipornot
   \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
   \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
   \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
