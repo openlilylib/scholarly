@@ -4,7 +4,8 @@
 \RequirePackage{ifthen}
 \RequirePackage{keyval}
 \RequirePackage{enumitem}
-\RequirePackage[stable]{footmisc} % allows footnotes inside arguments
+%\RequirePackage[stable]{footmisc} % allows footnotes inside arguments
+  % TODO this behavior isn't working correctly. Find another solution.
 
 %\usepackage{xparse}
 
@@ -15,11 +16,12 @@
 % Some options can be applied by wrapping the \annotations{filename.annotations.inp} in
 % respective environment, such as {multicols}, {xcolor}, etc.
 %
-% If specific changes are made to items with either the \renewcommand options (see Global
-% Styling Options below) or otherwise within the text of the actual .inp lists (written
+% If specific changes are made to items within the text of the actual .inp lists (written
 % by the user in the LilyPond document), they will override wrappers as applicable.
 
-% TODO recognize optional arguments i.e. how to deal with key/value pairs
+% TODO ...
+% All styling / formatting options currently affect both final and draft mode.
+% However, draft mode
 
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -37,21 +39,23 @@
 
 \ifex@draft
   \newcommand\skipornot{\par}
+  \newcommand{\typeSkipornot}{\par}
   \newcommand{\CRname}{\annType{(Critical Remark)}}
   \newcommand{\MIname}{\annType{(Musical Issue)}}
   \newcommand{\LIname}{\annType{(LilyPond Issue)}}
   \newcommand{\Qname}{\annType{(Question)}}
   \newcommand{\TODOname}{\annType{(TODO)}}
+  \newcommand{\modePostType}{\par}
 \else
+  \newcommand{\modePostType}{, }
   \newcommand{\CRname}{\annType{}}
   \newcommand{\MIname}{\annType{}}
   \newcommand{\LIname}{\annType{}}
   \newcommand{\Qname}{\annType{}}
   \newcommand{\TODOname}{\annType{}}
+  \newcommand{\typeSkipornot}{}
   \newcommand\skipornot{, } % TODO: leave empty here, add conditional comma for
 \fi                         % each parameter (exist if used; none/empty if not)
-
-
 
 
 
@@ -93,7 +97,6 @@
 %% ~ ~ ~ CONTINUE or RESET FOOTNOTE COUNT ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-
 \newcommand{\lastfootnote}[1]{\setcounter{footnote}{#1}}
 \newcommand{\resetfootnotes}{\setcounter{footnote}{0}}
 %
@@ -128,6 +131,7 @@
 %
 % \ifthenelse{\equal{\includeornot}{exclude}}{}{(Critical Remark)}
 
+
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ GLOBAL STYLING OPTIONS ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -152,22 +156,6 @@
 %
 % ex: \styleAnnType{\textit{#1}}
 
-% TODO a cleaner way to write this; and footnote text styling; and other footnote mark styling
-\newcommand{\footnotemarkcolor}{red} % abbreviated footnote color command
-\makeatletter
-\renewcommand{\@makefnmark}{\hbox{\@textsuperscript{%
-  \color{\footnotemarkcolor}\normalfont\@thefnmark}}}
-\makeatother
-%
-% temporary INSTRUCTIONS
-% to change these, 'renew' the command, such as
-%
-% \renewcommand{\annType}[1]{#1} % no formatting
-% \renewcommand{\annType}[1]{\textbf{#1}} % just bold
-% \renewcommand{\annType}[1]{\textit{\textbf{#1}}} % bold and italics
-%
-% In short, each additional style must be wrapped by (or wrap) the rest.
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% ENVIRONMENTS and COMMANDS ... the main part of the package
@@ -188,14 +176,19 @@
 
 %% ~ ~ ~ ALLOW (default) or AVOID breaking arguments in annotations ~ ~ ~ ~ ~ ~
 %
-\newcommand{\allowAnnBreaks}{
+\newcommand{\defaultAnnBreaks}{
   \newcommand{\noAnnBreaksBegin}{}
   \newcommand{\noAnnBreaksEnd}{}
 }
-\allowAnnBreaks % default; no need to be entered by user, but may be used within an
+\defaultAnnBreaks % allowed; no need to be entered by user, but may be used within an
                 % annotation to change behavior inline.
 
-\newcommand{\noAnnBreaks}{
+\newcommand{\allowAnnBreaks}{
+  \renewcommand{\noAnnBreaksBegin}{}
+  \renewcommand{\noAnnBreaksEnd}{}
+}
+
+\newcommand{\avoidAnnBreaks}{
   % AVOID annotated breaks, environments
   \newenvironment{absolutelynopagebreak}
     {\par\nobreak\vfil\penalty0\vfilneg
@@ -205,7 +198,6 @@
   \renewcommand{\noAnnBreaksBegin}{\begin{absolutelynopagebreak}}
   \renewcommand{\noAnnBreaksEnd}{\end{absolutelynopagebreak}}
 }
-\newcommand{\avoidAnnBreaks}{\noAnnBreaks}
 %
 % ex: \avoidAnnBreaks
 
@@ -263,6 +255,7 @@
 %% ~ ~ ~ hide or show types manually ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 \newcommand{\hideAnnTypes}{
+  \renewcommand{\typeSkipornot}{}
   \renewcommand{\CRname}{}
   \renewcommand{\MIname}{}
   \renewcommand{\LIname}{}
@@ -271,11 +264,12 @@
 }
 
 \newcommand{\showAnnTypes}{
-  \newcommand{\CRname}{\annType{(Critical Remark)}}
-  \newcommand{\MIname}{\annType{(Musical Issue)}}
-  \newcommand{\LIname}{\annType{(LilyPond Issue)}}
-  \newcommand{\Qname}{\annType{(Question)}}
-  \newcommand{\TODOname}{\annType{(TODO)}}
+  \renewcommand{\typeSkipornot}{\modePostType}
+  \renewcommand{\CRname}{\annType{(Critical Remark)}}
+  \renewcommand{\MIname}{\annType{(Musical Issue)}}
+  \renewcommand{\LIname}{\annType{(LilyPond Issue)}}
+  \renewcommand{\Qname}{\annType{(Question)}}
+  \renewcommand{\TODOname}{\annType{(TODO)}}
 }
 
 %% ~ ~ ~ the parser commands ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -283,7 +277,7 @@
 \newcommand{\criticalRemark}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
     \noAnnBreaksBegin
-      \item{\CRname\skipornot
+      \item{\CRname\typeSkipornot
       \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
@@ -295,7 +289,7 @@
 \newcommand{\musicalIssue}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
     \noAnnBreaksBegin
-      \item{\MIname\skipornot
+      \item{\MIname\typeSkipornot
       \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
@@ -307,7 +301,7 @@
 \newcommand{\lilypondIssue}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
     \noAnnBreaksBegin
-      \item{\LIname\skipornot
+      \item{\LIname\typeSkipornot
       \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
@@ -319,7 +313,7 @@
 \newcommand{\question}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
     \noAnnBreaksBegin
-      \item{\Qname\skipornot
+      \item{\Qname\typeSkipornot
       \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
@@ -331,7 +325,7 @@
 \newcommand{\todo}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
     \noAnnBreaksBegin
-      \item{\TODOname\skipornot
+      \item{\TODOname\typeSkipornot
       \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
