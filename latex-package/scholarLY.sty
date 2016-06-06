@@ -209,7 +209,6 @@
 %
 % ex: \avoidAnnBreaks
 
-
 %% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 % The LAST parameter in each set is footnote. If empty, one won't be created. If
@@ -219,17 +218,19 @@
 %
 % Requires annotation type and measure number, all other arguments optional
 
+%% ~ ~ ~ KEY + VALUE arguments ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
 \makeatletter
-\define@key{scholarLYannotations}{grob}{\def\ly@grob{#1}}
-\define@key{scholarLYannotations}{grob-location}{\def\ly@groblocation{#1}}
-\define@key{scholarLYannotations}{grob-type}{\def\ly@grobtype{#1}}
-\define@key{scholarLYannotations}{input-file-name}{\def\ly@inputfilename{#1}}
-\define@key{scholarLYannotations}{context-id}{\def\ly@contextid{#1}}
-\define@key{scholarLYannotations}{location}{\def\ly@location{#1}}
-\define@key{scholarLYannotations}{type}{\def\ly@type{#1}}
-\define@key{scholarLYannotations}{message}{\def\ly@message{#1}}
-\define@key{scholarLYannotations}{context}{\def\ly@context{#1}}
-%%%
+\define@key{scholarLYannotations}{grob}{\def\lygrob{#1}}
+\define@key{scholarLYannotations}{grob-location}{\def\lygroblocation{#1}}
+\define@key{scholarLYannotations}{grob-type}{\def\lygrobtype{#1}}
+\define@key{scholarLYannotations}{input-file-name}{\def\lyinputfilename{#1}}
+\define@key{scholarLYannotations}{context-id}{\def\lycontextid{#1}}
+\define@key{scholarLYannotations}{location}{\def\lylocation{#1}}
+\define@key{scholarLYannotations}{type}{\def\lytype{#1}}
+\define@key{scholarLYannotations}{message}{\def\lymessage{#1}}
+\define@key{scholarLYannotations}{context}{\def\lycontext{#1}}
+
 \setkeys{scholarLYannotations}{ % default values
   grob = no value given,
   grob-location = no value given,
@@ -242,6 +243,24 @@
   context = no value given
 }
 \makeatother
+
+\newcommand{\resetkeys}{
+  \makeatletter
+    \setkeys{scholarLYannotations}{ % default values
+      grob = no value given,
+      grob-location = no value given,
+      grob-type = no value given,
+      input-file-name = no value given,
+      context-id = no value given,
+      location = no value given,
+      type = no value given,
+      message = no value given,
+      context = no value given
+    }
+  \makeatother
+}
+
+%% ~ ~ ~ hide or show types manually ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 \newcommand{\hideAnnTypes}{
   \renewcommand{\CRname}{}
@@ -259,54 +278,66 @@
   \newcommand{\TODOname}{\annType{(TODO)}}
 }
 
-\newcommand{\criticalRemark}[6]{\noAnnBreaksBegin
-  \item{\CRname\skipornot
-  \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
-  \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
-  \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
-  \ifthenelse{\equal{#5}{}}{}
-    {{\preannArg\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
-\noAnnBreaksEnd
+%% ~ ~ ~ the parser commands ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+\newcommand{\criticalRemark}[7][]{
+  \resetkeys\setkeys{scholarLYannotations}{#1}
+    \noAnnBreaksBegin
+      \item{\CRname\skipornot
+      \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
+      \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
+      \ifthenelse{\equal{#6}{}}{}
+        {{\preannArg\annMessage{``#6''}}\ifthenelse{\equal{#7}{}}{\annFootnote{}}{\annFootnote{\footnote{#7}}}}
+    \noAnnBreaksEnd
 }
 
-\newcommand{\musicalIssue}[6]{\noAnnBreaksBegin
-  \item{\MIname\skipornot
-  \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
-  \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
-  \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
-  \ifthenelse{\equal{#5}{}}{}
-    {{\preannArg\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
-\noAnnBreaksEnd
+\newcommand{\musicalIssue}[7][]{
+  \resetkeys\setkeys{scholarLYannotations}{#1}
+    \noAnnBreaksBegin
+      \item{\MIname\skipornot
+      \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
+      \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
+      \ifthenelse{\equal{#6}{}}{}
+        {{\preannArg\annMessage{``#6''}}\ifthenelse{\equal{#7}{}}{\annFootnote{}}{\annFootnote{\footnote{#7}}}}
+    \noAnnBreaksEnd
 }
 
-\newcommand{\lilypondIssue}[6]{\noAnnBreaksBegin
-  \item{\LIname\skipornot
-  \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
-  \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
-  \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
-  \ifthenelse{\equal{#5}{}}{}
-    {{\preannArg\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
-\noAnnBreaksEnd
+\newcommand{\lilypondIssue}[7][]{
+  \resetkeys\setkeys{scholarLYannotations}{#1}
+    \noAnnBreaksBegin
+      \item{\LIname\skipornot
+      \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
+      \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
+      \ifthenelse{\equal{#6}{}}{}
+        {{\preannArg\annMessage{``#6''}}\ifthenelse{\equal{#7}{}}{\annFootnote{}}{\annFootnote{\footnote{#7}}}}
+    \noAnnBreaksEnd
 }
 
-\newcommand{\question}[6]{\noAnnBreaksBegin
-  \item{\Qname\skipornot
-  \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
-  \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
-  \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
-  \ifthenelse{\equal{#5}{}}{}
-    {{\preannArg\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
-\noAnnBreaksEnd
+\newcommand{\question}[7][]{
+  \resetkeys\setkeys{scholarLYannotations}{#1}
+    \noAnnBreaksBegin
+      \item{\Qname\skipornot
+      \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
+      \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
+      \ifthenelse{\equal{#6}{}}{}
+        {{\preannArg\annMessage{``#6''}}\ifthenelse{\equal{#7}{}}{\annFootnote{}}{\annFootnote{\footnote{#7}}}}
+    \noAnnBreaksEnd
 }
 
-\newcommand{\todo}[6]{\noAnnBreaksBegin
-  \item{\TODOname\skipornot
-  \postannType\preannArg{\annMeasure{M.#1,}}}   \ifthenelse{\equal{#2}{}}{\unskip{}}{\annBeat{beat #2}\skipornot}
-  \ifthenelse{\equal{#3}{}}{\unskip{}}{\preannArg\annVoice{#3}\skipornot}
-  \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annAffected{#4}\skipornot}
-  \ifthenelse{\equal{#5}{}}{}
-    {{\preannArg\annMessage{``#5''}}\ifthenelse{\equal{#6}{}}{\annFootnote{}}{\annFootnote{\footnote{#6}}}}
-\noAnnBreaksEnd
+\newcommand{\todo}[7][]{
+  \resetkeys\setkeys{scholarLYannotations}{#1}
+    \noAnnBreaksBegin
+      \item{\TODOname\skipornot
+      \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
+      \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
+      \ifthenelse{\equal{#6}{}}{}
+        {{\preannArg\annMessage{``#6''}}\ifthenelse{\equal{#7}{}}{\annFootnote{}}{\annFootnote{\footnote{#7}}}}
+    \noAnnBreaksEnd
 }
 
 \endinput
