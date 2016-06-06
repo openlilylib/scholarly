@@ -7,7 +7,9 @@
 %\RequirePackage[stable]{footmisc} % allows footnotes inside arguments
   % TODO this behavior isn't working correctly. Find another solution.
 
-%\usepackage{xparse}
+
+% TODO optional show/hide beat
+% TODO if measure number repeated, citation-style dash
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OPTIONS ... the customizable part of the package
@@ -44,7 +46,7 @@
   \newcommand{\MIname}{\annType{(Musical Issue)}}
   \newcommand{\LIname}{\annType{(LilyPond Issue)}}
   \newcommand{\Qname}{\annType{(Question)}}
-  \newcommand{\TODOname}{\annType{(TODO)}}
+  \newcommand{\TDname}{\annType{(TODO)}}
   \newcommand{\modePostType}{\par}
 \else
   \newcommand{\modePostType}{, }
@@ -52,7 +54,7 @@
   \newcommand{\MIname}{\annType{}}
   \newcommand{\LIname}{\annType{}}
   \newcommand{\Qname}{\annType{}}
-  \newcommand{\TODOname}{\annType{}}
+  \newcommand{\TDname}{\annType{}}
   \newcommand{\typeSkipornot}{}
   \newcommand\skipornot{, } % TODO: leave empty here, add conditional comma for
 \fi                         % each parameter (exist if used; none/empty if not)
@@ -60,7 +62,7 @@
 
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%% ~ ~ ~ ENUMERATION STYLE: ~
+%% ~ ~ ~ ENUMERATION STYLE  ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %
 % This package (currently) uses the 'enumitem' package for listing/formatting
@@ -85,6 +87,8 @@
 %% ~ ~ ~ FORMAT FOOTNOTES ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+% TODO this is a placeholder, pending footnotes functionality in scholarLY
+%
 % example: ... NOTE: remove this later, after testing
 %
 % \musicalIssue \with {
@@ -137,8 +141,8 @@
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 % DEFAULTS
-\newcommand{\annType}[1]{\textit{#1}} % Annotation Type; just italics
-\newcommand{\annMeasure}[1]{\textbf{#1}} % just bold
+\newcommand{\annType}[1]{#1} % Annotation Type; just italics
+\newcommand{\annMeasure}[1]{#1} % just bold
 \newcommand{\annBeat}[1]{#1} % none
 \newcommand{\annVoice}[1]{#1} % none ; this is Voice or Instrument (e.g. Viola)
 \newcommand{\annAffected}[1]{#1} % none
@@ -170,7 +174,8 @@
 
 %% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %
-\newcommand{\annotations}[1]{\begin{enumerate}\enumOptions\input{#1}\end{enumerate}}
+\newcommand{\annotations}[1]
+{\begin{enumerate}\enumOptions\input{#1}\end{enumerate}}
 %
 % ex: \annotations{annotate.annotations.inp}
 
@@ -222,7 +227,10 @@
 \define@key{scholarLYannotations}{type}{\def\lytype{#1}}
 \define@key{scholarLYannotations}{message}{\def\lymessage{#1}}
 \define@key{scholarLYannotations}{context}{\def\lycontext{#1}}
+\define@key{scholarLYannotations}{fn-one-text}{\def\lyfnonetext{#1}}
+\makeatother
 
+\makeatletter
 \setkeys{scholarLYannotations}{ % default values
   grob = no value given,
   grob-location = no value given,
@@ -232,7 +240,13 @@
   location = no value given,
   type = no value given,
   message = no value given,
-  context = no value given
+  context = no value given,
+  fn-one-text = nothing has been entered for this footnote
+  fn-two-text = nothing has been entered for this footnote
+  fn-three-text = nothing has been entered for this footnote
+  fn-four-text = nothing has been entered for this footnote
+  fn-five-text = nothing has been entered for this footnote
+    % if user needs more than five footnotes, must create new key=value before \annotations
 }
 \makeatother
 
@@ -260,7 +274,7 @@
   \renewcommand{\MIname}{}
   \renewcommand{\LIname}{}
   \renewcommand{\Qname}{}
-  \renewcommand{\TODOname}{}
+  \renewcommand{\TDname}{}
 }
 
 \newcommand{\showAnnTypes}{
@@ -269,69 +283,64 @@
   \renewcommand{\MIname}{\annType{(Musical Issue)}}
   \renewcommand{\LIname}{\annType{(LilyPond Issue)}}
   \renewcommand{\Qname}{\annType{(Question)}}
-  \renewcommand{\TODOname}{\annType{(TODO)}}
+  \renewcommand{\TDname}{\annType{(TODO)}}
 }
 
 %% ~ ~ ~ the parser commands ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 \newcommand{\criticalRemark}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
-    \noAnnBreaksBegin
       \item{\CRname\typeSkipornot
-      \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \postannType\preannArg{\annMeasure{M.#2,}}}
+      \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \ifthenelse{\equal{#6}{}}{}
-        {{\preannArg\annMessage{``#6''}}\ifthenelse{\equal{#7}{}}{\annFootnote{}}{\annFootnote{\footnote{#7}}}}
-    \noAnnBreaksEnd
+      \preannArg{\annMessage{\unskip#6\unskip
+      \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
 }
 
 \newcommand{\musicalIssue}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
-    \noAnnBreaksBegin
       \item{\MIname\typeSkipornot
-      \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \postannType\preannArg{\annMeasure{M.#2,}}}
+      \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \ifthenelse{\equal{#6}{}}{}
-        {{\preannArg\annMessage{``#6''}}\ifthenelse{\equal{#7}{}}{\annFootnote{}}{\annFootnote{\footnote{#7}}}}
-    \noAnnBreaksEnd
+      \preannArg{\annMessage{\unskip#6\unskip
+      \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
 }
 
 \newcommand{\lilypondIssue}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
-    \noAnnBreaksBegin
       \item{\LIname\typeSkipornot
-      \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \postannType\preannArg{\annMeasure{M.#2,}}}
+      \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \ifthenelse{\equal{#6}{}}{}
-        {{\preannArg\annMessage{``#6''}}\ifthenelse{\equal{#7}{}}{\annFootnote{}}{\annFootnote{\footnote{#7}}}}
-    \noAnnBreaksEnd
+      \preannArg{\annMessage{\unskip#6\unskip
+      \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
 }
 
 \newcommand{\question}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
-    \noAnnBreaksBegin
       \item{\Qname\typeSkipornot
-      \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \postannType\preannArg{\annMeasure{M.#2,}}}
+      \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \ifthenelse{\equal{#6}{}}{}
-        {{\preannArg\annMessage{``#6''}}\ifthenelse{\equal{#7}{}}{\annFootnote{}}{\annFootnote{\footnote{#7}}}}
-    \noAnnBreaksEnd
+      \preannArg{\annMessage{\unskip#6\unskip
+      \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
 }
 
 \newcommand{\todo}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
-    \noAnnBreaksBegin
-      \item{\TODOname\typeSkipornot
-      \postannType\preannArg{\annMeasure{M.#2,}}}   \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \item{\TDname\typeSkipornot
+      \postannType\preannArg{\annMeasure{M.#2,}}}
+      \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \ifthenelse{\equal{#6}{}}{}
-        {{\preannArg\annMessage{``#6''}}\ifthenelse{\equal{#7}{}}{\annFootnote{}}{\annFootnote{\footnote{#7}}}}
-    \noAnnBreaksEnd
+      \preannArg{\annMessage{\unskip#6\unskip
+      \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
 }
 
 \endinput
