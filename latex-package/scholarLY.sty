@@ -6,7 +6,6 @@
 \RequirePackage{enumitem}
 
 % TODO optional show/hide beat
-% TODO if measure number repeated, citation-style dash
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OPTIONS ... the customizable part of the package
@@ -301,72 +300,112 @@
 \newcommand{\verboseMeasures}{\renewcommand{\sameMeasure}{M.\currentMeasure}}
 % ex: \verboseMeasures
 
+\newcommand{\previousBeat}{0}
+\newcommand{\sameBeat}{---}
+\newcommand{\currentBeat}{0}
+\newcommand{\verboseBeats}{\renewcommand{\sameBeat}{beat \currentBeat}}
+% ex: \verboseBeats
+
 %% ~ ~ ~ the parser commands ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 \newcommand{\criticalRemark}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
     \renewcommand{\currentMeasure}{#2}
+    \renewcommand{\currentBeat}{#3}
       \item{\CRname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure},}
         {\postannType\preannArg{\annMeasure{M.#2,}}}}
-      \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \ifthenelse{\equal{#2}{\previousMeasure}}
+        {\ifthenelse{\equal{#3}{}}{\unskip{}}
+          {\ifthenelse{\equal{#3}{\previousBeat}}{{}\unskip}
+            {\annBeat{beat #3}\skipornot}}}
+        {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
       \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
     \renewcommand{\previousMeasure}{#2}
+    \renewcommand{\previousBeat}{#3}
 }
 
 \newcommand{\musicalIssue}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
+    \renewcommand{\currentMeasure}{#2}
+    \renewcommand{\currentBeat}{#3}
       \item{\MIname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure},}
         {\postannType\preannArg{\annMeasure{M.#2,}}}}
-      \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \ifthenelse{\equal{#2}{\previousMeasure}}
+        {\ifthenelse{\equal{#3}{}}{\unskip{}}
+          {\ifthenelse{\equal{#3}{\previousBeat}}{{}\unskip}
+            {\annBeat{beat #3}\skipornot}}}
+        {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
       \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
-      \renewcommand{\previousMeasure}{#2}
+    \renewcommand{\previousMeasure}{#2}
+    \renewcommand{\previousBeat}{#3}
 }
 
 \newcommand{\lilypondIssue}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
+    \renewcommand{\currentMeasure}{#2}
+    \renewcommand{\currentBeat}{#3}
       \item{\LIname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure},}
         {\postannType\preannArg{\annMeasure{M.#2,}}}}
-      \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \ifthenelse{\equal{#2}{\previousMeasure}}
+        {\ifthenelse{\equal{#3}{}}{\unskip{}}
+          {\ifthenelse{\equal{#3}{\previousBeat}}{{}\unskip}
+            {\annBeat{beat #3}\skipornot}}}
+        {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
       \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
-      \renewcommand{\previousMeasure}{#2}
+    \renewcommand{\previousMeasure}{#2}
+    \renewcommand{\previousBeat}{#3}
 }
 
 \newcommand{\question}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
+    \renewcommand{\currentMeasure}{#2}
+    \renewcommand{\currentBeat}{#3}
       \item{\Qname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure},}
         {\postannType\preannArg{\annMeasure{M.#2,}}}}
-      \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \ifthenelse{\equal{#2}{\previousMeasure}}
+        {\ifthenelse{\equal{#3}{}}{\unskip{}}
+          {\ifthenelse{\equal{#3}{\previousBeat}}{{}\unskip}
+            {\annBeat{beat #3}\skipornot}}}
+        {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
       \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
-      \renewcommand{\previousMeasure}{#2}
+    \renewcommand{\previousMeasure}{#2}
+    \renewcommand{\previousBeat}{#3}
 }
 
 \newcommand{\todo}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
+    \renewcommand{\currentMeasure}{#2}
+    \renewcommand{\currentBeat}{#3}
       \item{\TDname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure},}
         {\postannType\preannArg{\annMeasure{M.#2,}}}}
-      \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
+      \ifthenelse{\equal{#2}{\previousMeasure}}
+        {\ifthenelse{\equal{#3}{}}{\unskip{}}
+          {\ifthenelse{\equal{#3}{\previousBeat}}{{}\unskip}
+            {\annBeat{beat #3}\skipornot}}}
+        {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
       \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
-      \renewcommand{\previousMeasure}{#2}
+    \renewcommand{\previousMeasure}{#2}
+    \renewcommand{\previousBeat}{#3}
 }
 
 \endinput
