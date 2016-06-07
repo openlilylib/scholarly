@@ -119,7 +119,7 @@
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %
 % This package (currently) uses the 'enumitem' package for listing/formatting
-% the annotations. These options can be place at the top of the document (will
+% the annotations. These options can be placed at the top of the document (will
 % affect the entire document, unless changed) or just before the annotations.
 % More info: https://www.ctan.org/pkg/enumerate?lang=en
 
@@ -184,12 +184,6 @@
 % NOTE to user: add \par to correct vspace behavior, i.e. \postannType{\par\vspace{1cm}}
 \newcommand{\preannArg}{}
 
-% TODO type or not ... \excludetype will turn \includeornot (in front of 'type'), so
-% user can *not* print the types easily, if so desired.
-% \newcommand{\excludeType}{\renewcommand{\includeornot}{exclude}}
-%
-% \ifthenelse{\equal{\includeornot}{exclude}}{}{(Critical Remark)}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% ENVIRONMENTS and COMMANDS ... the main part of the package
@@ -237,7 +231,7 @@
   \renewcommand{\noAnnBreaksEnd}{\end{absolutelynopagebreak}}
 }
 %
-% ex: \avoidAnnBreaks
+% ex: \avoidAnnBreaks NOTE see top; this section void for now.
 
 %% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -305,7 +299,7 @@
       fn-four-text = nothing has been entered for this footnote,
       fn-five-text = nothing has been entered for this footnote
     }
-  \makeatother
+  % \makeatother
 }
 
 %% ~ ~ ~ hide or show types manually ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
