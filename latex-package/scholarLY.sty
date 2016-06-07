@@ -296,12 +296,16 @@
 }
 
 \newcommand{\previousMeasure}{0} % default
-\newcommand{\sameMeasure}{---}
+\newcommand{\sameMeasure}{---} % user may redefine
+\newcommand{\currentMeasure}{0} % default
+\newcommand{\verboseMeasures}{\renewcommand{\sameMeasure}{M.\currentMeasure}}
+% ex: \verboseMeasures
 
 %% ~ ~ ~ the parser commands ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 \newcommand{\criticalRemark}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
+    \renewcommand{\currentMeasure}{#2}
       \item{\CRname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure},}
         {\postannType\preannArg{\annMeasure{M.#2,}}}}
@@ -310,7 +314,7 @@
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
       \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
-      \renewcommand{\previousMeasure}{#2}
+    \renewcommand{\previousMeasure}{#2}
 }
 
 \newcommand{\musicalIssue}[7][]{
