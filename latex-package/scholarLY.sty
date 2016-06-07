@@ -301,9 +301,9 @@
 % ex: \verboseMeasures
 
 \newcommand{\previousBeat}{0}
-\newcommand{\sameBeat}{---}
+\newcommand{\sameBeat}{{}\unskip}
 \newcommand{\currentBeat}{0}
-\newcommand{\verboseBeats}{\renewcommand{\sameBeat}{beat \currentBeat}}
+\newcommand{\verboseBeats}{\renewcommand{\sameBeat}{beat \currentBeat,}}
 % ex: \verboseBeats
 
 %% ~ ~ ~ the parser commands ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -317,7 +317,7 @@
         {\postannType\preannArg{\annMeasure{M.#2,}}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
-          {\ifthenelse{\equal{#3}{\previousBeat}}{{}\unskip}
+          {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat}
             {\annBeat{beat #3}\skipornot}}}
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
@@ -337,7 +337,7 @@
         {\postannType\preannArg{\annMeasure{M.#2,}}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
-          {\ifthenelse{\equal{#3}{\previousBeat}}{{}\unskip}
+          {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat}
             {\annBeat{beat #3}\skipornot}}}
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
@@ -357,7 +357,7 @@
         {\postannType\preannArg{\annMeasure{M.#2,}}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
-          {\ifthenelse{\equal{#3}{\previousBeat}}{{}\unskip}
+          {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat}
             {\annBeat{beat #3}\skipornot}}}
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
@@ -377,7 +377,7 @@
         {\postannType\preannArg{\annMeasure{M.#2,}}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
-          {\ifthenelse{\equal{#3}{\previousBeat}}{{}\unskip}
+          {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat}
             {\annBeat{beat #3}\skipornot}}}
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
@@ -397,7 +397,7 @@
         {\postannType\preannArg{\annMeasure{M.#2,}}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
-          {\ifthenelse{\equal{#3}{\previousBeat}}{{}\unskip}
+          {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat}
             {\annBeat{beat #3}\skipornot}}}
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
