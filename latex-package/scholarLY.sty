@@ -4,9 +4,6 @@
 \RequirePackage{ifthen}
 \RequirePackage{keyval}
 \RequirePackage{enumitem}
-%\RequirePackage[stable]{footmisc} % allows footnotes inside arguments
-  % TODO this behavior isn't working correctly. Find another solution.
-
 
 % TODO optional show/hide beat
 % TODO if measure number repeated, citation-style dash
@@ -181,6 +178,9 @@
 
 %% ~ ~ ~ ALLOW (default) or AVOID breaking arguments in annotations ~ ~ ~ ~ ~ ~
 %
+% NOTE - this section is not in use. As is, it works for avoiding breaking, but
+% corrupts footnotes. TODO - find another solution.
+
 \newcommand{\defaultAnnBreaks}{
   \newcommand{\noAnnBreaksBegin}{}
   \newcommand{\noAnnBreaksEnd}{}
@@ -228,6 +228,10 @@
 \define@key{scholarLYannotations}{message}{\def\lymessage{#1}}
 \define@key{scholarLYannotations}{context}{\def\lycontext{#1}}
 \define@key{scholarLYannotations}{fn-one-text}{\def\lyfnonetext{#1}}
+\define@key{scholarLYannotations}{fn-two-text}{\def\lyfntwotext{#1}}
+\define@key{scholarLYannotations}{fn-three-text}{\def\lyfnthreetext{#1}}
+\define@key{scholarLYannotations}{fn-four-text}{\def\lyfnfourtext{#1}}
+\define@key{scholarLYannotations}{fn-five-text}{\def\lyfnfivetext{#1}}
 \makeatother
 
 \makeatletter
@@ -241,10 +245,10 @@
   type = no value given,
   message = no value given,
   context = no value given,
-  fn-one-text = nothing has been entered for this footnote
-  fn-two-text = nothing has been entered for this footnote
-  fn-three-text = nothing has been entered for this footnote
-  fn-four-text = nothing has been entered for this footnote
+  fn-one-text = nothing has been entered for this footnote,
+  fn-two-text = nothing has been entered for this footnote,
+  fn-three-text = nothing has been entered for this footnote,
+  fn-four-text = nothing has been entered for this footnote,
   fn-five-text = nothing has been entered for this footnote
     % if user needs more than five footnotes, must create new key=value before \annotations
 }
@@ -262,6 +266,11 @@
       type = no value given,
       message = no value given,
       context = no value given
+      fn-one-text = nothing has been entered for this footnote,
+      fn-two-text = nothing has been entered for this footnote,
+      fn-three-text = nothing has been entered for this footnote,
+      fn-four-text = nothing has been entered for this footnote,
+      fn-five-text = nothing has been entered for this footnote
     }
   \makeatother
 }
@@ -286,61 +295,74 @@
   \renewcommand{\TDname}{\annType{(TODO)}}
 }
 
+\newcommand{\previousMeasure}{0} % default
+\newcommand{\sameMeasure}{---}
+
 %% ~ ~ ~ the parser commands ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 \newcommand{\criticalRemark}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
       \item{\CRname\typeSkipornot
-      \postannType\preannArg{\annMeasure{M.#2,}}}
+      \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure},}
+        {\postannType\preannArg{\annMeasure{M.#2,}}}}
       \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
       \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
+      \renewcommand{\previousMeasure}{#2}
 }
 
 \newcommand{\musicalIssue}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
       \item{\MIname\typeSkipornot
-      \postannType\preannArg{\annMeasure{M.#2,}}}
+      \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure},}
+        {\postannType\preannArg{\annMeasure{M.#2,}}}}
       \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
       \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
+      \renewcommand{\previousMeasure}{#2}
 }
 
 \newcommand{\lilypondIssue}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
       \item{\LIname\typeSkipornot
-      \postannType\preannArg{\annMeasure{M.#2,}}}
+      \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure},}
+        {\postannType\preannArg{\annMeasure{M.#2,}}}}
       \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
       \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
+      \renewcommand{\previousMeasure}{#2}
 }
 
 \newcommand{\question}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
       \item{\Qname\typeSkipornot
-      \postannType\preannArg{\annMeasure{M.#2,}}}
+      \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure},}
+        {\postannType\preannArg{\annMeasure{M.#2,}}}}
       \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
       \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
+      \renewcommand{\previousMeasure}{#2}
 }
 
 \newcommand{\todo}[7][]{
   \resetkeys\setkeys{scholarLYannotations}{#1}
       \item{\TDname\typeSkipornot
-      \postannType\preannArg{\annMeasure{M.#2,}}}
+      \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure},}
+        {\postannType\preannArg{\annMeasure{M.#2,}}}}
       \ifthenelse{\equal{#3}{}}{\unskip{}}{\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
       \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
+      \renewcommand{\previousMeasure}{#2}
 }
 
 \endinput
