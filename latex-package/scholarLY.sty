@@ -16,22 +16,70 @@
 % If specific changes are made to items within the text of the actual .inp lists (written
 % by the user in the LilyPond document), they will override wrappers as applicable.
 
-% TODO ...
-% All styling / formatting options currently affect both final and draft mode.
-% However, draft mode
 
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ GLOBAL STYLING OPTIONS ~
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%% ~ ~ ~ DRAFT or FINAL MODE  ~
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+% DEFAULTS in final
+\newcommand{\annType}[1]{#1} % Annotation Type; just italics
+\newcommand{\annMeasure}[1]{#1} % just bold
+\newcommand{\annBeat}[1]{#1} % none
+\newcommand{\annVoice}[1]{#1} % none ; this is Voice or Instrument (e.g. Viola)
+\newcommand{\annAffected}[1]{#1} % none
+\newcommand{\annMessage}[1]{#1} % none
+\newcommand{\annFootnote}[1]{#1} % none
+
+% To update styles:
+\newcommand{\styleAnnType}[1]{\renewcommand{\annType}[1]{#1}}
+\newcommand{\styleAnnMeasure}[1]{\renewcommand{\annMeasure}[1]{#1}}
+\newcommand{\styleAnnBeat}[1]{\renewcommand{\annBeat}[1]{#1}}
+\newcommand{\styleAnnVoice}[1]{\renewcommand{\annVoice}[1]{#1}}
+\newcommand{\styleAnnAffected}[1]{\renewcommand{\annAffected}[1]{#1}}
+\newcommand{\styleAnnMessage}[1]{\renewcommand{\annMessage}[1]{#1}}
+\newcommand{\styleAnnFootnote}[1]{\renewcommand{\annFootnote}[1]{#1}}
 %
-% So far, this only affects horizontal/vertical arrangement. What else?
+% ex: \styleAnnType{\textit{#1}}
+
+
+% DEFAULTS for draft
+\newcommand{\annTypeDraft}[1]{#1} % Annotation Type; just italics
+\newcommand{\annMeasureDraft}[1]{#1} % just bold
+\newcommand{\annBeatDraft}[1]{#1} % none
+\newcommand{\annVoiceDraft}[1]{#1} % none ; this is Voice or Instrument (e.g. Viola)
+\newcommand{\annAffectedDraft}[1]{#1} % none
+\newcommand{\annMessageDraft}[1]{#1} % none
+\newcommand{\annFootnoteDraft}[1]{#1} % none
+
+% To update styles:
+\newcommand{\restyleAnnType}[1]{\renewcommand{\annTypeDraft}[1]{#1}}
+\newcommand{\restyleAnnMeasure}[1]{\renewcommand{\annMeasureDraft}[1]{#1}}
+\newcommand{\restyleAnnBeat}[1]{\renewcommand{\annBeatDraft}[1]{#1}}
+\newcommand{\restyleAnnVoice}[1]{\renewcommand{\annVoiceDraft}[1]{#1}}
+\newcommand{\restyleAnnAffected}[1]{\renewcommand{\annAffectedDraft}[1]{#1}}
+\newcommand{\restyleAnnMessage}[1]{\renewcommand{\annMessageDraft}[1]{#1}}
+\newcommand{\restyleAnnFootnote}[1]{\renewcommand{\annFootnoteDraft}[1]{#1}}
+%
+
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ DRAFT or FINAL MODE, and styling therein ~
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 \newcommand{\customdraft}{}
 \newcommand\setcustomdraft[1]{\renewcommand{\customdraft}{#1}}
-
+\setcustomdraft{
+\styleAnnMessage{##1}
+} % the default settings for DRAFT mode
 \newcommand{\customdraftornot}{}
 \newcommand{\usecustomdraft}{\renewcommand{\customdraftornot}{\customdraft}}
+
+\newcommand{\customfinal}{}
+\newcommand\setcustomfinal[1]{\renewcommand{\customfinal}{#1}}
+\setcustomfinal{
+\styleAnnMessage{##1}
+} % the default settings for FINAL mode
+\newcommand{\customfinalornot}{}
+\newcommand{\usecustomfinal}{\renewcommand{\customfinalornot}{\customfinal}}
 
 
 \newif\ifex@draft % (implicitly final) ... i.e. draft mode if set, otherwise final mode,
@@ -50,9 +98,9 @@
   \newcommand{\Qname}{\annType{(Question)}}
   \newcommand{\TDname}{\annType{(TODO)}}
   \newcommand{\modePostType}{\par}
-  \newcommand{\sendcustomdraft}{\customdraftornot}
+  \newcommand{\annStyleMode}{\customdraftornot}
 \else
-  \newcommand{\sendcustomdraft}{}
+  \newcommand{\annStyleMode}{\customfinalornot}
   \newcommand{\modePostType}{, }
   \newcommand{\CRname}{\annType{}}
   \newcommand{\MIname}{\annType{}}
@@ -62,7 +110,6 @@
   \newcommand{\typeSkipornot}{}
   \newcommand\skipornot{, } % TODO: leave empty here, add conditional comma for
 \fi                         % each parameter (exist if used; none/empty if not)
-
 
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -101,6 +148,7 @@
 %   annotation-footnote = "This automatically tagged to end of message"
 % }
 
+
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ CONTINUE or RESET FOOTNOTE COUNT ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -124,7 +172,8 @@
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 % TODO MULTI-COLUMNs
-% multicols package is applicable
+% multicols package is applicable, as well as (presumably) others; this will be
+% verified.
 % BUT, make condition to avoid breaking arguments inside an annotation
 %
 % [twocolumn] option is applicable, but also breaks (allow or avoid?; or optional?)
@@ -138,31 +187,6 @@
 % \newcommand{\excludeType}{\renewcommand{\includeornot}{exclude}}
 %
 % \ifthenelse{\equal{\includeornot}{exclude}}{}{(Critical Remark)}
-
-
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%% ~ ~ ~ GLOBAL STYLING OPTIONS ~
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-% DEFAULTS
-\newcommand{\annType}[1]{#1} % Annotation Type; just italics
-\newcommand{\annMeasure}[1]{#1} % just bold
-\newcommand{\annBeat}[1]{#1} % none
-\newcommand{\annVoice}[1]{#1} % none ; this is Voice or Instrument (e.g. Viola)
-\newcommand{\annAffected}[1]{#1} % none
-\newcommand{\annMessage}[1]{#1} % none
-\newcommand{\annFootnote}[1]{#1} % none
-
-% To update styles:
-\newcommand{\styleAnnType}[1]{\renewcommand{\annType}[1]{#1}}
-\newcommand{\styleAnnMeasure}[1]{\renewcommand{\annMeasure}[1]{#1}}
-\newcommand{\styleAnnBeat}[1]{\renewcommand{\annBeat}[1]{#1}}
-\newcommand{\styleAnnVoice}[1]{\renewcommand{\annVoice}[1]{#1}}
-\newcommand{\styleAnnAffected}[1]{\renewcommand{\annAffected}[1]{#1}}
-\newcommand{\styleAnnMessage}[1]{\renewcommand{\annMessage}[1]{#1}}
-\newcommand{\styleAnnFootnote}[1]{\renewcommand{\annFootnote}[1]{#1}}
-%
-% ex: \styleAnnType{\textit{#1}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -179,7 +203,7 @@
 %% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %
 \newcommand{\annotations}[1]
-{\begin{enumerate}\enumOptions\sendcustomdraft{\input{#1}}\end{enumerate}}
+{\begin{enumerate}\enumOptions\annStyleMode\input{#1}\end{enumerate}}
 %
 % ex: \annotations{annotate.annotations.inp}
 
@@ -224,7 +248,7 @@
 
 %% ~ ~ ~ KEY + VALUE arguments ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-\makeatletter
+% \makeatletter
 \define@key{scholarLYannotations}{grob}{\def\lygrob{#1}}
 \define@key{scholarLYannotations}{grob-location}{\def\lygroblocation{#1}}
 \define@key{scholarLYannotations}{grob-type}{\def\lygrobtype{#1}}
@@ -239,9 +263,9 @@
 \define@key{scholarLYannotations}{fn-three-text}{\def\lyfnthreetext{#1}}
 \define@key{scholarLYannotations}{fn-four-text}{\def\lyfnfourtext{#1}}
 \define@key{scholarLYannotations}{fn-five-text}{\def\lyfnfivetext{#1}}
-\makeatother
+% \makeatother
 
-\makeatletter
+% \makeatletter
 \setkeys{scholarLYannotations}{ % default values
   grob = no value given,
   grob-location = no value given,
@@ -259,10 +283,10 @@
   fn-five-text = nothing has been entered for this footnote
     % if user needs more than five footnotes, must create new key=value before \annotations
 }
-\makeatother
+% \makeatother
 
 \newcommand{\resetkeys}{
-  \makeatletter
+  % \makeatletter
     \setkeys{scholarLYannotations}{ % default values
       grob = no value given,
       grob-location = no value given,
