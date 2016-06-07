@@ -254,6 +254,11 @@
 \define@key{scholarLYannotations}{type}{\def\lytype{#1}}
 \define@key{scholarLYannotations}{message}{\def\lymessage{#1}}
 \define@key{scholarLYannotations}{context}{\def\lycontext{#1}}
+\define@key{scholarLYannotations}{fn-one}{\def\lyfnone{#1}}
+\define@key{scholarLYannotations}{fn-two}{\def\lyfntwo{#1}}
+\define@key{scholarLYannotations}{fn-three}{\def\lyfnthree{#1}}
+\define@key{scholarLYannotations}{fn-four}{\def\lyfnfour{#1}}
+\define@key{scholarLYannotations}{fn-five}{\def\lyfnfive{#1}}
 \define@key{scholarLYannotations}{fn-one-text}{\def\lyfnonetext{#1}}
 \define@key{scholarLYannotations}{fn-two-text}{\def\lyfntwotext{#1}}
 \define@key{scholarLYannotations}{fn-three-text}{\def\lyfnthreetext{#1}}
@@ -276,7 +281,12 @@
   fn-two-text = nothing has been entered for this footnote,
   fn-three-text = nothing has been entered for this footnote,
   fn-four-text = nothing has been entered for this footnote,
-  fn-five-text = nothing has been entered for this footnote
+  fn-five-text = nothing has been entered for this footnote,
+  fn-one = {\footnote{\lyfnonetext}},
+  fn-two = {\footnote{\lyfnonetext}},
+  fn-three = {\footnote{\lyfnonetext}},
+  fn-four = {\footnote{\lyfnonetext}},
+  fn-five = {\footnote{\lyfnonetext}}
     % if user needs more than five footnotes, must create new key=value before \annotations
 }
 % \makeatother
