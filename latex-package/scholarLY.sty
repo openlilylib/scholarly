@@ -52,13 +52,13 @@
 \newcommand{\annFootnoteDraft}[1]{#1} % none
 
 % To update styles:
-\newcommand{\restyleAnnType}[1]{\renewcommand{\annTypeDraft}[1]{#1}}
-\newcommand{\restyleAnnMeasure}[1]{\renewcommand{\annMeasureDraft}[1]{#1}}
-\newcommand{\restyleAnnBeat}[1]{\renewcommand{\annBeatDraft}[1]{#1}}
-\newcommand{\restyleAnnVoice}[1]{\renewcommand{\annVoiceDraft}[1]{#1}}
-\newcommand{\restyleAnnAffected}[1]{\renewcommand{\annAffectedDraft}[1]{#1}}
-\newcommand{\restyleAnnMessage}[1]{\renewcommand{\annMessageDraft}[1]{#1}}
-\newcommand{\restyleAnnFootnote}[1]{\renewcommand{\annFootnoteDraft}[1]{#1}}
+\newcommand{\styleAnnTypeDraft}[1]{\renewcommand{\annTypeDraft}[1]{#1}}
+\newcommand{\styleAnnMeasureDraft}[1]{\renewcommand{\annMeasureDraft}[1]{#1}}
+\newcommand{\styleAnnBeatDraft}[1]{\renewcommand{\annBeatDraft}[1]{#1}}
+\newcommand{\styleAnnVoiceDraft}[1]{\renewcommand{\annVoiceDraft}[1]{#1}}
+\newcommand{\styleAnnAffectedDraft}[1]{\renewcommand{\annAffectedDraft}[1]{#1}}
+\newcommand{\styleAnnMessageDraft}[1]{\renewcommand{\annMessageDraft}[1]{#1}}
+\newcommand{\styleAnnFootnoteDraft}[1]{\renewcommand{\annFootnoteDraft}[1]{#1}}
 %
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -77,10 +77,12 @@
 \newcommand\setcustomfinal[1]{\renewcommand{\customfinal}{#1}}
 \setcustomfinal{
 \styleAnnMessage{##1}
+\styleAnnMeasure{\color{red}{\textit{##1}}}
 } % the default settings for FINAL mode
 \newcommand{\customfinalornot}{}
 \newcommand{\usecustomfinal}{\renewcommand{\customfinalornot}{\customfinal}}
 
+\newcommand{\finalfordraft}{\renewcommand{\customdraft}{\customfinal}}
 
 \newif\ifex@draft % (implicitly final) ... i.e. draft mode if set, otherwise final mode,
                   % which can also be explicitly set: \usepackage[final]{scholarLY}
