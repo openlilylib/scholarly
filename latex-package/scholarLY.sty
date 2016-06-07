@@ -5,7 +5,6 @@
 \RequirePackage{keyval}
 \RequirePackage{enumitem}
 
-% TODO optional show/hide beat
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OPTIONS ... the customizable part of the package
@@ -28,6 +27,13 @@
 %
 % So far, this only affects horizontal/vertical arrangement. What else?
 
+\newcommand{\customdraft}{}
+\newcommand\setcustomdraft[1]{\renewcommand{\customdraft}{#1}}
+
+\newcommand{\customdraftornot}{}
+\newcommand{\usecustomdraft}{\renewcommand{\customdraftornot}{\customdraft}}
+
+
 \newif\ifex@draft % (implicitly final) ... i.e. draft mode if set, otherwise final mode,
                   % which can also be explicitly set: \usepackage[final]{scholarLY}
 
@@ -44,7 +50,9 @@
   \newcommand{\Qname}{\annType{(Question)}}
   \newcommand{\TDname}{\annType{(TODO)}}
   \newcommand{\modePostType}{\par}
+  \newcommand{\sendcustomdraft}{\customdraftornot}
 \else
+  \newcommand{\sendcustomdraft}{}
   \newcommand{\modePostType}{, }
   \newcommand{\CRname}{\annType{}}
   \newcommand{\MIname}{\annType{}}
@@ -171,7 +179,7 @@
 %% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %
 \newcommand{\annotations}[1]
-{\begin{enumerate}\enumOptions\input{#1}\end{enumerate}}
+{\begin{enumerate}\enumOptions\sendcustomdraft{\input{#1}}\end{enumerate}}
 %
 % ex: \annotations{annotate.annotations.inp}
 
@@ -207,7 +215,7 @@
 
 %% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-% The LAST parameter in each set is footnote. If empty, one won't be created. If
+% The LAST parameter in each set is footnote. If empty, one is not created. If
 % other optional parameters are added in the future, these places (#1, #2, etc)
 % may shift. Non-defined parameters should always make the list as {}, otherwise
 % latex will assume the next argument (whether {} or {argument}) in that place.
@@ -291,7 +299,7 @@
   \renewcommand{\MIname}{\annType{(Musical Issue)}}
   \renewcommand{\LIname}{\annType{(LilyPond Issue)}}
   \renewcommand{\Qname}{\annType{(Question)}}
-  \renewcommand{\TDname}{\annType{(TODO)}}
+  \renewcommand{\TDname}{\annType{(To Do)}}
 }
 
 \newcommand{\previousMeasure}{0} % default
