@@ -4,8 +4,10 @@
 \RequirePackage{ifthen}
 \RequirePackage{keyval}
 \RequirePackage{enumitem}
-\RequirePackage{xparse}
+\RequirePackage{etex} % required for use of  `xstring`
+\RequirePackage{xstring}
 
+% TODO consider reorganizing package structure (this file master, with subfiles)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OPTIONS ... the customizable part of the package
@@ -158,7 +160,7 @@
 \newcommand{\lastfootnote}[1]{\setcounter{footnote}{#1}}
 \newcommand{\resetfootnotes}{\setcounter{footnote}{0}}
 %
-\resetfootnotes % default
+\resetfootnotes % default, though redundant for the time being
 %
 % To manually reset (overriding continuation, if applicable) prepend the
 % following to \annotations{filename.annotations.inp} command:
@@ -188,6 +190,58 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% ENVIRONMENTS and COMMANDS ... the main part of the package
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% ~ ~ ~ message parser [under construction] ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%
+\newcommand{\prependMessage}{``} % default
+\newcommand{\appendMessage}{''} % default
+\newcommand{\setPreMess}[1]{\renewcommand{\prependMessage}{#1}}
+\newcommand{\setAppMess}[1]{\renewcommand{\appendMessage}{#1}}
+
+
+% period AFTER quotes, whether (quotes) used or not
+\newcommand{\annMessageTest}{ % this will go in place of {#6}
+  \IfEndWith{\mytestmessage}{.} % {##6} will go in place of {\mytestmessage}
+    { % true
+      {\prependMessage{\StrGobbleRight{\mytestmessage}{1}}\appendMessage.}
+    }
+    { % false
+      {\prependMessage\mytestmessage\appendMessage}
+    }
+}
+
+
+% explicitly set period AFTER quotes, whether (quotes) used or not
+\newcommand{\annMessPeriodLast}{
+  \renewcommand{\annMessageTest}{ % this will go in place of {#6}
+    \IfEndWith{\mytestmessage}{.} % {##6} will go in place of {\mytestmessage}
+      { % true
+        {\prependMessage{\StrGobbleRight{\mytestmessage}{1}}\appendMessage.}
+      }
+      { % false
+        {\prependMessage\mytestmessage\appendMessage}
+      }
+  }
+}
+
+
+% explicitly set period BEFORE quotes, whether (quotes) used or not
+\newcommand{\annMessPeriodPen}{ % period is penultimate (if \appendMessage{anything})
+  \renewcommand{\annMessageTest}{ % this will go in place of {#6}
+    \IfEndWith{\mytestmessage}{.} % {##6} will go in place of {\mytestmessage}
+      { % true
+        {\prependMessage{\mytestmessage}\appendMessage}
+      }
+      { % false; amend to TEST if it ends with interal quotes, in which case PROCESS MORE
+        {\prependMessage{\StrGobbleRight{\mytestmessage}{1}}.\appendMessage}
+      }
+  }
+}
+
+%% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+
 
 % format/style the list of annotations
 \newcommand{\enumOptions}{}
