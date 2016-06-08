@@ -85,6 +85,22 @@
 
 \newcommand{\finalfordraft}{\renewcommand{\customdraft}{\customfinal}}
 
+% ~ ~ ~ inline and stacked modes ~ ~ ~
+
+\newcommand{\skipornot}{}
+\newcommand{\typeSkipornot}{}
+
+\newcommand{\inlineParams}{
+  \renewcommand{\skipornot}{, }
+  \renewcommand{\typeSkipornot}{}
+}
+
+\newcommand{\stackedParams}{
+  \renewcommand{\skipornot}{\par}
+  \renewcommand{\typeSkipornot}{\par}
+}
+
+
 \newif\ifex@draft % (implicitly final) ... i.e. draft mode if set, otherwise final mode,
                   % which can also be explicitly set: \usepackage[final]{scholarLY}
 
@@ -93,8 +109,9 @@
 \ProcessOptions*
 
 \ifex@draft
-  \newcommand\skipornot{\par}
-  \newcommand{\typeSkipornot}{\par}
+  % \newcommand\skipornot{\par}
+  % \newcommand{\typeSkipornot}{\par}
+  \stackedParams % default, can be overwritten in custom or global settings
   \newcommand{\CRname}{\annType{(Critical Remark)}}
   \newcommand{\MIname}{\annType{(Musical Issue)}}
   \newcommand{\LIname}{\annType{(LilyPond Issue)}}
@@ -103,6 +120,7 @@
   \newcommand{\modePostType}{\par}
   \newcommand{\annStyleMode}{\customdraftornot}
 \else
+  \inlineParams % default, can be overwritten in custom or global settings
   \newcommand{\annStyleMode}{\customfinalornot}
   \newcommand{\modePostType}{, }
   \newcommand{\CRname}{\annType{}}
@@ -110,8 +128,8 @@
   \newcommand{\LIname}{\annType{}}
   \newcommand{\Qname}{\annType{}}
   \newcommand{\TDname}{\annType{}}
-  \newcommand{\typeSkipornot}{}
-  \newcommand\skipornot{, } % TODO: leave empty here, add conditional comma for
+  % \newcommand{\typeSkipornot}{}
+  % \newcommand\skipornot{, } % TODO: leave empty here, add conditional comma for
 \fi                         % each parameter (exist if used; none/empty if not)
 
 
