@@ -4,7 +4,7 @@
 \RequirePackage{ifthen}
 \RequirePackage{keyval}
 \RequirePackage{enumitem}
-\usepackage{kvsetkeys}
+\RequirePackage{xparse}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -22,7 +22,7 @@
 %% ~ ~ ~ GLOBAL STYLING OPTIONS ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-% DEFAULTS in final
+% style predicates:
 \newcommand{\annType}[1]{#1} % Annotation Type; just italics
 \newcommand{\annMeasure}[1]{#1} % just bold
 \newcommand{\annBeat}[1]{#1} % none
@@ -42,25 +42,6 @@
 %
 % ex: \styleAnnType{\textit{#1}}
 
-
-% DEFAULTS for draft
-\newcommand{\annTypeDraft}[1]{#1} % Annotation Type; just italics
-\newcommand{\annMeasureDraft}[1]{#1} % just bold
-\newcommand{\annBeatDraft}[1]{#1} % none
-\newcommand{\annVoiceDraft}[1]{#1} % none ; this is Voice or Instrument (e.g. Viola)
-\newcommand{\annAffectedDraft}[1]{#1} % none
-\newcommand{\annMessageDraft}[1]{#1} % none
-\newcommand{\annFootnoteDraft}[1]{#1} % none
-
-% To update styles:
-\newcommand{\styleAnnTypeDraft}[1]{\renewcommand{\annTypeDraft}[1]{#1}}
-\newcommand{\styleAnnMeasureDraft}[1]{\renewcommand{\annMeasureDraft}[1]{#1}}
-\newcommand{\styleAnnBeatDraft}[1]{\renewcommand{\annBeatDraft}[1]{#1}}
-\newcommand{\styleAnnVoiceDraft}[1]{\renewcommand{\annVoiceDraft}[1]{#1}}
-\newcommand{\styleAnnAffectedDraft}[1]{\renewcommand{\annAffectedDraft}[1]{#1}}
-\newcommand{\styleAnnMessageDraft}[1]{\renewcommand{\annMessageDraft}[1]{#1}}
-\newcommand{\styleAnnFootnoteDraft}[1]{\renewcommand{\annFootnoteDraft}[1]{#1}}
-%
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ DRAFT or FINAL MODE, and styling therein ~
@@ -112,11 +93,11 @@
   % \newcommand\skipornot{\par}
   % \newcommand{\typeSkipornot}{\par}
   \stackedParams % default, can be overwritten in custom or global settings
-  \newcommand{\CRname}{\annType{(Critical Remark)}}
-  \newcommand{\MIname}{\annType{(Musical Issue)}}
-  \newcommand{\LIname}{\annType{(LilyPond Issue)}}
-  \newcommand{\Qname}{\annType{(Question)}}
-  \newcommand{\TDname}{\annType{(TODO)}}
+  \newcommand{\CRname}{\annType{(Critical Remark) }}
+  \newcommand{\MIname}{\annType{(Musical Issue) }}
+  \newcommand{\LIname}{\annType{(LilyPond Issue) }}
+  \newcommand{\Qname}{\annType{(Question) }}
+  \newcommand{\TDname}{\annType{(TODO) }}
   \newcommand{\modePostType}{\par}
   \newcommand{\annStyleMode}{\customdraftornot}
 \else
@@ -263,7 +244,6 @@
 
 %% ~ ~ ~ KEY + VALUE arguments ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-% \makeatletter
 \define@key{scholarLYannotations}{grob}{\def\lygrob{#1}}
 \define@key{scholarLYannotations}{grob-location}{\def\lygroblocation{#1}}
 \define@key{scholarLYannotations}{grob-type}{\def\lygrobtype{#1}}
@@ -279,9 +259,7 @@
 \define@key{scholarLYannotations}{fn-four-text}{\def\lyfnfourtext{#1}}
 \define@key{scholarLYannotations}{fn-five-text}{\def\lyfnfivetext{#1}}
 \define@key{scholarLYannotations}{ann-footnote}{\def\lyannfootnote{#1}}
-% \makeatother
 
-% \makeatletter
 \setkeys{scholarLYannotations}{ % default values
   grob = no value given,
   grob-location = no value given,
@@ -300,34 +278,31 @@
   ann-footnote = {no value given}
     % if user needs more than five footnotes, must create new key=value before \annotations
 }
-% \makeatother
 
-\newcommand{\fnOne}{\footnote{\lyfnonetext}}
-\newcommand{\fnTwo}{\footnote{\lyfntwotext}}
-\newcommand{\fnThree}{\footnote{\lyfnthreetext}}
-\newcommand{\fnFour}{\footnote{\lyfnfourtext}}
-\newcommand{\fnFive}{\footnote{\lyfnfivetext}}
+\newcommand{\fnOne}{\footnote{\lyfnonetext} }
+\newcommand{\fnTwo}{\footnote{\lyfntwotext} }
+\newcommand{\fnThree}{\footnote{\lyfnthreetext} }
+\newcommand{\fnFour}{\footnote{\lyfnfourtext} }
+\newcommand{\fnFive}{\footnote{\lyfnfivetext} }
 
 \newcommand{\resetkeys}{ % TODO ... make this work
-  % \makeatletter
-    \setkeys{scholarLYannotations}{ % default values
-      grob = no value given,
-      grob-location = no value given,
-      grob-type = no value given,
-      input-file-name = no value given,
-      context-id = no value given,
-      location = no value given,
-      type = no value given,
-      message = no value given,
-      context = no value given,
-      fn-one-text = {\color{red} Oops! Nothing has been entered for this footnote},
-      fn-two-text = {\color{red} Oops! Nothing has been entered for this footnote},
-      fn-three-text = {\color{red} Oops! Nothing has been entered for this footnote},
-      fn-four-text = {\color{red} Oops! Nothing has been entered for this footnote},
-      fn-five-text = {\color{red} Oops! Nothing has been entered for this footnote},
-      ann-footnote = {no value given}
-    }
-  % \makeatother
+  \setkeys{scholarLYannotations}{ % default values
+    grob = no value given,
+    grob-location = no value given,
+    grob-type = no value given,
+    input-file-name = no value given,
+    context-id = no value given,
+    location = no value given,
+    type = no value given,
+    message = no value given,
+    context = no value given,
+    fn-one-text = {\color{red} Oops! Nothing has been entered for this footnote},
+    fn-two-text = {\color{red} Oops! Nothing has been entered for this footnote},
+    fn-three-text = {\color{red} Oops! Nothing has been entered for this footnote},
+    fn-four-text = {\color{red} Oops! Nothing has been entered for this footnote},
+    fn-five-text = {\color{red} Oops! Nothing has been entered for this footnote},
+    ann-footnote = {no value given}
+  }
 }
 
 %% ~ ~ ~ hide or show types manually ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -343,11 +318,11 @@
 
 \newcommand{\showAnnTypes}{
   \renewcommand{\typeSkipornot}{\modePostType}
-  \renewcommand{\CRname}{\annType{(Critical Remark)}}
-  \renewcommand{\MIname}{\annType{(Musical Issue)}}
-  \renewcommand{\LIname}{\annType{(LilyPond Issue)}}
-  \renewcommand{\Qname}{\annType{(Question)}}
-  \renewcommand{\TDname}{\annType{(To Do)}}
+  \renewcommand{\CRname}{\annType{(Critical Remark) }}
+  \renewcommand{\MIname}{\annType{(Musical Issue) }}
+  \renewcommand{\LIname}{\annType{(LilyPond Issue) }}
+  \renewcommand{\Qname}{\annType{(Question) }}
+  \renewcommand{\TDname}{\annType{(To Do) }}
 }
 
 \newcommand{\previousMeasure}{0} % default
@@ -388,7 +363,7 @@
 
 \newcommand{\musicalIssue}[6][]{
 \resetkeys
-  \kvsetkeys{scholarLYannotations}{#1}
+  \setkeys{scholarLYannotations}{#1}
     \renewcommand{\currentMeasure}{#2}
     \renewcommand{\currentBeat}{#3}
       \item{\MIname\typeSkipornot
@@ -410,7 +385,7 @@
 
 \newcommand{\lilypondIssue}[6][]{
 \resetkeys
-  \kvsetkeys{scholarLYannotations}{#1}
+  \setkeys{scholarLYannotations}{#1}
     \renewcommand{\currentMeasure}{#2}
     \renewcommand{\currentBeat}{#3}
       \item{\LIname\typeSkipornot
@@ -432,7 +407,7 @@
 
 \newcommand{\question}[6][]{
 \resetkeys
-  \kvsetkeys{scholarLYannotations}{#1}
+  \setkeys{scholarLYannotations}{#1}
     \renewcommand{\currentMeasure}{#2}
     \renewcommand{\currentBeat}{#3}
       \item{\Qname\typeSkipornot
@@ -454,7 +429,7 @@
 
 \newcommand{\todo}[6][]{
 \resetkeys
-  \kvsetkeys{scholarLYannotations}{#1}
+  \setkeys{scholarLYannotations}{#1}
     \renewcommand{\currentMeasure}{#2}
     \renewcommand{\currentBeat}{#3}
       \item{\TDname\typeSkipornot
