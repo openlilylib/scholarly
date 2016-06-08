@@ -260,6 +260,7 @@
 \define@key{scholarLYannotations}{fn-three-text}{\def\lyfnthreetext{#1}}
 \define@key{scholarLYannotations}{fn-four-text}{\def\lyfnfourtext{#1}}
 \define@key{scholarLYannotations}{fn-five-text}{\def\lyfnfivetext{#1}}
+\define@key{scholarLYannotations}{ann-footnote}{\def\lyannfootnote{#1}}
 % \makeatother
 
 % \makeatletter
@@ -278,6 +279,7 @@
   fn-three-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   fn-four-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   fn-five-text = {\color{red} Oops! Nothing has been entered for this footnote.},
+  ann-footnote = {no value given}
     % if user needs more than five footnotes, must create new key=value before \annotations
 }
 % \makeatother
@@ -305,6 +307,7 @@
       fn-three-text = {\color{red} Oops! Nothing has been entered for this footnote},
       fn-four-text = {\color{red} Oops! Nothing has been entered for this footnote},
       fn-five-text = {\color{red} Oops! Nothing has been entered for this footnote},
+      ann-footnote = {no value given}
     }
   % \makeatother
 }
@@ -343,7 +346,7 @@
 
 %% ~ ~ ~ the parser commands ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-\newcommand{\criticalRemark}[7][]{
+\newcommand{\criticalRemark}[6][]{
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
     \renewcommand{\currentMeasure}{#2}
@@ -359,12 +362,13 @@
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
-      \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
+      \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
+        {\annFootnote{\footnote{\lyannfootnote}}}}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
 
-\newcommand{\musicalIssue}[7][]{
+\newcommand{\musicalIssue}[6][]{
 \resetkeys
   \kvsetkeys{scholarLYannotations}{#1}
     \renewcommand{\currentMeasure}{#2}
@@ -380,12 +384,13 @@
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
-      \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
+      \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
+        {\annFootnote{\footnote{\lyannfootnote}}}}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
 
-\newcommand{\lilypondIssue}[7][]{
+\newcommand{\lilypondIssue}[6][]{
 \resetkeys
   \kvsetkeys{scholarLYannotations}{#1}
     \renewcommand{\currentMeasure}{#2}
@@ -401,12 +406,13 @@
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
-      \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
+      \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
+        {\annFootnote{\footnote{\lyannfootnote}}}}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
 
-\newcommand{\question}[7][]{
+\newcommand{\question}[6][]{
 \resetkeys
   \kvsetkeys{scholarLYannotations}{#1}
     \renewcommand{\currentMeasure}{#2}
@@ -422,12 +428,13 @@
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
-      \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
+      \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
+        {\annFootnote{\footnote{\lyannfootnote}}}}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
 
-\newcommand{\todo}[7][]{
+\newcommand{\todo}[6][]{
 \resetkeys
   \kvsetkeys{scholarLYannotations}{#1}
     \renewcommand{\currentMeasure}{#2}
@@ -443,7 +450,8 @@
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{\unskip#6\unskip
-      \ifthenelse{\equal{#7}{}}{}{\annFootnote{\footnote{#7}}}}}
+      \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
+        {\annFootnote{\footnote{\lyannfootnote}}}}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
