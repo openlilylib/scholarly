@@ -183,8 +183,11 @@
 % [twocolumn] option is applicable, but also breaks (allow or avoid?; or optional?)
 
 \newcommand{\postannType}{} % add vspace, hspace, characters, etc. *after* type
-% NOTE to user: add \par to correct vspace behavior, i.e. \postannType{\par\vspace{1cm}}
+\newcommand{\setpostannType}[1]{\renewcommand{\postannType}{#1}}
+% NOTE: add \par to correct vspace behavior, i.e. \setpostannType{\par\vspace{1cm}}
+
 \newcommand{\preannArg}{}
+\newcommand{\setpreannType}[1]{\renewcommand{\preannType}{#1}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -194,53 +197,58 @@
 
 %% ~ ~ ~ message parser [under construction] ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %
+
 \newcommand{\prependMessage}{``} % default
 \newcommand{\appendMessage}{''} % default
 \newcommand{\setPreMess}[1]{\renewcommand{\prependMessage}{#1}}
 \newcommand{\setAppMess}[1]{\renewcommand{\appendMessage}{#1}}
 
 
-% period AFTER quotes, whether (quotes) used or not
-\newcommand{\annMessageTest}{ % this will go in place of {#6}
-  \IfEndWith{\mytestmessage}{.} % {##6} will go in place of {\mytestmessage}
+\begin{comment} % ~ ~ ~ ~ ~ [This portion is inactive] ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%
+
+% explicitly set period AFTER right-side punctuation (not affected if no punctuation used)
+\newcommand{\annMessPunctLast}{
+  \IfEndWith{\lymessage}{.}
     { % true
-      {\prependMessage{\StrGobbleRight{\mytestmessage}{1}}\appendMessage.}
+      {\prependMessage{\StrGobbleRight{\lymessage}{1}}\appendMessage.}
     }
     { % false
-      {\prependMessage\mytestmessage\appendMessage}
+      \IfEndWith{\lymessage}{?}
+        { % true
+          {\prependMessage{\StrGobbleRight{\lymessage}{1}}\appendMessage?}
+        }
+        { % false
+          {\prependMessage{\lymessage}\appendMessage.} % logically, one wouldn't imply a questionmark
+        }
     }
 }
 
 
-% explicitly set period AFTER quotes, whether (quotes) used or not
-\newcommand{\annMessPeriodLast}{
-  \renewcommand{\annMessageTest}{ % this will go in place of {#6}
-    \IfEndWith{\mytestmessage}{.} % {##6} will go in place of {\mytestmessage}
-      { % true
-        {\prependMessage{\StrGobbleRight{\mytestmessage}{1}}\appendMessage.}
-      }
-      { % false
-        {\prependMessage\mytestmessage\appendMessage}
-      }
-  }
+% explicitly set period BEFORE right-side punctuation (not affected if no punctuation used)
+\newcommand{\annMessPunctPen}{
+  \IfEndWith{\lymessage}{.}
+    { % true
+      {\prependMessage{\lymessage}\appendMessage}
+    }
+    { % false
+      \IfEndWith{\lymessage}{?}
+        { % true
+          {\prependMessage{\StrGobbleRight{\lymessage}{1}}?\appendMessage}
+        }
+        { % false
+          {\prependMessage{\lymessage}.\appendMessage} % logically, one wouldn't imply a questionmark
+        }
+    }
 }
 
 
-% explicitly set period BEFORE quotes, whether (quotes) used or not
-\newcommand{\annMessPeriodPen}{ % period is penultimate (if \appendMessage{anything})
-  \renewcommand{\annMessageTest}{ % this will go in place of {#6}
-    \IfEndWith{\mytestmessage}{.} % {##6} will go in place of {\mytestmessage}
-      { % true
-        {\prependMessage{\mytestmessage}\appendMessage}
-      }
-      { % false; amend to TEST if it ends with interal quotes, in which case PROCESS MORE
-        {\prependMessage{\StrGobbleRight{\mytestmessage}{1}}.\appendMessage}
-      }
-  }
-}
+These previous two commands are scraps for now, as footnotes are not accepted if
+used in such parsed strings (yet).
+
+\end{comment} %% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ [ends inactive portion] ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 %% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 
 
 % format/style the list of annotations
@@ -256,6 +264,7 @@
 {\begin{enumerate}\enumOptions\annStyleMode\input{#1}\end{enumerate}}
 %
 % ex: \annotations{annotate.annotations.inp}
+
 
 %% ~ ~ ~ ALLOW (default) or AVOID breaking arguments in annotations ~ ~ ~ ~ ~ ~
 %
@@ -330,7 +339,6 @@
   fn-four-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   fn-five-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   ann-footnote = {no value given}
-    % if user needs more than five footnotes, must create new key=value before \annotations
 }
 
 \newcommand{\fnOne}{\footnote{\lyfnonetext} }
@@ -348,7 +356,7 @@
     context-id = no value given,
     location = no value given,
     type = no value given,
-    message = no value given,
+    message = {where is the message?},
     context = no value given,
     fn-one-text = {\color{red} Oops! Nothing has been entered for this footnote},
     fn-two-text = {\color{red} Oops! Nothing has been entered for this footnote},
@@ -393,6 +401,7 @@
 
 %% ~ ~ ~ the parser commands ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+
 \newcommand{\criticalRemark}[6][]{
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
@@ -408,9 +417,9 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip#6\unskip
+      \preannArg{\annMessage{\unskip{\prependMessage#6\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\annFootnote{\footnote{\lyannfootnote}}}}}
+        {\annFootnote{\footnote{\lyannfootnote}}}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -430,9 +439,9 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip#6\unskip
+      \preannArg{\annMessage{\unskip{\prependMessage#6\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\annFootnote{\footnote{\lyannfootnote}}}}}
+        {\annFootnote{\footnote{\lyannfootnote}}}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -452,9 +461,9 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip#6\unskip
+      \preannArg{\annMessage{\unskip{\prependMessage#6\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\annFootnote{\footnote{\lyannfootnote}}}}}
+        {\annFootnote{\footnote{\lyannfootnote}}}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -474,9 +483,9 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip#6\unskip
+      \preannArg{\annMessage{\unskip{\prependMessage#6\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\annFootnote{\footnote{\lyannfootnote}}}}}
+        {\annFootnote{\footnote{\lyannfootnote}}}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -496,9 +505,9 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip#6\unskip
+      \preannArg{\annMessage{\unskip{\prependMessage#6\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\annFootnote{\footnote{\lyannfootnote}}}}}
+        {\annFootnote{\footnote{\lyannfootnote}}}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
