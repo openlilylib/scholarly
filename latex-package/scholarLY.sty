@@ -4,8 +4,10 @@
 \RequirePackage{ifthen}
 \RequirePackage{keyval}
 \RequirePackage{enumitem}
-\RequirePackage{etex} % required for use of  `xstring`
+%\RequirePackage{etex} % required for use of  `xstring` % NOTE check this
 \RequirePackage{xstring}
+%\noexpandarg % affects `xtring`, necessary for footnotes in parsed messages:
+             % i.e. don't do full expansion in `purple' arguments
 
 % TODO consider reorganizing package structure (this file master, with subfiles)
 
@@ -79,8 +81,8 @@
 }
 
 \newcommand{\stackedParams}{
-  \renewcommand{\skipornot}{\par}
-  \renewcommand{\typeSkipornot}{\par}
+  \renewcommand{\skipornot}{\par} % \par
+  \renewcommand{\typeSkipornot}{\par} % \par
 }
 
 
@@ -198,55 +200,15 @@
 %% ~ ~ ~ message parser [under construction] ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %
 
+\newcommand{\prependMessageFirst}{}
 \newcommand{\prependMessage}{``} % default
 \newcommand{\appendMessage}{''} % default
-\newcommand{\setPreMess}[1]{\renewcommand{\prependMessage}{#1}}
-\newcommand{\setAppMess}[1]{\renewcommand{\appendMessage}{#1}}
+\newcommand{\appendMessageLast}{}
+\newcommand{\setPreMessFirst}[1]{\renewcommand{\prependMessageFirst}{\unskip#1\unskip}}
+\newcommand{\setPreMess}[1]{\renewcommand{\prependMessage}{\unskip#1\unskip}}
+\newcommand{\setAppMess}[1]{\renewcommand{\appendMessage}{\unskip#1\unskip}}
+\newcommand{\setAppMessLast}[1]{\renewcommand{\appendMessageLast}{\unskip#1\unskip}}
 
-
-\begin{comment} % ~ ~ ~ ~ ~ [This portion is inactive] ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%
-
-% explicitly set period AFTER right-side punctuation (not affected if no punctuation used)
-\newcommand{\annMessPunctLast}{
-  \IfEndWith{\lymessage}{.}
-    { % true
-      {\prependMessage{\StrGobbleRight{\lymessage}{1}}\appendMessage.}
-    }
-    { % false
-      \IfEndWith{\lymessage}{?}
-        { % true
-          {\prependMessage{\StrGobbleRight{\lymessage}{1}}\appendMessage?}
-        }
-        { % false
-          {\prependMessage{\lymessage}\appendMessage.} % logically, one wouldn't imply a questionmark
-        }
-    }
-}
-
-
-% explicitly set period BEFORE right-side punctuation (not affected if no punctuation used)
-\newcommand{\annMessPunctPen}{
-  \IfEndWith{\lymessage}{.}
-    { % true
-      {\prependMessage{\lymessage}\appendMessage}
-    }
-    { % false
-      \IfEndWith{\lymessage}{?}
-        { % true
-          {\prependMessage{\StrGobbleRight{\lymessage}{1}}?\appendMessage}
-        }
-        { % false
-          {\prependMessage{\lymessage}.\appendMessage} % logically, one wouldn't imply a questionmark
-        }
-    }
-}
-
-
-These previous two commands are scraps for now, as footnotes are not accepted if
-used in such parsed strings (yet).
-
-\end{comment} %% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ [ends inactive portion] ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 %% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -341,13 +303,13 @@ used in such parsed strings (yet).
   ann-footnote = {no value given}
 }
 
-\newcommand{\fnOne}{\footnote{\lyfnonetext} }
-\newcommand{\fnTwo}{\footnote{\lyfntwotext} }
-\newcommand{\fnThree}{\footnote{\lyfnthreetext} }
-\newcommand{\fnFour}{\footnote{\lyfnfourtext} }
-\newcommand{\fnFive}{\footnote{\lyfnfivetext} }
+\newcommand{\fnOne}{\unskip\footnote{\lyfnonetext} }
+\newcommand{\fnTwo}{\unskip\footnote{\lyfntwotext} }
+\newcommand{\fnThree}{\unskip\footnote{\lyfnthreetext} }
+\newcommand{\fnFour}{\unskip\footnote{\lyfnfourtext} }
+\newcommand{\fnFive}{\unskip\footnote{\lyfnfivetext} }
 
-\newcommand{\resetkeys}{ % TODO ... make this work
+\newcommand{\resetkeys}{
   \setkeys{scholarLYannotations}{ % default values
     grob = no value given,
     grob-location = no value given,
@@ -366,6 +328,7 @@ used in such parsed strings (yet).
     ann-footnote = {no value given}
   }
 }
+
 
 %% ~ ~ ~ hide or show types manually ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -401,11 +364,32 @@ used in such parsed strings (yet).
 
 %% ~ ~ ~ the parser commands ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+\newcommand{\annMessagePunct}{} % default, no punctuation
+
+%% ~ ~ ~ the default message parser ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+\newcommand{\annMessageParse}{ % TODO tests
+  \saveexpandmode\expandarg
+    \IfEndWith{\lymessage}{.}
+      % true; the user wants a period for punctuation
+      {\unskip\StrGobbleRight{\lymessage}{1}{\renewcommand{\annMessagePunct}{.}}}
+      % false
+      {\IfEndWith{\lymessage}{?}
+        % true; the user wants a question mark for punctuation
+        {\unskip\StrGobbleRight{\lymessage}{1}{\renewcommand{\annMessagePunct}{?}}}
+        % false:
+        {This is the result of no arguments being satisfied!} % a placeholder, to be expanded
+      }
+  \restoreexpandmode
+}
+
+
+%% ~ ~ ~ annotation parser ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 \newcommand{\criticalRemark}[6][]{
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
-    \renewcommand{\currentMeasure}{#2}
+    \renewcommand{\currentMeasure}{#3}
     \renewcommand{\currentBeat}{#3}
       \item{\CRname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
@@ -417,9 +401,9 @@ used in such parsed strings (yet).
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip{\prependMessage#6\appendMessage}\unskip}
+      \preannArg{\annMessage{\unskip{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\annFootnote{\footnote{\lyannfootnote}}}}
+        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -439,9 +423,9 @@ used in such parsed strings (yet).
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip{\prependMessage#6\appendMessage}\unskip}
+      \preannArg{\annMessage{\unskip{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\annFootnote{\footnote{\lyannfootnote}}}}
+        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -461,9 +445,9 @@ used in such parsed strings (yet).
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip{\prependMessage#6\appendMessage}\unskip}
+      \preannArg{\annMessage{\unskip{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\annFootnote{\footnote{\lyannfootnote}}}}
+        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -483,9 +467,9 @@ used in such parsed strings (yet).
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip{\prependMessage#6\appendMessage}\unskip}
+      \preannArg{\annMessage{\unskip{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\annFootnote{\footnote{\lyannfootnote}}}}
+        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -505,9 +489,9 @@ used in such parsed strings (yet).
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip{\prependMessage#6\appendMessage}\unskip}
+      \preannArg{\annMessage{\unskip{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\annFootnote{\footnote{\lyannfootnote}}}}
+        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
