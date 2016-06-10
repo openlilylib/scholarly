@@ -4,14 +4,11 @@
 \RequirePackage{ifthen}
 \RequirePackage{keyval}
 \RequirePackage{enumitem}
-%\RequirePackage{etex} % required for use of  `xstring` % NOTE check this
 \RequirePackage{xstring}
-\setlist{enumerate}
 
 % TODO consider reorganizing package structure (this file master, with subfiles)
 % TODO support more formats, such as two-columns per annotation (e.g. Message | the message )
 % TODO Provide labels (which can be easily redefined) for user-customized templates
-% TODO Allow prevention of breaking contents of individual annotations (to be toggled on/off)
 % TODO test \unumOptions capabilities
 
 
@@ -88,6 +85,17 @@
 \newcommand{\finalfordraft}{\renewcommand{\customdraft}{\customfinal}}
 
 
+% break annotations or not:
+
+\newcommand{\letAnnBreakornot}{\par\nobreak} % default = no break
+\newcommand{\letAnnBreak}{\renewcommand{\letAnnBreakornot}{\par}} % let break
+\newcommand{\avoidAnnBreak}{\renewcommand{\letAnnBreakornot}{\par\nobreak}} % avoid break
+%
+% NOTE If \enumoptions (see below) specifies vertical spacing within items, \letAnnBreak
+%      is more likely to result in breaks. Otherwise, LaTeX will try to avoid breaking
+%      even with \letAnnBreak employed.
+
+
 % inline or stacked annotations:
 
 \newcommand{\skipornot}{}
@@ -101,8 +109,8 @@
 }
 
 \newcommand{\stackedParams}{
-  \renewcommand{\skipornot}{\par\nobreak}
-  \renewcommand{\typeSkipornot}{\par\nobreak} % TODO check these behaviors
+  \renewcommand{\skipornot}{\letAnnBreakornot}
+  \renewcommand{\typeSkipornot}{\letAnnBreakornot} % TODO check these behaviors
   \renewcommand{\modePostType}{} % TODO check these behaviors
 }
 
