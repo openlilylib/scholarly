@@ -10,6 +10,9 @@
 % TODO support more formats, such as two-columns per annotation (e.g. Message | the message )
 % TODO Provide labels (which can be easily redefined) for user-customized templates
 % TODO test \unumOptions capabilities
+% TODO prevent ann message breaking
+% TODO messages not accepting `uppercase`, though other message styles working.
+% TODO test on engines other than pdflatex
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -232,14 +235,14 @@
   context-id = no value given,
   location = no value given,
   type = no value given,
-  message = {\color{red} Oops! Nothing has been entered for this message.},
+  message = no value given,
   context = no value given,
   fn-one-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   fn-two-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   fn-three-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   fn-four-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   fn-five-text = {\color{red} Oops! Nothing has been entered for this footnote.},
-  ann-footnote = {\color{red} Oops! Nothing has been entered for this footnote.}
+  ann-footnote = {no value given}
 }
 
 \newcommand{\resetkeys}{
@@ -251,16 +254,19 @@
     context-id = no value given,
     location = no value given,
     type = no value given,
-    message = {\color{red} Oops! Nothing has been entered for this message.},
+    message = no value given,
     context = no value given,
     fn-one-text = {\color{red} Oops! Nothing has been entered for this footnote.},
     fn-two-text = {\color{red} Oops! Nothing has been entered for this footnote.},
     fn-three-text = {\color{red} Oops! Nothing has been entered for this footnote.},
     fn-four-text = {\color{red} Oops! Nothing has been entered for this footnote.},
     fn-five-text = {\color{red} Oops! Nothing has been entered for this footnote.},
-    ann-footnote = {\color{red} Oops! Nothing has been entered for this footnote.}
+    ann-footnote = {no value given}
   }
 }
+
+% TODO implement this:
+\newcommand{\noMessError}{\color{red} Oops! No message has been entered for this annotation.}
 
 
 %% ~ ~ ~ more TOGGLES ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -394,7 +400,7 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
+      \preannArg{\annMessage{{\prependMessageFirst\prependMessage{\annMessageParse}\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
