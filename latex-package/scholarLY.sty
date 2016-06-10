@@ -6,10 +6,12 @@
 \RequirePackage{enumitem}
 %\RequirePackage{etex} % required for use of  `xstring` % NOTE check this
 \RequirePackage{xstring}
-%\noexpandarg % affects `xtring`, necessary for footnotes in parsed messages:
-             % i.e. don't do full expansion in `purple' arguments
+\setlist{enumerate}
 
 % TODO consider reorganizing package structure (this file master, with subfiles)
+% TODO support more formats, such as two-columns per annotation (e.g. Message | the message )
+% TODO Provide labels (which can be easily redefined) for user-customized templates
+% TODO Allow prevention of breaking contents of individual annotations (to be toggled on/off)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OPTIONS ... the customizable part of the package
@@ -74,17 +76,19 @@
 
 \newcommand{\skipornot}{}
 \newcommand{\typeSkipornot}{}
+\newcommand{\modePostType}{}
 
 \newcommand{\inlineParams}{
   \renewcommand{\skipornot}{, }
-  \renewcommand{\typeSkipornot}{}
+  \renewcommand{\typeSkipornot}{} % TODO check these behaviors
+  \renewcommand{\modePostType}{} % TODO check these behaviors
 }
 
 \newcommand{\stackedParams}{
-  \renewcommand{\skipornot}{\par} % \par
-  \renewcommand{\typeSkipornot}{\par} % \par
+  \renewcommand{\skipornot}{\par}
+  \renewcommand{\typeSkipornot}{\par} % TODO check these behaviors
+  \renewcommand{\modePostType}{} % TODO check these behaviors
 }
-
 
 \newif\ifex@draft % (implicitly final) ... i.e. draft mode if set, otherwise final mode,
                   % which can also be explicitly set: \usepackage[final]{scholarLY}
@@ -102,12 +106,10 @@
   \newcommand{\LIname}{\annType{(LilyPond Issue) }}
   \newcommand{\Qname}{\annType{(Question) }}
   \newcommand{\TDname}{\annType{(TODO) }}
-  \newcommand{\modePostType}{\par}
   \newcommand{\annStyleMode}{\customdraftornot}
 \else
   \inlineParams % default, can be overwritten in custom or global settings
   \newcommand{\annStyleMode}{\customfinalornot}
-  \newcommand{\modePostType}{, }
   \newcommand{\CRname}{\annType{}}
   \newcommand{\MIname}{\annType{}}
   \newcommand{\LIname}{\annType{}}
@@ -138,39 +140,6 @@
 \setlist{parsep=0pt} % spacing between different annotations
 \setlength{\parskip}{0em} % line-spacing within each annotation
 \setlength{\itemsep}{0pt}
-
-
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%% ~ ~ ~ FORMAT FOOTNOTES ~
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-% TODO this is a placeholder, pending footnotes functionality in scholarLY
-%
-% example: ... NOTE: remove this later, after testing
-%
-% \musicalIssue \with {
-%   message = "This is my message\fnOne, and it has two footnotes."
-%   fnOneText = "This is the text of the footnote"
-%   annotation-footnote = "This automatically tagged to end of message"
-% }
-
-
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%% ~ ~ ~ CONTINUE or RESET FOOTNOTE COUNT ~
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-\newcommand{\lastfootnote}[1]{\setcounter{footnote}{#1}}
-\newcommand{\resetfootnotes}{\setcounter{footnote}{0}}
-%
-\resetfootnotes % default, though redundant for the time being
-%
-% To manually reset (overriding continuation, if applicable) prepend the
-% following to \annotations{filename.annotations.inp} command:
-%   \lastfootnote{#}
-% To reset the count (at any time):
-%   \resetfootnotes
-%
-% This can be inserted within annotations in the LilyPond document.
 
 
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -220,52 +189,25 @@
 % ex: \setEnumOptions{\setlength{\itemsep}{0.5cm}}
 
 
-%% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%
-\newcommand{\annotations}[1]
-{\begin{enumerate}\enumOptions\annStyleMode\input{#1}\end{enumerate}}
-%
-% ex: \annotations{annotate.annotations.inp}
-
 
 %% ~ ~ ~ ALLOW (default) or AVOID breaking arguments in annotations ~ ~ ~ ~ ~ ~
 %
 % NOTE - this section is not in use. As is, it works for avoiding breaking, but
 % corrupts footnotes. TODO - find another solution.
 
-\newcommand{\defaultAnnBreaks}{
-  \newcommand{\noAnnBreaksBegin}{}
-  \newcommand{\noAnnBreaksEnd}{}
-}
-\defaultAnnBreaks % allowed; no need to be entered by user, but may be used within an
-                % annotation to change behavior inline.
+\newcommand{\breakornot}{\parbox[t]{\textwidth}} % default = no breaking
+\newcommand{\letAnnBreak}{\renewcommand{\breakornot}{}}
+\newcommand{\avoidAnnBreak}{\renewcommand{\breakornot}{\parbox[t]{\textwidth}}} % a redundant command
 
-\newcommand{\allowAnnBreaks}{
-  \renewcommand{\noAnnBreaksBegin}{}
-  \renewcommand{\noAnnBreaksEnd}{}
-}
+% \letAnnBreak
 
-\newcommand{\avoidAnnBreaks}{
-  % AVOID annotated breaks, environments
-  \newenvironment{absolutelynopagebreak}
-    {\par\nobreak\vfil\penalty0\vfilneg
-     \vtop\bgroup}
-    {\par\xdef\tpd{\the\prevdepth}\egroup
-     \prevdepth=\tpd}
-  \renewcommand{\noAnnBreaksBegin}{\begin{absolutelynopagebreak}}
-  \renewcommand{\noAnnBreaksEnd}{\end{absolutelynopagebreak}}
-}
+%% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %
-% ex: \avoidAnnBreaks NOTE see top; this section void for now.
-
-%% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-% The LAST parameter in each set is footnote. If empty, one is not created. If
-% other optional parameters are added in the future, these places (#1, #2, etc)
-% may shift. Non-defined parameters should always make the list as {}, otherwise
-% latex will assume the next argument (whether {} or {argument}) in that place.
+\newcommand{\annotations}[1]
+{\begin{enumerate}[mode=boxed]\enumOptions\annStyleMode\input{#1}\end{enumerate}}
 %
-% Requires annotation type and measure number, all other arguments optional
+% ex: \annotations{annotate.annotations.inp}
+
 
 %% ~ ~ ~ KEY + VALUE arguments ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -393,7 +335,7 @@
     \renewcommand{\currentBeat}{#3}
       \item{\CRname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-        {\postannType\preannArg{\annMeasure{M.#2,}}}}
+        {\postannType\preannArg{\annMeasure{M.#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
           {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
@@ -401,9 +343,9 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
+      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}
+        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -415,7 +357,7 @@
     \renewcommand{\currentBeat}{#3}
       \item{\MIname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-        {\postannType\preannArg{\annMeasure{M.#2,}}}}
+        {\postannType\preannArg{\annMeasure{M.#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
           {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
@@ -423,9 +365,9 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
+      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}
+        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -437,7 +379,7 @@
     \renewcommand{\currentBeat}{#3}
       \item{\LIname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-        {\postannType\preannArg{\annMeasure{M.#2,}}}}
+        {\postannType\preannArg{\annMeasure{M.#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
           {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
@@ -445,9 +387,9 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
+      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}
+        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -459,7 +401,7 @@
     \renewcommand{\currentBeat}{#3}
       \item{\Qname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-        {\postannType\preannArg{\annMeasure{M.#2,}}}}
+        {\postannType\preannArg{\annMeasure{M.#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
           {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
@@ -467,9 +409,9 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
+      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}
+        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -481,7 +423,7 @@
     \renewcommand{\currentBeat}{#3}
       \item{\TDname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-        {\postannType\preannArg{\annMeasure{M.#2,}}}}
+        {\postannType\preannArg{\annMeasure{M.#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
           {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
@@ -489,9 +431,9 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{\unskip{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
+      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}
+        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
