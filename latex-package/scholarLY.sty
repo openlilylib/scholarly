@@ -12,6 +12,8 @@
 % TODO support more formats, such as two-columns per annotation (e.g. Message | the message )
 % TODO Provide labels (which can be easily redefined) for user-customized templates
 % TODO Allow prevention of breaking contents of individual annotations (to be toggled on/off)
+% TODO test \unumOptions capabilities
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OPTIONS ... the customizable part of the package
@@ -29,6 +31,7 @@
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 % style predicates:
+
 \newcommand{\annType}[1]{#1} % Annotation Type; just italics
 \newcommand{\annMeasure}[1]{#1} % just bold
 \newcommand{\annBeat}[1]{#1} % none
@@ -38,6 +41,7 @@
 \newcommand{\annFootnote}[1]{#1} % none
 
 % To update styles:
+
 \newcommand{\styleAnnType}[1]{\renewcommand{\annType}[1]{#1}}
 \newcommand{\styleAnnMeasure}[1]{\renewcommand{\annMeasure}[1]{#1}}
 \newcommand{\styleAnnBeat}[1]{\renewcommand{\annBeat}[1]{#1}}
@@ -53,26 +57,38 @@
 %% ~ ~ ~ DRAFT or FINAL MODE, and styling therein ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+
+% create custom settings for `draft` mode:
+
 \newcommand{\customdraft}{}
 \newcommand\setcustomdraft[1]{\renewcommand{\customdraft}{#1}}
-\setcustomdraft{
-\styleAnnMessage{##1}
-} % the default settings for DRAFT mode
+  \setcustomdraft{
+    \styleAnnMessage{##1}
+  } % the default settings for DRAFT mode = nothing
+
 \newcommand{\customdraftornot}{}
 \newcommand{\usecustomdraft}{\renewcommand{\customdraftornot}{\customdraft}}
 
+
+% create custom settings for `final` mode:
+
 \newcommand{\customfinal}{}
 \newcommand\setcustomfinal[1]{\renewcommand{\customfinal}{#1}}
-\setcustomfinal{
-\styleAnnMessage{##1}
-\styleAnnMeasure{\color{red}{\textit{##1}}}
-} % the default settings for FINAL mode
+  \setcustomfinal{
+    \styleAnnMessage{##1}
+    \styleAnnMeasure{\color{red}{\textit{##1}}}
+  } % the default settings for FINAL mode (just example for now; make bland later)
+
 \newcommand{\customfinalornot}{}
 \newcommand{\usecustomfinal}{\renewcommand{\customfinalornot}{\customfinal}}
 
+
+% let custom final settings carry over to draft mode
+
 \newcommand{\finalfordraft}{\renewcommand{\customdraft}{\customfinal}}
 
-% ~ ~ ~ inline and stacked modes ~ ~ ~
+
+% inline or stacked annotations:
 
 \newcommand{\skipornot}{}
 \newcommand{\typeSkipornot}{}
@@ -85,10 +101,13 @@
 }
 
 \newcommand{\stackedParams}{
-  \renewcommand{\skipornot}{\par}
-  \renewcommand{\typeSkipornot}{\par} % TODO check these behaviors
+  \renewcommand{\skipornot}{\par\nobreak}
+  \renewcommand{\typeSkipornot}{\par\nobreak} % TODO check these behaviors
   \renewcommand{\modePostType}{} % TODO check these behaviors
 }
+
+
+% declare draft/final options:
 
 \newif\ifex@draft % (implicitly final) ... i.e. draft mode if set, otherwise final mode,
                   % which can also be explicitly set: \usepackage[final]{scholarLY}
@@ -98,8 +117,6 @@
 \ProcessOptions*
 
 \ifex@draft
-  % \newcommand\skipornot{\par}
-  % \newcommand{\typeSkipornot}{\par}
   \stackedParams % default, can be overwritten in custom or global settings
   \newcommand{\CRname}{\annType{(Critical Remark) }}
   \newcommand{\MIname}{\annType{(Musical Issue) }}
@@ -115,50 +132,45 @@
   \newcommand{\LIname}{\annType{}}
   \newcommand{\Qname}{\annType{}}
   \newcommand{\TDname}{\annType{}}
-  % \newcommand{\typeSkipornot}{}
-  % \newcommand\skipornot{, } % TODO: leave empty here, add conditional comma for
-\fi                         % each parameter (exist if used; none/empty if not)
+\fi
 
 
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%% ~ ~ ~ ENUMERATION STYLE  ~
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ ADDITIONAL CUSTOMIZATIONS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+% apply any of the usual enumerate arguments to the list:
+
+\newcommand{\enumOptions}{}
+\newcommand{\setEnumOptions}[1]{\renewcommand{\enumOptions}{#1}}
 %
-% This package (currently) uses the 'enumitem' package for listing/formatting
-% the annotations. These options can be placed at the top of the document (will
-% affect the entire document, unless changed) or just before the annotations.
-% More info: https://www.ctan.org/pkg/enumerate?lang=en
-
-%%% ONE or TWO PARENS, or other
-\renewcommand\labelenumi{\theenumi)}     % This should be easily customizable by
-% \renewcommand\labelenumi{(\theenumi)}  % the user. Either recommend in the documentation
-                                         % that it can be changed as such, or create an
-                                         % abbreviated command for the user.
-
-%%% SPACING, TODO optionally. - put within list via \enumOptions
-% \setlist[enumerate]{leftmargin=*} % left-justified (to each margin)
-\setlist{parsep=0pt} % spacing between different annotations
-\setlength{\parskip}{0em} % line-spacing within each annotation
-\setlength{\itemsep}{0pt}
+% ex: \setEnumOptions{\setlength{\itemsep}{0.5cm}}
+% \renewcommand\labelenumi{\theenumi)} % paren after only
+% \renewcommand\labelenumi{(\theenumi)} % parens around, and etc.
 
 
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%% ~ ~ ~ GLOBAL FORMATTING OPTIONS  ~
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-% TODO MULTI-COLUMNs
-% multicols package is applicable, as well as (presumably) others; this will be
-% verified.
-% BUT, make condition to avoid breaking arguments inside an annotation
-%
-% [twocolumn] option is applicable, but also breaks (allow or avoid?; or optional?)
+% do something immediately after the type (only effective if type present)
 
 \newcommand{\postannType}{} % add vspace, hspace, characters, etc. *after* type
 \newcommand{\setpostannType}[1]{\renewcommand{\postannType}{#1}}
+%
 % NOTE: add \par to correct vspace behavior, i.e. \setpostannType{\par\vspace{1cm}}
+
+
+% do something immediately before each of the arguments (presently affects all):
 
 \newcommand{\preannArg}{}
 \newcommand{\setpreannType}[1]{\renewcommand{\preannType}{#1}}
+
+
+% {prependFirst}{prepend} (MESSAGE) {append} {appendLast}:
+
+\newcommand{\prependMessageFirst}{}
+\newcommand{\prependMessage}{``} % default
+\newcommand{\appendMessage}{''} % default
+\newcommand{\appendMessageLast}{}
+\newcommand{\setPreMessFirst}[1]{\renewcommand{\prependMessageFirst}{\unskip#1}}
+\newcommand{\setPreMess}[1]{\renewcommand{\prependMessage}{#1\unskip}}
+\newcommand{\setAppMess}[1]{\renewcommand{\appendMessage}{\unskip#1\unskip}}
+\newcommand{\setAppMessLast}[1]{\renewcommand{\appendMessageLast}{\unskip#1\unskip}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -166,50 +178,27 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-%% ~ ~ ~ message parser [under construction] ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%
-
-\newcommand{\prependMessageFirst}{}
-\newcommand{\prependMessage}{``} % default
-\newcommand{\appendMessage}{''} % default
-\newcommand{\appendMessageLast}{}
-\newcommand{\setPreMessFirst}[1]{\renewcommand{\prependMessageFirst}{\unskip#1\unskip}}
-\newcommand{\setPreMess}[1]{\renewcommand{\prependMessage}{\unskip#1\unskip}}
-\newcommand{\setAppMess}[1]{\renewcommand{\appendMessage}{\unskip#1\unskip}}
-\newcommand{\setAppMessLast}[1]{\renewcommand{\appendMessageLast}{\unskip#1\unskip}}
-
-
-%% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-
-% format/style the list of annotations
-\newcommand{\enumOptions}{}
-\newcommand{\setEnumOptions}[1]{\renewcommand{\enumOptions}{#1}}
-%
-% ex: \setEnumOptions{\setlength{\itemsep}{0.5cm}}
-
-
-
 %% ~ ~ ~ ALLOW (default) or AVOID breaking arguments in annotations ~ ~ ~ ~ ~ ~
-%
-% NOTE - this section is not in use. As is, it works for avoiding breaking, but
-% corrupts footnotes. TODO - find another solution.
 
-\newcommand{\breakornot}{\parbox[t]{\textwidth}} % default = no breaking
-\newcommand{\letAnnBreak}{\renewcommand{\breakornot}{}}
-\newcommand{\avoidAnnBreak}{\renewcommand{\breakornot}{\parbox[t]{\textwidth}}} % a redundant command
+% TODO - find a better solution?
 
-% \letAnnBreak
+% Currently, \skipornot (the main breaking toggle) = {\par\nobreak} when set to
+% skip, which does protect from breaking. But rather than stretching/squeezing
+% the lines, it rounds down (if necessary) and pulls the footnotes (if any) up.
+
+% the following *will* toggle breaking allowance/avoidance
+% ex: \letAnnBreak
+
 
 %% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%
+
 \newcommand{\annotations}[1]
 {\begin{enumerate}[mode=boxed]\enumOptions\annStyleMode\input{#1}\end{enumerate}}
 %
 % ex: \annotations{annotate.annotations.inp}
 
 
-%% ~ ~ ~ KEY + VALUE arguments ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ KEY / VALUE arguments ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 \define@key{scholarLYannotations}{grob}{\def\lygrob{#1}}
 \define@key{scholarLYannotations}{grob-location}{\def\lygroblocation{#1}}
@@ -235,21 +224,15 @@
   context-id = no value given,
   location = no value given,
   type = no value given,
-  message = no value given,
+  message = {\color{red} Oops! Nothing has been entered for this message.},
   context = no value given,
   fn-one-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   fn-two-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   fn-three-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   fn-four-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   fn-five-text = {\color{red} Oops! Nothing has been entered for this footnote.},
-  ann-footnote = {no value given}
+  ann-footnote = {\color{red} Oops! Nothing has been entered for this footnote.}
 }
-
-\newcommand{\fnOne}{\unskip\footnote{\lyfnonetext} }
-\newcommand{\fnTwo}{\unskip\footnote{\lyfntwotext} }
-\newcommand{\fnThree}{\unskip\footnote{\lyfnthreetext} }
-\newcommand{\fnFour}{\unskip\footnote{\lyfnfourtext} }
-\newcommand{\fnFive}{\unskip\footnote{\lyfnfivetext} }
 
 \newcommand{\resetkeys}{
   \setkeys{scholarLYannotations}{ % default values
@@ -260,19 +243,32 @@
     context-id = no value given,
     location = no value given,
     type = no value given,
-    message = {where is the message?},
+    message = {\color{red} Oops! Nothing has been entered for this message.},
     context = no value given,
-    fn-one-text = {\color{red} Oops! Nothing has been entered for this footnote},
-    fn-two-text = {\color{red} Oops! Nothing has been entered for this footnote},
-    fn-three-text = {\color{red} Oops! Nothing has been entered for this footnote},
-    fn-four-text = {\color{red} Oops! Nothing has been entered for this footnote},
-    fn-five-text = {\color{red} Oops! Nothing has been entered for this footnote},
-    ann-footnote = {no value given}
+    fn-one-text = {\color{red} Oops! Nothing has been entered for this footnote.},
+    fn-two-text = {\color{red} Oops! Nothing has been entered for this footnote.},
+    fn-three-text = {\color{red} Oops! Nothing has been entered for this footnote.},
+    fn-four-text = {\color{red} Oops! Nothing has been entered for this footnote.},
+    fn-five-text = {\color{red} Oops! Nothing has been entered for this footnote.},
+    ann-footnote = {\color{red} Oops! Nothing has been entered for this footnote.}
   }
 }
 
 
-%% ~ ~ ~ hide or show types manually ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+%% ~ ~ ~ more TOGGLES ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+% commands for linking footnotes to text
+% NOTE - marks/text are only linked to their respective partners
+% (suffixes `One`, `Two`, etc. aren't don't influence the actual order)
+
+\newcommand{\fnOne}{\unskip\footnote{\lyfnonetext} }
+\newcommand{\fnTwo}{\unskip\footnote{\lyfntwotext} }
+\newcommand{\fnThree}{\unskip\footnote{\lyfnthreetext} }
+\newcommand{\fnFour}{\unskip\footnote{\lyfnfourtext} }
+\newcommand{\fnFive}{\unskip\footnote{\lyfnfivetext} }
+
+
+% hide or show annotation types manually
 
 \newcommand{\hideAnnTypes}{
   \renewcommand{\typeSkipornot}{}
@@ -285,52 +281,99 @@
 
 \newcommand{\showAnnTypes}{
   \renewcommand{\typeSkipornot}{\modePostType}
-  \renewcommand{\CRname}{\annType{(Critical Remark) }}
-  \renewcommand{\MIname}{\annType{(Musical Issue) }}
-  \renewcommand{\LIname}{\annType{(LilyPond Issue) }}
-  \renewcommand{\Qname}{\annType{(Question) }}
+  \renewcommand{\CRname}{\annType{(Critical Remark) }} % if the user defines a ','
+  \renewcommand{\MIname}{\annType{(Musical Issue) }}   % for \postannType, they must
+  \renewcommand{\LIname}{\annType{(LilyPond Issue) }}  % also \unskip to remove the
+  \renewcommand{\Qname}{\annType{(Question) }}         % cushion here.
   \renewcommand{\TDname}{\annType{(To Do) }}
 }
+
+
+% if same measure, optionally substitute:
 
 \newcommand{\previousMeasure}{0} % default
 \newcommand{\sameMeasure}{---} % user may redefine
 \newcommand{\currentMeasure}{0} % default
 \newcommand{\verboseMeasures}{\renewcommand{\sameMeasure}{M.\currentMeasure}}
-% ex: \verboseMeasures
+% \verboseMeasures makes measures always show
+
+
+% optionally substitute same beat (if *also* same measure):
 
 \newcommand{\previousBeat}{0}
 \newcommand{\sameBeat}{{}\unskip}
 \newcommand{\currentBeat}{0}
 \newcommand{\verboseBeats}{\renewcommand{\sameBeat}{beat \currentBeat,}}
-% ex: \verboseBeats
+% \verboseBeats make beats always show
 
-%% ~ ~ ~ the parser commands ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+%% ~ ~ ~ the PARSERS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+% test the message for punctuations, and store the result:
 
 \newcommand{\annMessagePunct}{} % default, no punctuation
 
-%% ~ ~ ~ the default message parser ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-\newcommand{\annMessageParse}{ % TODO tests
+\newcommand{\testMessagePunct}{
   \saveexpandmode\expandarg
     \IfEndWith{\lymessage}{.}
-      % true; the user wants a period for punctuation
-      {\unskip\StrGobbleRight{\lymessage}{1}{\renewcommand{\annMessagePunct}{.}}}
+      % true
+      {\renewcommand{\annMessagePunct}{.}}
       % false
       {\IfEndWith{\lymessage}{?}
-        % true; the user wants a question mark for punctuation
-        {\unskip\StrGobbleRight{\lymessage}{1}{\renewcommand{\annMessagePunct}{?}}}
-        % false:
-        {This is the result of no arguments being satisfied!} % a placeholder, to be expanded
+        % true
+        {\renewcommand{\annMessagePunct}{?}}
+        % false
+        {\IfEndWith{\lymessage}{!}
+          % true
+          {\renewcommand{\annMessagePunct}{!}}
+          % false
+          {\renewcommand{\annMessagePunct}{\unskip}}
+        }
       }
   \restoreexpandmode
 }
 
 
-%% ~ ~ ~ annotation parser ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+% parse messages:
+
+\newcommand{\annMessageParse}{
+  \saveexpandmode\expandarg
+    \IfEndWith{\lymessage}{.}
+      % true; the user set a period for punctuation
+      {\unskip\StrGobbleRight{\lymessage}{1}}
+      % false
+      {\IfEndWith{\lymessage}{?}
+        % true; the user set a question mark for punctuation
+        {\unskip\StrGobbleRight{\lymessage}{1}}
+        % false
+        {\IfEndWith{\lymessage}{!}
+          % true; the user set an exclamation point for punctuation
+          {\unskip\StrGobbleRight{\lymessage}{1}}
+          % false
+          {\unskip{\lymessage}} % no punctuation; TODO test for ' or '' ?
+        }
+      }
+  \restoreexpandmode
+}
+
+
+% set the append/punct vs. punct/append orientations:
+
+\newcommand{\annMessTail}{\annMessagePunct\appendMessage} % default = Punct, Append
+
+\newcommand{\annMessPunctAppend}{
+  \renewcommand{\annMessTail}{\appendMessage\unskip\annMessagePunct}} % Append, Punct
+
+\newcommand{\annMessAppendPunct}{
+  \renewcommand{\annMessTail}{\annMessagePunct\unskip\appendMessage}} % Punct, Append
+
+
+% annotation parsers:
 
 \newcommand{\criticalRemark}[6][]{
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
+  \testMessagePunct
     \renewcommand{\currentMeasure}{#3}
     \renewcommand{\currentBeat}{#3}
       \item{\CRname\typeSkipornot
@@ -343,7 +386,7 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
+      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
@@ -353,6 +396,7 @@
 \newcommand{\musicalIssue}[6][]{
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
+  \testMessagePunct
     \renewcommand{\currentMeasure}{#2}
     \renewcommand{\currentBeat}{#3}
       \item{\MIname\typeSkipornot
@@ -365,7 +409,7 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
+      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
@@ -375,6 +419,7 @@
 \newcommand{\lilypondIssue}[6][]{
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
+  \testMessagePunct
     \renewcommand{\currentMeasure}{#2}
     \renewcommand{\currentBeat}{#3}
       \item{\LIname\typeSkipornot
@@ -387,7 +432,7 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
+      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
@@ -397,6 +442,7 @@
 \newcommand{\question}[6][]{
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
+  \testMessagePunct
     \renewcommand{\currentMeasure}{#2}
     \renewcommand{\currentBeat}{#3}
       \item{\Qname\typeSkipornot
@@ -409,7 +455,7 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
+      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
@@ -419,6 +465,7 @@
 \newcommand{\todo}[6][]{
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
+  \testMessagePunct
     \renewcommand{\currentMeasure}{#2}
     \renewcommand{\currentBeat}{#3}
       \item{\TDname\typeSkipornot
@@ -431,7 +478,7 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\appendMessage}\unskip}
+      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
