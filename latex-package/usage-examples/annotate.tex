@@ -1,0 +1,75 @@
+\documentclass{article}
+
+\usepackage[final]{scholarLY}
+\usepackage[margin=1in]{geometry}
+\usepackage{xcolor}
+
+
+% \letAnnBreak % allow annotations to break anywhere
+\avoidAnnBreak % prevent annotations from breaking, though not messages yet
+
+\setcustomdraft{ % note: use double hash marks (##) in these defs
+  \styleAnnType{\uppercase{##1}}
+  \inlineParams
+}
+\usecustomdraft % lets \setcustomdraft override defaults in draft mode
+
+\setcustomfinal{ % note: use double hash marks (##) in these defs
+  \styleAnnType{\uppercase{##1}}
+  \styleAnnMessage{\color{cyan}{##1}}
+  \showAnnTypes
+  %\inlineParams % implicit, but must be explicitly set to affect \finalfordraft
+}
+ \usecustomfinal % lets \setcustomfinal override defaults in final mode
+% \finalfordraft % keeps custom final styles when switching to custom draft mode
+
+\setPreMessFirst{\{\hspace{0.5em}} % This will precede the entire message, on the left.
+\setPreMess{``} % If you would like message in quotes (or something else), set left side here
+\setAppMess{''} % and set right side here
+\setAppMessLast{\hspace{0.5em}\}} % This will follow the entire message, on the right.
+
+% \annMessPunctAppend % This sets syntax as (`punctuation type`, then `AppMess`)
+% The message parser determines the punctuation type (currently `.` `?` `!` or `(none)`)
+% \annMessAppendPunct
+% TODO: \annMessLeaveAlone will leave the message enirely as is.
+
+
+% examples of GLOBAL CUSTOMIZATION
+
+% \styleAnnType{\color{magenta}{\textit{\uppercase{#1}}}}
+% \styleAnnMeasure{\color{red}{\textit{#1}}}
+% \verboseMeasures % always displays repeated Measure numbers
+% \verboseBeats % always displays repeated Beat numbers
+
+% example of behavior following (Annotation Type):    TODO check how this effects
+% \renewcommand{\postannType}{\par\vspace{0.125cm}}   if set, but ann type hidden.
+%
+% \hideAnnTypes - this will override automatic options
+%
+% example of behavior before each argument:
+% \renewcommand{\preannArg}{\hspace{1em}}
+
+% Affect the itemization, which uses the enumerate pacakge.
+% \setEnumOptions{\setlength{\itemsep}{0.5cm}}
+% \setEnumOptions{\setlist[enumerate]{leftmargin=*}}
+%
+%NOTE wrap all enum options in a single set, otherwise only the last one will count
+
+\begin{document}
+
+\section{Annotations}
+\annotations{scholarly.annotations.inp} % compile the annotations
+
+\setcustomfinal{ % redefines custom final for the new annotations
+  \styleAnnType{\textbf{\textit{##1}}}
+  \styleAnnMessage{\color{red}{##1}}
+  \showAnnTypes
+  \stackedParams
+}
+
+\pagebreak
+
+\section{More Annotations}
+\annotations{scholarly.annotations.inp} % compile the annotations
+
+\end{document}

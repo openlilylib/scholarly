@@ -1,0 +1,79 @@
+\criticalRemark
+[message={A critical remark message\fnOne with a nested footnote.},
+fn-one-text={The text of the first nested footnote}]
+  {1}{1}
+  {Instrument}
+  {fingering}
+  {A critical remark message with a nested footnote.}
+
+\lilypondIssue
+[ann-footnote={This is a footnote for the entire annotation.},
+message={A message about a LilyPond issue.}]
+  {2}{3}
+  {Trumpet II}
+  {Pitch}
+  {A message about a LilyPond issue.}
+
+\musicalIssue
+[message={There is an issue with the music here.}]
+  {2}{4}
+  {Viola}
+  {Pitch}
+  {There is an issue with the music here.}
+
+\question
+[ann-footnote={A footnote for the whole question annotation.},
+message={Should I ask a question about this?}]
+  {7}{1}
+  {Right Hand}
+  {Pitch}
+  {Should I ask a question about this?}
+
+\todo
+[message={My new message for the todo!}]
+  {7}{2}
+  {Viola}
+  {Affected Item}
+  {My new message for the todo!}
+
+\musicalIssue
+[message={My new message for the musical issue.}]
+  {7}{2}
+  {Violoncello}
+  {Pitch}
+  {My new message for the musical issue.}
+
+\question
+[message = {Should I ask a question about this?}]
+  {9}{1}
+  {Right Hand}
+  {Rhythm}
+  {Should I ask a question about this?}
+
+\todo
+[message = {I think I need to do\fnOne something else to this; no text was written for the nested footnote.}]
+  {10}{1}
+  {Viola}
+  {Bowing}
+  {I think I need to do\fnOne something else to this; no text was written for the nested footnote.}
+
+\lilypondIssue
+[message={An issue in lilypond with the second trumpet part here. Also, this is longer to show spacing.}]
+  {11}{4}
+  {Trumpet II}
+  {Pitch}
+  {An issue in lilypond with the second trumpet part here. Also, this is longer to show spacing.}
+
+\lilypondIssue
+[message = {Another issue in lilypond for the second trumpet part in the same spot.}]
+  {11}{4}
+  {Trumpet II}
+  {Pitch}
+  {Another issue in lilypond for the second trumpet part in the same spot.}
+
+\lilypondIssue
+[message={A critical remark about the double bass part here. Also, this is longer to show spacing.}]
+  {12}{3}
+  {Double Bass}
+  {Pitch}
+  {A critical remark about the double bass part here. Also, this is longer to show spacing.}
