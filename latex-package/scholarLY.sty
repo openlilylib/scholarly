@@ -1,6 +1,5 @@
 \ProvidesPackage{scholarLY}
 
-\RequirePackage{verbatim}
 \RequirePackage{ifthen}
 \RequirePackage{keyval}
 \RequirePackage{enumitem}
@@ -9,7 +8,7 @@
 % TODO consider reorganizing package structure (this file master, with subfiles)
 % TODO support more formats, such as two-columns per annotation (e.g. Message | the message )
 % TODO Provide labels (which can be easily redefined) for user-customized templates
-% TODO test \unumOptions capabilities
+% TODO test \enumOptions capabilities
 % TODO prevent ann message breaking
 % TODO messages not accepting `uppercase`, though other message styles working.
 % TODO test on engines other than pdflatex
@@ -152,10 +151,6 @@
 
 \newcommand{\enumOptions}{}
 \newcommand{\setEnumOptions}[1]{\renewcommand{\enumOptions}{#1}}
-%
-% ex: \setEnumOptions{\setlength{\itemsep}{0.5cm}}
-% \renewcommand\labelenumi{\theenumi)} % paren after only
-% \renewcommand\labelenumi{(\theenumi)} % parens around, and etc.
 
 
 % do something immediately after the type (only effective if type present)
@@ -211,12 +206,12 @@
 
 %% ~ ~ ~ KEY / VALUE arguments ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-\define@key{scholarLYannotations}{grob}{\def\lygrob{#1}}
-\define@key{scholarLYannotations}{grob-location}{\def\lygroblocation{#1}}
+\define@key{scholarLYannotations}{grob}{\edef\lygrob{\detokenize{#1}}}
+\define@key{scholarLYannotations}{grob-location}{\edef\lygroblocation{\detokenize{#1}}}
 \define@key{scholarLYannotations}{grob-type}{\def\lygrobtype{#1}}
 \define@key{scholarLYannotations}{input-file-name}{\def\lyinputfilename{#1}}
 \define@key{scholarLYannotations}{context-id}{\def\lycontextid{#1}}
-\define@key{scholarLYannotations}{location}{\def\lylocation{#1}}
+\define@key{scholarLYannotations}{location}{\edef\lylocation{\detokenize{#1}}}
 \define@key{scholarLYannotations}{type}{\def\lytype{#1}}
 \define@key{scholarLYannotations}{message}{\def\lymessage{#1}}
 \define@key{scholarLYannotations}{context}{\def\lycontext{#1}}
@@ -349,6 +344,7 @@
 
 
 % parse messages:
+% TODO unskip ONLY if prependMessage is NOT equal to {}
 
 \newcommand{\annMessageParse}{
   \saveexpandmode\expandarg
@@ -364,7 +360,11 @@
           % true; the user set an exclamation point for punctuation
           {\unskip\StrGobbleRight{\lymessage}{1}}
           % false
-          {\unskip{\lymessage}} % no punctuation; TODO test for ' or '' ?
+          {\ifthenelse{\equal{\lymessage}{no value given}}{\unskip\noMessError}
+            % else
+            {\ifthenelse{\equal{\lymessage}{}}{\unskip\noMessError}
+              % else
+              {\unskip{\lymessage}}}}
         }
       }
   \restoreexpandmode
