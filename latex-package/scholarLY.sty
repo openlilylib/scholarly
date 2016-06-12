@@ -12,6 +12,8 @@
 % TODO prevent ann message breaking
 % TODO messages not accepting `uppercase`, though other message styles working.
 % TODO test on engines other than pdflatex
+% TODO can't setEnumOptions inside custom definitions
+% TODO hideAnnTypes conflict with additional customfinal definitions (requires explicit redef)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -102,18 +104,15 @@
 
 \newcommand{\skipornot}{}
 \newcommand{\typeSkipornot}{}
-\newcommand{\modePostType}{}
 
-\newcommand{\inlineParams}{
+\newcommand{\inlineParams}{%
   \renewcommand{\skipornot}{, }
   \renewcommand{\typeSkipornot}{} % TODO check these behaviors
-  \renewcommand{\modePostType}{} % TODO check these behaviors
 }
 
-\newcommand{\stackedParams}{
+\newcommand{\stackedParams}{%
   \renewcommand{\skipornot}{\letAnnBreakornot}
-  \renewcommand{\typeSkipornot}{\letAnnBreakornot} % TODO check these behaviors
-  \renewcommand{\modePostType}{} % TODO check these behaviors
+  \renewcommand{\typeSkipornot}{\letAnnBreakornot} % TODO make this check if hideAnnTypes exists already
 }
 
 
@@ -222,7 +221,7 @@
 \define@key{scholarLYannotations}{fn-five-text}{\def\lyfnfivetext{#1}}
 \define@key{scholarLYannotations}{ann-footnote}{\def\lyannfootnote{#1}}
 
-\setkeys{scholarLYannotations}{ % default values
+\setkeys{scholarLYannotations}{% default values
   grob = no value given,
   grob-location = no value given,
   grob-type = no value given,
@@ -241,7 +240,7 @@
 }
 
 \newcommand{\resetkeys}{
-  \setkeys{scholarLYannotations}{ % default values
+  \setkeys{scholarLYannotations}{% default values
     grob = no value given,
     grob-location = no value given,
     grob-type = no value given,
@@ -279,23 +278,53 @@
 
 % hide or show annotation types manually
 
-\newcommand{\hideAnnTypes}{
-  \renewcommand{\typeSkipornot}{}
+\newcommand{\hideAnnTypes}{%
   \renewcommand{\CRname}{}
   \renewcommand{\MIname}{}
   \renewcommand{\LIname}{}
   \renewcommand{\Qname}{}
   \renewcommand{\TDname}{}
+  \renewcommand{\typeSkipornot}{}
 }
 
-\newcommand{\showAnnTypes}{
-  \renewcommand{\typeSkipornot}{\modePostType}
+\newcommand{\showAnnTypes}{%
   \renewcommand{\CRname}{\annType{(Critical Remark) }} % if the user defines a ','
   \renewcommand{\MIname}{\annType{(Musical Issue) }}   % for \postannType, they must
   \renewcommand{\LIname}{\annType{(LilyPond Issue) }}  % also \unskip to remove the
   \renewcommand{\Qname}{\annType{(Question) }}         % cushion here.
   \renewcommand{\TDname}{\annType{(To Do) }}
 }
+
+
+% default prefixes/names:
+% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+% These allow user to pull labels and content easily for use in custom templates.
+% Of course, others can be defined just the same. These are provided for convenience,
+% and for easily mapping into the provided templates. (So far, only `default` exists.)
+%
+\def\lygrobPfx{Grob}
+\def\lygroblocationPfx{Grob Location}
+\def\lygrobtypePfx{Grob Type}
+\def\lyinputfilenamePfx{Input File Name}
+\def\lycontextidPfx{Context ID}
+\def\lylocationPfx{Location}
+\def\lytypePfx{Type}
+\def\lymessagePfx{Message}
+\def\lycontextPfx{Context}
+% extras used in default template:
+\def\lymeasurePfx{M.} % default; user resets: \def\lymessagePfx{(something else)}
+\def\lybeatPfx{beat }
+
+% One could combine such as:
+%     \lylocationPfx : \lymeasurePfx {#2} \lybeatPfx {#3}
+%
+% TODO let #2 and #3 be mapped to \lymeasure and \lybeat, updated in each annotation,
+% to be used such as:
+%     \lylocationPfx : \lymeasurePfx\lymeasurelybeatPfx\lybeat
+%
+% another ex:
+%     \def\lygrobPrx{custom name}
+%     \lygrobPfx:\hspace{1em}\lygrob
 
 
 % if same measure, optionally substitute:
@@ -320,9 +349,9 @@
 
 % test the message for punctuations, and store the result:
 
-\newcommand{\annMessagePunct}{} % default, no punctuation
+\newcommand{\annMessagePunct}{}% default, no punctuation
 
-\newcommand{\testMessagePunct}{
+\newcommand{\testMessagePunct}{%
   \saveexpandmode\expandarg
     \IfEndWith{\lymessage}{.}
       % true
@@ -344,9 +373,9 @@
 
 
 % parse messages:
-% TODO unskip ONLY if prependMessage is NOT equal to {}
+% TODO unskip ONLY if prependMessage is NOT equal to {}? Make user set that?
 
-\newcommand{\annMessageParse}{
+\newcommand{\annMessageParse}{%
   \saveexpandmode\expandarg
     \IfEndWith{\lymessage}{.}
       % true; the user set a period for punctuation
@@ -375,16 +404,17 @@
 
 \newcommand{\annMessTail}{\annMessagePunct\appendMessage} % default = Punct, Append
 
-\newcommand{\annMessPunctAppend}{
-  \renewcommand{\annMessTail}{\appendMessage\unskip\annMessagePunct}} % Append, Punct
+\newcommand{\annMessPunctAppend}{%
+  \renewcommand{\annMessTail}{\annMessagePunct\unskip\appendMessage}} % Append, Punct
 
-\newcommand{\annMessAppendPunct}{
-  \renewcommand{\annMessTail}{\annMessagePunct\unskip\appendMessage}} % Punct, Append
+\newcommand{\annMessAppendPunct}{%
+  \renewcommand{\annMessTail}{\appendMessage\unskip\annMessagePunct}} % Punct, Append
 
 
-% annotation parsers:
+% default annotation parsers:
 
-\newcommand{\criticalRemark}[6][]{
+\newcommand{\criticalRemark}[6][]{%
+\saveexpandmode\expandarg
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
@@ -392,7 +422,7 @@
     \renewcommand{\currentBeat}{#3}
       \item{\CRname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-        {\postannType\preannArg{\annMeasure{M.#2,}}}
+        {\postannType\preannArg{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
           {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
@@ -400,14 +430,15 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{{\prependMessageFirst\prependMessage{\annMessageParse}\unskip\annMessTail}\unskip}
+      \preannArg{\annMessage{{%
+        \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
 
-\newcommand{\musicalIssue}[6][]{
+\newcommand{\musicalIssue}[6][]{%
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
@@ -415,7 +446,7 @@
     \renewcommand{\currentBeat}{#3}
       \item{\MIname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-        {\postannType\preannArg{\annMeasure{M.#2,}}}
+        {\postannType\preannArg{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
           {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
@@ -423,14 +454,15 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
+      \preannArg{\annMessage{{%
+        \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
 
-\newcommand{\lilypondIssue}[6][]{
+\newcommand{\lilypondIssue}[6][]{%
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
@@ -438,7 +470,7 @@
     \renewcommand{\currentBeat}{#3}
       \item{\LIname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-        {\postannType\preannArg{\annMeasure{M.#2,}}}
+        {\postannType\preannArg{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
           {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
@@ -446,14 +478,15 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
+      \preannArg{\annMessage{{%
+        \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
 
-\newcommand{\question}[6][]{
+\newcommand{\question}[6][]{%
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
@@ -461,7 +494,7 @@
     \renewcommand{\currentBeat}{#3}
       \item{\Qname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-        {\postannType\preannArg{\annMeasure{M.#2,}}}
+        {\postannType\preannArg{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
           {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
@@ -469,14 +502,15 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
+      \preannArg{\annMessage{{%
+        \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
 
-\newcommand{\todo}[6][]{
+\newcommand{\todo}[6][]{%
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
@@ -484,7 +518,7 @@
     \renewcommand{\currentBeat}{#3}
       \item{\TDname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-        {\postannType\preannArg{\annMeasure{M.#2,}}}
+        {\postannType\preannArg{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
           {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
@@ -492,11 +526,21 @@
         {\annBeat{beat #3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
-      \preannArg{\annMessage{{\prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
+      \preannArg{\annMessage{{%
+        \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
+}
+
+
+% for custom annotations // TODO this is a stub
+\newcommand{\customann}[2][]{%
+  \IfSubStr{#1}{option}{%
+    \IfSubStr{#1}{second}{the result of both}{just the first}}
+    {\IfSubStr{#1}{second}{just the second}{nothing satisfied}}
+#2
 }
 
 \endinput
