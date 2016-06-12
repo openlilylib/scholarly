@@ -4,6 +4,7 @@
 \RequirePackage{keyval}
 \RequirePackage{enumitem}
 \RequirePackage{xstring}
+\RequirePackage{stringstrings}
 
 % TODO consider reorganizing package structure (this file master, with subfiles)
 % TODO support more formats, such as two-columns per annotation (e.g. Message | the message )
@@ -14,6 +15,7 @@
 % TODO test on engines other than pdflatex
 % TODO can't setEnumOptions inside custom definitions
 % TODO hideAnnTypes conflict with additional customfinal definitions (requires explicit redef)
+% TODO support not-yet-defined footnote names
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -107,12 +109,30 @@
 
 \newcommand{\inlineParams}{%
   \renewcommand{\skipornot}{, }
-  \renewcommand{\typeSkipornot}{} % TODO check these behaviors
 }
 
 \newcommand{\stackedParams}{%
   \renewcommand{\skipornot}{\letAnnBreakornot}
-  \renewcommand{\typeSkipornot}{\letAnnBreakornot} % TODO make this check if hideAnnTypes exists already
+}
+
+
+% hide or show annotation types:
+
+\newcommand{\hideAnnTypes}{%
+  \renewcommand{\CRname}{}
+  \renewcommand{\MIname}{}
+  \renewcommand{\LIname}{}
+  \renewcommand{\Qname}{}
+  \renewcommand{\TDname}{}
+  \renewcommand{\typeSkipornot}{}
+}
+
+\newcommand{\showAnnTypes}{%
+  \renewcommand{\CRname}{\annType{(Critical Remark) }} % if the user defines a ','
+  \renewcommand{\MIname}{\annType{(Musical Issue) }}   % for \postannType, they must
+  \renewcommand{\LIname}{\annType{(LilyPond Issue) }}  % also \unskip to remove the
+  \renewcommand{\Qname}{\annType{(Question) }}         % cushion here.
+  \renewcommand{\TDname}{\annType{(To Do) }}
 }
 
 
@@ -132,15 +152,15 @@
   \newcommand{\LIname}{\annType{(LilyPond Issue) }}
   \newcommand{\Qname}{\annType{(Question) }}
   \newcommand{\TDname}{\annType{(TODO) }}
-  \newcommand{\annStyleMode}{\customdraftornot}
+  \newcommand{\annStyleMode}{\customdraftornot}% must be *last*
 \else
   \inlineParams % default, can be overwritten in custom or global settings
-  \newcommand{\annStyleMode}{\customfinalornot}
   \newcommand{\CRname}{\annType{}}
   \newcommand{\MIname}{\annType{}}
   \newcommand{\LIname}{\annType{}}
   \newcommand{\Qname}{\annType{}}
   \newcommand{\TDname}{\annType{}}
+  \newcommand{\annStyleMode}{\customfinalornot}% must be *last*
 \fi
 
 
@@ -269,31 +289,11 @@
 % NOTE - marks/text are only linked to their respective partners
 % (suffixes `One`, `Two`, etc. aren't don't influence the actual order)
 
-\newcommand{\fnOne}{\unskip\footnote{\lyfnonetext} }
-\newcommand{\fnTwo}{\unskip\footnote{\lyfntwotext} }
-\newcommand{\fnThree}{\unskip\footnote{\lyfnthreetext} }
-\newcommand{\fnFour}{\unskip\footnote{\lyfnfourtext} }
-\newcommand{\fnFive}{\unskip\footnote{\lyfnfivetext} }
-
-
-% hide or show annotation types manually
-
-\newcommand{\hideAnnTypes}{%
-  \renewcommand{\CRname}{}
-  \renewcommand{\MIname}{}
-  \renewcommand{\LIname}{}
-  \renewcommand{\Qname}{}
-  \renewcommand{\TDname}{}
-  \renewcommand{\typeSkipornot}{}
-}
-
-\newcommand{\showAnnTypes}{%
-  \renewcommand{\CRname}{\annType{(Critical Remark) }} % if the user defines a ','
-  \renewcommand{\MIname}{\annType{(Musical Issue) }}   % for \postannType, they must
-  \renewcommand{\LIname}{\annType{(LilyPond Issue) }}  % also \unskip to remove the
-  \renewcommand{\Qname}{\annType{(Question) }}         % cushion here.
-  \renewcommand{\TDname}{\annType{(To Do) }}
-}
+\def\fnOne{\unskip\footnote{\lyfnonetext} }
+\def\fnTwo{\unskip\footnote{\lyfntwotext} }
+\def\fnThree{\unskip\footnote{\lyfnthreetext} }
+\def\fnFour{\unskip\footnote{\lyfnfourtext} }
+\def\fnFive{\unskip\footnote{\lyfnfivetext} }
 
 
 % default prefixes/names:
@@ -420,7 +420,8 @@
   \testMessagePunct
     \renewcommand{\currentMeasure}{#3}
     \renewcommand{\currentBeat}{#3}
-      \item{\CRname\typeSkipornot
+      \item{\begingroup\linepenalty=10000
+      \CRname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
         {\postannType\preannArg{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -433,7 +434,7 @@
       \preannArg{\annMessage{{%
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
+        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}\endgroup}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
@@ -468,7 +469,8 @@
   \testMessagePunct
     \renewcommand{\currentMeasure}{#2}
     \renewcommand{\currentBeat}{#3}
-      \item{\LIname\typeSkipornot
+      \item{\begingroup\linepenalty=10000
+      \LIname\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
         {\postannType\preannArg{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -479,9 +481,10 @@
       \ifthenelse{\equal{#4}{}}{\unskip{}}{\preannArg\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}{\preannArg\annAffected{#5}\skipornot}
       \preannArg{\annMessage{{%
+      \linepenalty=1000
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
-        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
+        {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}\endgroup}
     \renewcommand{\previousMeasure}{#2}
     \renewcommand{\previousBeat}{#3}
 }
