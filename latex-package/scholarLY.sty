@@ -6,6 +6,7 @@
 \RequirePackage{xstring}
 \RequirePackage{stringstrings}
 \RequirePackage{verbatim}% for comments
+\RequirePackage{titlecaps}% for custom names
 
 
 \begin{comment}
@@ -24,6 +25,7 @@ compiles with:
 - messages not accepting `uppercase`, though other message styles working.
 - support not-yet-defined footnote names
 - postannType; vspace (after) doesn't behave as expected
+- check need for titlecap in custom annotation names
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 \end{comment}
 
@@ -446,6 +448,17 @@ compiles with:
 
 \newcommand{\annMessAppendPunct}{%
   \renewcommand{\annMessTail}{\appendMessage\unskip\annMessagePunct}} % Punct, Append
+
+
+% generic annotation, custom type: name parser
+\def\customName{
+  \StrCut{\lyanntype}{-}\csA\csB% remove first hyphen, if one
+  \def\expandedonce{\csA{} \csB}
+    \StrCut{\expandedonce}{-}\csC\csD% remove second hyphen, if two
+    \def\expandedtwice{\csC{} \csD}
+      \StrCut{\expandedtwice}{-}\csE\csF% remove third hyphen, if three
+  \titlecap{\csE{} \csF}% result
+}
 
 
 % default annotation parsers: for stacked and inline modes that can be easily
