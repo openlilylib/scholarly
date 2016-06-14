@@ -17,15 +17,11 @@ compiles with:
 \xelatex?
 
 % TODO:
-- parse custom annotation names
-- prevent ann message breaking?
 - consider reorganizing package structure (this file master, with subfiles)
-- support any kind of expansion to custom formats
 - provide labels (which can be easily redefined) for user-customized templates
-- messages not accepting `uppercase`, though other message styles working.
 - support not-yet-defined footnote names
-- postannType; vspace (after) doesn't behave as expected
 - check need for titlecap in custom annotation names
+- types shouldn't always be parenthesized
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 \end{comment}
 
@@ -245,6 +241,9 @@ compiles with:
 %
 % ex: \annotations{annotate.annotations.inp}
 
+\newcommand{\customannotations}[1]
+{\input{#1}}
+
 
 %% ~ ~ ~ KEY / VALUE arguments ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -255,6 +254,7 @@ compiles with:
 \define@key{scholarLYannotations}{context-id}{\def\lycontextid{#1}}
 \define@key{scholarLYannotations}{location}{\edef\lylocation{\detokenize{#1}}}
 \define@key{scholarLYannotations}{message}{\def\lymessage{#1}}
+\define@key{scholarLYannotations}{type}{\def\lyanntype{#1}}
 \define@key{scholarLYannotations}{context}{\def\lycontext{#1}}
 \define@key{scholarLYannotations}{fn-one-text}{\def\lyfnonetext{#1}}
 \define@key{scholarLYannotations}{fn-two-text}{\def\lyfntwotext{#1}}
@@ -450,14 +450,15 @@ compiles with:
   \renewcommand{\annMessTail}{\appendMessage\unskip\annMessagePunct}} % Punct, Append
 
 
-% generic annotation, custom type: name parser
+% generic annotation, custom type: name parser:
+
 \def\customName{
-  \StrCut{\lyanntype}{-}\csA\csB% remove first hyphen, if one
-  \def\expandedonce{\csA{} \csB}
-    \StrCut{\expandedonce}{-}\csC\csD% remove second hyphen, if two
-    \def\expandedtwice{\csC{} \csD}
-      \StrCut{\expandedtwice}{-}\csE\csF% remove third hyphen, if three
-  \titlecap{\csE{} \csF}% result
+  \StrCut{\lyanntype}{-}\splitA\splitB% remove first hyphen, if one
+  \def\expandedonce{\splitA{} \splitB}
+    \StrCut{\expandedonce}{-}\splitC\splitD% remove second hyphen, if two
+    \def\expandedtwice{\splitC{} \splitD}
+      \StrCut{\expandedtwice}{-}\splitE\splitF% remove third hyphen, if three
+  \titlecap{\splitE{} \splitF}% result
 }
 
 
@@ -487,8 +488,8 @@ compiles with:
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
-    \def\previousMeasure{#2}
-    \def\previousBeat{#3}
+  \def\previousMeasure{#2}
+  \def\previousBeat{#3}
 }
 
 \newcommand{\musicalIssue}[6][]{%
@@ -513,8 +514,8 @@ compiles with:
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
-    \def\previousMeasure{#2}
-    \def\previousBeat{#3}
+  \def\previousMeasure{#2}
+  \def\previousBeat{#3}
 }
 
 \newcommand{\lilypondIssue}[6][]{%
@@ -539,11 +540,11 @@ compiles with:
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
-    \def\previousMeasure{#2}
-    \def\previousBeat{#3}
+  \def\previousMeasure{#2}
+  \def\previousBeat{#3}
 }
 
-\newcommand{\question}[6][]{%
+\newcommand{\annotateQuestion}[6][]{%
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
@@ -565,11 +566,11 @@ compiles with:
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
-    \def\previousMeasure{#2}
-    \def\previousBeat{#3}
+  \def\previousMeasure{#2}
+  \def\previousBeat{#3}
 }
 
-\newcommand{\todo}[6][]{%
+\newcommand{\annotateTodo}[6][]{%
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
@@ -591,8 +592,8 @@ compiles with:
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
-    \def\previousMeasure{#2}
-    \def\previousBeat{#3}
+  \def\previousMeasure{#2}
+  \def\previousBeat{#3}
 }
 
 \newcommand{\annotation}[6][]{% generic annotation, for custom types
@@ -617,16 +618,67 @@ compiles with:
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
-    \def\previousMeasure{#2}
-    \def\previousBeat{#3}
+  \def\previousMeasure{#2}
+  \def\previousBeat{#3}
 }
 
-% for custom annotations // TODO this is a stub
-\newcommand{\lyannotations}[2][]{% ``lee-annotations''
-  \IfSubStr{#1}{option}{%
-    \IfSubStr{#1}{second}{the result of both}{just the first}}
-    {\IfSubStr{#1}{second}{just the second}{nothing satisfied}}
-#2
+
+\newcommand\useCustomAnn[1]{
+  \renewcommand\criticalRemark[6][]{
+    \resetkeys
+      \setkeys{scholarLYannotations}{##1}
+      \def\currentMeasure{##2}
+      \def\currentBeat{##3}
+      {#1}
+      \def\previousMeasure{##2}
+      \def\previousBeat{##3}
+  }
+  \renewcommand\musicalIssue[6][]{
+    \resetkeys
+      \setkeys{scholarLYannotations}{##1}
+      \def\currentMeasure{##2}
+      \def\currentBeat{##3}
+      {#1}
+      \def\previousMeasure{##2}
+      \def\previousBeat{##3}
+  }
+  \renewcommand\lilypondIssue[6][]{
+    \resetkeys
+      \setkeys{scholarLYannotations}{##1}
+      \def\currentMeasure{##2}
+      \def\currentBeat{##3}
+      {#1}
+      \def\previousMeasure{##2}
+      \def\previousBeat{##3}
+  }
+  \renewcommand\annotateQuestion[6][]{
+    \resetkeys
+      \setkeys{scholarLYannotations}{##1}
+      \def\currentMeasure{##2}
+      \def\currentBeat{##3}
+      {#1}
+      \def\previousMeasure{##2}
+      \def\previousBeat{##3}
+  }
+  \renewcommand\annotateTodo[6][]{
+    \resetkeys
+      \setkeys{scholarLYannotations}{##1}
+      \def\currentMeasure{##2}
+      \def\currentBeat{##3}
+      {#1}
+      \def\previousMeasure{##2}
+      \def\previousBeat{##3}
+  }
+  \renewcommand\annotation[6][]{
+    \resetkeys
+      \setkeys{scholarLYannotations}{##1}
+      \def\currentMeasure{##2}
+      \def\currentBeat{##3}
+      {#1}
+      \def\previousMeasure{##2}
+      \def\previousBeat{##3}
+  }
 }
+
 
 \endinput
