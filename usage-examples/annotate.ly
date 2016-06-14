@@ -1,4 +1,4 @@
-\version "2.19.22"
+\version "2.19.42"
 
 \include "scholarly/package.ly"
 
@@ -14,8 +14,12 @@
 music = \relative c'{
   c4 d e
     \criticalRemark \with {
-      message = "Go \"to \textit{school} \vand \noindent{sit back}!"
+      message = "Go to \\textit{school}\fnOne and\\\ \\noindent{sit back}! This
+        is another sentence\fnThree with a footnote."
       context = "Some staff"
+      fn-one-text = "This is my first nested footnote"
+      fn-two-text = "This is another nested footnote, but it isn't used."
+      ann-footnote = "This is an annotation footnote"
     }
     NoteHead
     f ( |
