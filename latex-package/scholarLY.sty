@@ -1,9 +1,9 @@
 \ProvidesPackage{scholarLY}
 
 \RequirePackage{ifthen}
-\RequirePackage{keyval}
 \RequirePackage{enumitem}
 \RequirePackage{xstring}
+\RequirePackage{keyval}
 \RequirePackage{stringstrings}
 \RequirePackage{verbatim}% for comments
 \RequirePackage{titlecaps}% for custom names
@@ -24,6 +24,7 @@ compiles with:
 - types shouldn't always be parenthesized
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 \end{comment}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -241,9 +242,6 @@ compiles with:
 %
 % ex: \annotations{annotate.annotations.inp}
 
-\newcommand{\customannotations}[1]
-{\input{#1}}
-
 
 %% ~ ~ ~ KEY / VALUE arguments ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
@@ -386,6 +384,312 @@ compiles with:
 
 %% ~ ~ ~ the PARSERS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+%
+%%
+%%%%
+%%%%%
+% FOOTNOTES
+
+% generic \bigmessage is replaced by arg#1 in \annotation parsers
+\def\bigmessage{}% leave this first
+
+
+% determine if there are custom footnotes, by searching arg #1
+
+\def\customFootsParse{
+  \StrCount{\bigmessage}{-text=}[\howmanytext]
+  \StrCount{\bigmessage}{ann-footnote=}[\howmanyannfn]
+  % IF how many ann-footnote = 0
+  \ifthenelse{\equal{\howmanyannfn}{0}}{
+    \ifthenelse{\equal{\howmanytext}{0}}
+      % yes, creat redundant (empty) defs, for testing; remove later
+      {
+      \def\resultOne{}
+      \def\resultTwo{}
+      \def\resultThree{}
+      \def\resultFour{}
+      \def\resultFive{}
+      }
+      % no
+      {\ifthenelse{\equal{\howmanytext}{1}}
+        % yes...
+        {%
+        \StrBehind[1]{\bigmessage}{-text=}[\resultOne]
+        \def\resultTwo{}
+        \def\resultThree{}
+        \def\resultFour{}
+        \def\resultFive{}
+        }
+        % no
+        {\ifthenelse{\equal{\howmanytext}{2}}
+          % yes
+          {%
+          \StrBetween[1,2]{\bigmessage}{-text=}{fn-}[\resultOne]
+            \StrGobbleRight{\resultOne}{2}[\resultOne]
+          \StrBehind[2]{\bigmessage}{-text=}[\resultTwo]
+          \def\resultThree{}
+          \def\resultFour{}
+          \def\resultFive{}
+          }
+          % no
+          {\ifthenelse{\equal{\howmanytext}{3}}
+            % yes
+            {%
+            \StrBetween[1,2]{\bigmessage}{-text=}{fn-}[\resultOne]
+              \StrGobbleRight{\resultOne}{2}[\resultOne]% removes comma
+            \StrBetween[2,3]{\bigmessage}{-text=}{fn-}[\resultTwo]
+              \StrGobbleRight{\resultTwo}{2}[\resultTwo]% same...
+            \StrBehind[3]{\bigmessage}{-text=}[\resultThree]
+            \def\resultFour{}
+            \def\resultFive{}
+            }
+            % no
+            {\ifthenelse{\equal{\howmanytext}{4}}
+              % yes
+              {%
+              \StrBetween[1,2]{\bigmessage}{-text=}{fn-}[\resultOne]
+                \StrGobbleRight{\resultOne}{2}[\resultOne]% removes comma
+              \StrBetween[2,3]{\bigmessage}{-text=}{fn-}[\resultTwo]
+                \StrGobbleRight{\resultTwo}{2}[\resultTwo]% same...
+              \StrBetween[3,4]{\bigmessage}{-text=}{fn-}[\resultThree]
+                \StrGobbleRight{\resultThree}{2}[\resultThree]% same...
+              \StrBehind[4]{\bigmessage}{-text=}[\resultFour]
+              \def\resultFive{}
+              }
+              % no
+              {\ifthenelse{\equal{\howmanytext}{5}}
+                % yes
+                {%
+                \StrBetween[1,2]{\bigmessage}{-text=}{fn-}[\resultOne]
+                  \StrGobbleRight{\resultOne}{2}[\resultOne]% same...
+                \StrBetween[2,3]{\bigmessage}{-text=}{fn-}[\resultTwo]
+                  \StrGobbleRight{\resultTwo}{2}[\resultTwo]% same...
+                \StrBetween[3,4]{\bigmessage}{-text=}{fn-}[\resultThree]
+                  \StrGobbleRight{\resultThree}{2}[\resultThree]% same...
+                \StrBetween[4,5]{\bigmessage}{-text=}{fn-}[\resultFour]
+                  \StrGobbleRight{\resultFour}{2}[\resultFour]% same...
+                \StrBehind[5]{\bigmessage}{-text=}[\resultFive]
+                }
+                % no
+                {}% stop here? yes while it is only in proof stage
+              }
+            }
+          }
+        }
+      }
+    }
+    % else... there IS an ann-footnote
+    {\ifthenelse{\equal{\howmanytext}{0}}
+      % yes
+      {%
+      \def\resultOne{}
+      \def\resultTwo{}
+      \def\resultThree{}
+      \def\resultFour{}
+      \def\resultFive{}
+      }
+      % no
+      {\ifthenelse{\equal{\howmanytext}{1}}
+        % yes
+        {%
+        \StrBetween[1,1]{\bigmessage}{-text=}{, ann-footnote}[\resultOne]
+        \def\resultTwo{}
+        \def\resultThree{}
+        \def\resultFour{}
+        \def\resultFive{}
+        }
+        % no
+        {\ifthenelse{\equal{\howmanytext}{2}}
+          % yes
+          {%
+          \StrBetween[1,1]{\bigmessage}{-text=}{, fn-}[\resultOne]
+          \StrBetween[2,1]{\bigmessage}{-text=}{, ann-footnote}[\resultTwo]
+          \def\resultThree{}
+          \def\resultFour{}
+          \def\resultFive{}
+          }
+          % no
+          {\ifthenelse{\equal{\howmanytext}{3}}
+            % yes
+            {%
+            \StrBetween[1,1]{\bigmessage}{-text=}{, fn-}[\resultOne]
+            \StrBetween[2,2]{\bigmessage}{-text=}{, fn-}[\resultTwo]
+            \StrBetween[3,1]{\bigmessage}{-text=}{, ann-footnote}[\resultThree]
+            \def\resultFour{}
+            \def\resultFive{}
+            }
+            % no
+            {\ifthenelse{\equal{\howmanytext}{4}}
+              % yes
+              {%
+              \StrBetween[1,1]{\bigmessage}{-text=}{, fn-}[\resultOne]
+              \StrBetween[2,2]{\bigmessage}{-text=}{, fn-}[\resultTwo]
+              \StrBetween[3,3]{\bigmessage}{-text=}{, fn-}[\resultThree]
+              \StrBetween[4,1]{\bigmessage}{-text=}{, ann-footnote}[\resultFour]
+              \def\resultFive{}
+              }
+              % no
+              {\ifthenelse{\equal{\howmanytext}{5}}
+                % yes
+                {%
+                \StrBetween[1,1]{\bigmessage}{-text=}{, fn-}[\resultOne]
+                \StrBetween[2,2]{\bigmessage}{-text=}{, fn-}[\resultTwo]
+                \StrBetween[3,3]{\bigmessage}{-text=}{, fn-}[\resultThree]
+                \StrBetween[4,4]{\bigmessage}{-text=}{, fn-}[\resultFour]
+                \StrBetween[5,1]{\bigmessage}{-text=}{, ann-footnote}[\resultFive]
+                }
+                % no
+                {%
+                \def\resultOne{}
+                \def\resultTwo{}
+                \def\resultThree{}
+                \def\resultFour{}
+                \def\resultFive{}
+                }% stop here? yes while it is only in proof stage...
+              }
+            }
+          }
+        }
+      }
+    }
+}
+
+
+% define the macro names for custom footnotes:
+
+\def\extractFNnames{%
+  \expandarg\StrCount{\bigmessage}{fn-}[\theFNnum]
+  \ifthenelse{\equal{\theFNnum}{0}}
+    {%
+    \def\resultOneMacro{}
+    \def\resultTwoMacro{}
+    \def\resultThreeMacro{}
+    \def\resultFourMacro{}
+    \def\resultFiveMacro{}
+    }% don't make any macro names
+    {\ifthenelse{\equal{\theFNnum}{1}}
+      {%
+      \StrBetween{\bigmessage}{fn-}{-text=}[\resultOneMacro]
+        \StrDel{\resultOneMacro}{-}[\resultOneMacro]% remove hyphens
+      \def\resultTwoMacro{}
+      \def\resultThreeMacro{}
+      \def\resultFourMacro{}
+      \def\resultFiveMacro{}
+      }
+      {\ifthenelse{\equal{\theFNnum}{2}}
+        {%
+        \StrBetween{\bigmessage}{fn-}{-text=}[\resultOneMacro]
+          \StrDel{\resultOneMacro}{-}[\resultOneMacro]% remove hyphens
+        \StrBetween[2,2]{\bigmessage}{fn-}{-text=}[\resultTwoMacro]
+          \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]% remove hyphens
+        \def\resultThreeMacro{}
+        \def\resultFourMacro{}
+        \def\resultFiveMacro{}
+        }
+        {\ifthenelse{\equal{\theFNnum}{3}}
+          {%
+          \StrBetween{\bigmessage}{fn-}{-text=}[\resultOneMacro]
+            \StrDel{\resultOneMacro}{-}[\resultOneMacro]% remove hyphens
+          \StrBetween[2,2]{\bigmessage}{fn-}{-text=}[\resultTwoMacro]
+            \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]% remove hyphens
+          \StrBetween[3,3]{\bigmessage}{fn-}{-text=}[\resultThreeMacro]
+            \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]% remove hyphens
+          \def\resultFourMacro{}
+          \def\resultFiveMacro{}
+          }
+          {\ifthenelse{\equal{\theFNnum}{4}}
+            {%
+            \StrBetween{\bigmessage}{fn-}{-text=}[\resultOneMacro]
+              \StrDel{\resultOneMacro}{-}[\resultOneMacro]% remove hyphens
+            \StrBetween[2,2]{\bigmessage}{fn-}{-text=}[\resultTwoMacro]
+              \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]% remove hyphens
+            \StrBetween[3,3]{\bigmessage}{fn-}{-text=}[\resultThreeMacro]
+              \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]% remove hyphens
+            \StrBetween[4,4]{\bigmessage}{fn-}{-text=}[\resultFourMacro]
+              \StrDel{\resultFourMacro}{-}[\resultFourMacro]% remove hyphens
+            \def\resultFiveMacro{}
+            }
+            {\ifthenelse{\equal{\theFNnum}{5}}
+              {%
+              \StrBetween{\bigmessage}{fn-}{-text=}[\resultOneMacro]
+                \StrDel{\resultOneMacro}{-}[\resultOneMacro]% remove hyphens
+              \StrBetween[2,2]{\bigmessage}{fn-}{-text=}[\resultTwoMacro]
+                \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]% remove hyphens
+              \StrBetween[3,3]{\bigmessage}{fn-}{-text=}[\resultThreeMacro]
+                \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]% remove hyphens
+              \StrBetween[4,4]{\bigmessage}{fn-}{-text=}[\resultFourMacro]
+                \StrDel{\resultFourMacro}{-}[\resultFourMacro]% remove hyphens
+              \StrBetween[5,5]{\bigmessage}{fn-}{-text=}[\resultFiveMacro]
+                \StrDel{\resultFiveMacro}{-}[\resultFiveMacro]% remove hyphens
+              }
+              {there must be too many}% NOTE this is a STUB
+            }
+          }
+        }
+      }
+    }
+}
+
+
+% create the macros that are used in the messages:
+
+\def\makeFNmacros{
+  \ifthenelse{\equal{\theFNnum}{0}}
+    {}% don't make any macros
+    {\ifthenelse{\equal{\theFNnum}{1}}
+      % yes
+      {%
+      \expandafter\def\csname fn\resultOneMacro\endcsname{\footnote{\resultOne} }
+      }
+      % no
+      {\ifthenelse{\equal{\theFNnum}{2}}
+        % yes
+        {%
+        \expandafter\def\csname fn\resultOneMacro\endcsname{\footnote{\resultOne} }
+        \expandafter\def\csname fn\resultTwoMacro\endcsname{\footnote{\resultTwo} }
+        }
+        % no
+        {\ifthenelse{\equal{\theFNnum}{3}}
+          % yes
+          {%
+          \expandafter\def\csname fn\resultOneMacro\endcsname{\footnote{\resultOne} }
+          \expandafter\def\csname fn\resultTwoMacro\endcsname{\footnote{\resultTwo} }
+          \expandafter\def\csname fn\resultThreeMacro\endcsname{\footnote{\resultThree} }
+          }
+          % no
+          {\ifthenelse{\equal{\theFNnum}{4}}
+            % yes
+            {%
+            \expandafter\def\csname fn\resultOneMacro\endcsname{\footnote{\resultOne} }
+            \expandafter\def\csname fn\resultTwoMacro\endcsname{\footnote{\resultTwo} }        \expandafter\def\csname fn\resultThreeMacro\endcsname{\footnote{\resultThree} }
+            \expandafter\def\csname fn\resultFourMacro\endcsname{\footnote{\resultFour} }
+            }
+            % no
+            {\ifthenelse{\equal{\theFNnum}{5}}
+              % yes
+              {%
+              \expandafter\def\csname fn\resultOneMacro\endcsname{\footnote{\resultOne} }
+              \expandafter\def\csname fn\resultTwoMacro\endcsname{\footnote{\resultTwo} }        \expandafter\def\csname fn\resultThreeMacro\endcsname{\footnote{\resultThree} }
+              \expandafter\def\csname fn\resultFourMacro\endcsname{\footnote{\resultFour} }
+              \expandafter\def\csname fn\resultFiveMacro\endcsname{\footnote{\resultFive} }
+              }
+              % no
+              {}%stop here? yes, while it is only in proof stage
+            }
+          }
+        }
+      }
+    }
+}
+
+
+
+%
+%%
+%%%%
+%%%%%
+% MESSAGES
+
 % test the message for punctuations, and store the result:
 
 \def\annMessagePunct{}% default, no punctuation
@@ -462,6 +766,12 @@ compiles with:
 }
 
 
+%
+%%
+%%%%
+%%%%%
+% ANNOTATIONS
+
 % default annotation parsers: for stacked and inline modes that can be easily
 % hacked/reconfigured to custom designs.
 
@@ -470,6 +780,10 @@ compiles with:
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
+    \edef\bigmessage{\detokenize{#1}}
+    \customFootsParse
+    \extractFNnames
+    \makeFNmacros
     \def\currentMeasure{#2}
     \def\currentBeat{#3}
       \item{\preannType\lytypePfx\CRname\postannType\typeSkipornot
@@ -496,6 +810,10 @@ compiles with:
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
+  \edef\bigmessage{\detokenize{#1}}
+  \customFootsParse
+  \extractFNnames
+  \makeFNmacros
   \def\currentMeasure{#2}
   \def\currentBeat{#3}
       \item{\preannType\lytypePfx\MIname\postannType\typeSkipornot
@@ -522,6 +840,10 @@ compiles with:
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
+  \edef\bigmessage{\detokenize{#1}}
+  \customFootsParse
+  \extractFNnames
+  \makeFNmacros
   \def\currentMeasure{#2}
   \def\currentBeat{#3}
       \item{\preannType\lytypePfx\LIname\postannType\typeSkipornot
@@ -548,6 +870,10 @@ compiles with:
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
+  \edef\bigmessage{\detokenize{#1}}
+  \customFootsParse
+  \extractFNnames
+  \makeFNmacros
   \def\currentMeasure{#2}
   \def\currentBeat{#3}
       \item{\preannType\lytypePfx\Qname\postannType\typeSkipornot
@@ -574,6 +900,10 @@ compiles with:
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
+  \edef\bigmessage{\detokenize{#1}}
+  \customFootsParse
+  \extractFNnames
+  \makeFNmacros
   \def\currentMeasure{#2}
   \def\currentBeat{#3}
       \item{\preannType\lytypePfx\TDname\postannType\typeSkipornot
@@ -600,6 +930,10 @@ compiles with:
 \resetkeys
   \setkeys{scholarLYannotations}{#1}
   \testMessagePunct
+  \edef\bigmessage{\detokenize{#1}}
+  \customFootsParse
+  \extractFNnames
+  \makeFNmacros
   \def\currentMeasure{#2}
   \def\currentBeat{#3}
       \item{\preannType\lytypePfx\customName\postannType\typeSkipornot
@@ -622,6 +956,15 @@ compiles with:
   \def\previousBeat{#3}
 }
 
+
+% for the entirely custom command: \useCustomAnn{ ... custom stuff ... }
+% NOTE this is really just a placeholder right now..
+
+\newcommand{\customannotations}[3]{
+  \expandafter{#1}
+  \input{#2}
+  \expandafter{#3}
+}
 
 \newcommand\useCustomAnn[1]{
   \renewcommand\criticalRemark[6][]{
@@ -680,5 +1023,9 @@ compiles with:
   }
 }
 
+% Ignore unknown keys ... this must be last
+\makeatletter
+\let\KV@errx\@gobble
+\makeatother
 
 \endinput
