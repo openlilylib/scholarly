@@ -26,6 +26,9 @@ compiles with:
 \end{comment}
 
 
+\makeatletter
+\let\KV@errx@ORI\KV@errx   % Save original error handling
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OPTIONS ... the customizable part of the package
@@ -254,11 +257,6 @@ compiles with:
 \define@key{scholarLYannotations}{message}{\def\lymessage{#1}}
 \define@key{scholarLYannotations}{type}{\def\lyanntype{#1}}
 \define@key{scholarLYannotations}{context}{\def\lycontext{#1}}
-\define@key{scholarLYannotations}{fn-one-text}{\def\lyfnonetext{#1}}
-\define@key{scholarLYannotations}{fn-two-text}{\def\lyfntwotext{#1}}
-\define@key{scholarLYannotations}{fn-three-text}{\def\lyfnthreetext{#1}}
-\define@key{scholarLYannotations}{fn-four-text}{\def\lyfnfourtext{#1}}
-\define@key{scholarLYannotations}{fn-five-text}{\def\lyfnfivetext{#1}}
 \define@key{scholarLYannotations}{ann-footnote}{\def\lyannfootnote{#1}}
 
 \setkeys{scholarLYannotations}{% default values
@@ -271,11 +269,6 @@ compiles with:
   type = no value given,
   message = no value given,
   context = no value given,
-  fn-one-text = {\color{red} Oops! Nothing has been entered for this footnote.},
-  fn-two-text = {\color{red} Oops! Nothing has been entered for this footnote.},
-  fn-three-text = {\color{red} Oops! Nothing has been entered for this footnote.},
-  fn-four-text = {\color{red} Oops! Nothing has been entered for this footnote.},
-  fn-five-text = {\color{red} Oops! Nothing has been entered for this footnote.},
   ann-footnote = {no value given}
 }
 
@@ -290,11 +283,6 @@ compiles with:
     type = no value given,
     message = no value given,
     context = no value given,
-    fn-one-text = {\color{red} Oops! Nothing has been entered for this footnote.},
-    fn-two-text = {\color{red} Oops! Nothing has been entered for this footnote.},
-    fn-three-text = {\color{red} Oops! Nothing has been entered for this footnote.},
-    fn-four-text = {\color{red} Oops! Nothing has been entered for this footnote.},
-    fn-five-text = {\color{red} Oops! Nothing has been entered for this footnote.},
     ann-footnote = {no value given}
   }
 }
@@ -304,16 +292,6 @@ compiles with:
 
 
 %% ~ ~ ~ more TOGGLES ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
-% commands for linking footnotes to text
-% NOTE - marks/text are only linked to their respective partners
-% (suffixes `One`, `Two`, etc. aren't don't influence the actual order)
-
-\def\fnOne{\unskip\footnote{\lyfnonetext} }
-\def\fnTwo{\unskip\footnote{\lyfntwotext} }
-\def\fnThree{\unskip\footnote{\lyfnthreetext} }
-\def\fnFour{\unskip\footnote{\lyfnfourtext} }
-\def\fnFive{\unskip\footnote{\lyfnfivetext} }
 
 
 % default prefixes/names:
@@ -391,7 +369,7 @@ compiles with:
 % FOOTNOTES
 
 % generic \bigmessage is replaced by arg#1 in \annotation parsers
-\def\bigmessage{}% leave this first
+%\def\bigmessage{}% leave this first
 
 
 % determine if there are custom footnotes, by searching arg #1
@@ -502,8 +480,8 @@ compiles with:
         {\ifthenelse{\equal{\howmanytext}{2}}
           % yes
           {%
-          \StrBetween[1,1]{\bigmessage}{-text=}{, fn-}[\resultOne]
-          \StrBetween[2,1]{\bigmessage}{-text=}{, ann-footnote}[\resultTwo]
+          \StrBetween[1,2]{\bigmessage}{-text=}{fn-}[\resultOne]
+          \StrBetween[2,1]{\bigmessage}{-text=}{ann-footnote}[\resultTwo]
           \def\resultThree{}
           \def\resultFour{}
           \def\resultFive{}
@@ -512,9 +490,9 @@ compiles with:
           {\ifthenelse{\equal{\howmanytext}{3}}
             % yes
             {%
-            \StrBetween[1,1]{\bigmessage}{-text=}{, fn-}[\resultOne]
-            \StrBetween[2,2]{\bigmessage}{-text=}{, fn-}[\resultTwo]
-            \StrBetween[3,1]{\bigmessage}{-text=}{, ann-footnote}[\resultThree]
+            \StrBetween[1,2]{\bigmessage}{-text=}{fn-}[\resultOne]
+            \StrBetween[2,3]{\bigmessage}{-text=}{fn-}[\resultTwo]
+            \StrBetween[3,1]{\bigmessage}{-text=}{ ann-footnote}[\resultThree]
             \def\resultFour{}
             \def\resultFive{}
             }
@@ -522,9 +500,9 @@ compiles with:
             {\ifthenelse{\equal{\howmanytext}{4}}
               % yes
               {%
-              \StrBetween[1,1]{\bigmessage}{-text=}{, fn-}[\resultOne]
-              \StrBetween[2,2]{\bigmessage}{-text=}{, fn-}[\resultTwo]
-              \StrBetween[3,3]{\bigmessage}{-text=}{, fn-}[\resultThree]
+              \StrBetween[1,2]{\bigmessage}{-text=}{, fn-}[\resultOne]
+              \StrBetween[2,3]{\bigmessage}{-text=}{, fn-}[\resultTwo]
+              \StrBetween[3,4]{\bigmessage}{-text=}{, fn-}[\resultThree]
               \StrBetween[4,1]{\bigmessage}{-text=}{, ann-footnote}[\resultFour]
               \def\resultFive{}
               }
@@ -532,10 +510,10 @@ compiles with:
               {\ifthenelse{\equal{\howmanytext}{5}}
                 % yes
                 {%
-                \StrBetween[1,1]{\bigmessage}{-text=}{, fn-}[\resultOne]
-                \StrBetween[2,2]{\bigmessage}{-text=}{, fn-}[\resultTwo]
-                \StrBetween[3,3]{\bigmessage}{-text=}{, fn-}[\resultThree]
-                \StrBetween[4,4]{\bigmessage}{-text=}{, fn-}[\resultFour]
+                \StrBetween[1,2]{\bigmessage}{-text=}{, fn-}[\resultOne]
+                \StrBetween[2,3]{\bigmessage}{-text=}{, fn-}[\resultTwo]
+                \StrBetween[3,4]{\bigmessage}{-text=}{, fn-}[\resultThree]
+                \StrBetween[4,5]{\bigmessage}{-text=}{, fn-}[\resultFour]
                 \StrBetween[5,1]{\bigmessage}{-text=}{, ann-footnote}[\resultFive]
                 }
                 % no
@@ -631,6 +609,7 @@ compiles with:
 }
 
 
+
 % create the macros that are used in the messages:
 
 \def\makeFNmacros{
@@ -695,7 +674,7 @@ compiles with:
 \def\annMessagePunct{}% default, no punctuation
 
 \newcommand{\testMessagePunct}{%
-  \saveexpandmode\expandarg
+  %\saveexpandmode\expandarg
     \IfEndWith{\lymessage}{.}
       % true
       {\def\annMessagePunct{.}}
@@ -711,7 +690,7 @@ compiles with:
           {\def\annMessagePunct{\unskip}}
         }
       }
-  \restoreexpandmode
+  %\restoreexpandmode
 }
 
 
@@ -719,7 +698,7 @@ compiles with:
 % TODO unskip ONLY if prependMessage is NOT equal to {}? Make user set that?
 
 \newcommand{\annMessageParse}{%
-  \saveexpandmode\expandarg
+  %\saveexpandmode\expandarg
     \IfEndWith{\lymessage}{.}
       % true; the user set a period for punctuation
       {\unskip\StrGobbleRight{\lymessage}{1}\nobreak}
@@ -739,7 +718,7 @@ compiles with:
               {\unskip{\lymessage}\nobreak}}}
         }
       }
-  \restoreexpandmode
+  %\restoreexpandmode
 }
 
 
@@ -775,18 +754,30 @@ compiles with:
 % default annotation parsers: for stacked and inline modes that can be easily
 % hacked/reconfigured to custom designs.
 
+\let\KV@errx@ORI\KV@errx% store original error handling
+
+
+% critical remark:
+
 \newcommand{\criticalRemark}[6][]{%
-\saveexpandmode\expandarg
-\resetkeys
-  \setkeys{scholarLYannotations}{#1}
-  \testMessagePunct
-    \edef\bigmessage{\detokenize{#1}}
-    \customFootsParse
-    \extractFNnames
-    \makeFNmacros
+  % set KEYS, defaults, then new from #1
+    \resetkeys
+      \let\KV@errx\@gobble% ignore unknown keys
+      \setkeys{scholarLYannotations}{#1}
+      \let\KV@errx\KV@errx@ORI% Restore original error handling
+  \saveexpandmode\expandarg
+  % PARSE FOOTNOTES
+    \def\bigmessage{#1}% used in fn 1, 2, 3
+      \customFootsParse% parse fn, step one
+      \extractFNnames% parse fn, step two
+      \makeFNmacros% parse fn, step three
+  % TEST MESSAGE PUNCTUATION; DEFINE measure and beat
+    \testMessagePunct
     \def\currentMeasure{#2}
     \def\currentBeat{#3}
-      \item{\preannType\lytypePfx\CRname\postannType\typeSkipornot
+  % APPLY to ITEM
+    \item{
+      \preannType\lytypePfx\CRname\postannType\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
         {\preannArg\lylocationPfx{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -802,21 +793,33 @@ compiles with:
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
-  \def\previousMeasure{#2}
-  \def\previousBeat{#3}
+  % set "previous" mm/beats for use in next annotation
+    \def\previousMeasure{#2}
+    \def\previousBeat{#3}
 }
+
+
+% musical issue:
 
 \newcommand{\musicalIssue}[6][]{%
-\resetkeys
-  \setkeys{scholarLYannotations}{#1}
+% set KEYS, defaults, then new from #1
+  \resetkeys
+    \let\KV@errx\@gobble% ignore unknown keys
+    \setkeys{scholarLYannotations}{#1}
+    \let\KV@errx\KV@errx@ORI% Restore original error handling
+\saveexpandmode\expandarg
+% PARSE FOOTNOTES
+  \def\bigmessage{#1}% used in fn 1, 2, 3
+    \customFootsParse% parse fn, step one
+    \extractFNnames% parse fn, step two
+    \makeFNmacros% parse fn, step three
+% TEST MESSAGE PUNCTUATION; DEFINE measure and beat
   \testMessagePunct
-  \edef\bigmessage{\detokenize{#1}}
-  \customFootsParse
-  \extractFNnames
-  \makeFNmacros
   \def\currentMeasure{#2}
   \def\currentBeat{#3}
-      \item{\preannType\lytypePfx\MIname\postannType\typeSkipornot
+% APPLY to ITEM
+  \item{
+      \preannType\lytypePfx\MIname\postannType\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
         {\preannArg\lylocationPfx{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -832,21 +835,33 @@ compiles with:
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
-  \def\previousMeasure{#2}
-  \def\previousBeat{#3}
+  % set "previous" mm/beats for use in next annotation
+    \def\previousMeasure{#2}
+    \def\previousBeat{#3}
 }
+
+
+% lilypond issue:
 
 \newcommand{\lilypondIssue}[6][]{%
-\resetkeys
-  \setkeys{scholarLYannotations}{#1}
+% set KEYS, defaults, then new from #1
+  \resetkeys
+    \let\KV@errx\@gobble% ignore unknown keys
+    \setkeys{scholarLYannotations}{#1}
+    \let\KV@errx\KV@errx@ORI% Restore original error handling
+\saveexpandmode\expandarg
+% PARSE FOOTNOTES
+  \def\bigmessage{#1}% used in fn 1, 2, 3
+    \customFootsParse% parse fn, step one
+    \extractFNnames% parse fn, step two
+    \makeFNmacros% parse fn, step three
+% TEST MESSAGE PUNCTUATION; DEFINE measure and beat
   \testMessagePunct
-  \edef\bigmessage{\detokenize{#1}}
-  \customFootsParse
-  \extractFNnames
-  \makeFNmacros
   \def\currentMeasure{#2}
   \def\currentBeat{#3}
-      \item{\preannType\lytypePfx\LIname\postannType\typeSkipornot
+% APPLY to ITEM
+  \item{
+      \preannType\lytypePfx\LIname\postannType\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
         {\preannArg\lylocationPfx{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -862,21 +877,33 @@ compiles with:
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
-  \def\previousMeasure{#2}
-  \def\previousBeat{#3}
+  % set "previous" mm/beats for use in next annotation
+    \def\previousMeasure{#2}
+    \def\previousBeat{#3}
 }
+
+
+% question:
 
 \newcommand{\annotateQuestion}[6][]{%
-\resetkeys
-  \setkeys{scholarLYannotations}{#1}
+% set KEYS, defaults, then new from #1
+  \resetkeys
+    \let\KV@errx\@gobble% ignore unknown keys
+    \setkeys{scholarLYannotations}{#1}
+    \let\KV@errx\KV@errx@ORI% Restore original error handling
+\saveexpandmode\expandarg
+% PARSE FOOTNOTES
+  \def\bigmessage{#1}% used in fn 1, 2, 3
+    \customFootsParse% parse fn, step one
+    \extractFNnames% parse fn, step two
+    \makeFNmacros% parse fn, step three
+% TEST MESSAGE PUNCTUATION; DEFINE measure and beat
   \testMessagePunct
-  \edef\bigmessage{\detokenize{#1}}
-  \customFootsParse
-  \extractFNnames
-  \makeFNmacros
   \def\currentMeasure{#2}
   \def\currentBeat{#3}
-      \item{\preannType\lytypePfx\Qname\postannType\typeSkipornot
+% APPLY to ITEM
+  \item{
+      \preannType\lytypePfx\Qname\postannType\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
         {\preannArg\lylocationPfx{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -892,21 +919,33 @@ compiles with:
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
-  \def\previousMeasure{#2}
-  \def\previousBeat{#3}
+  % set "previous" mm/beats for use in next annotation
+    \def\previousMeasure{#2}
+    \def\previousBeat{#3}
 }
+
+
+% todo:
 
 \newcommand{\annotateTodo}[6][]{%
-\resetkeys
-  \setkeys{scholarLYannotations}{#1}
+% set KEYS, defaults, then new from #1
+  \resetkeys
+    \let\KV@errx\@gobble% ignore unknown keys
+    \setkeys{scholarLYannotations}{#1}
+    \let\KV@errx\KV@errx@ORI% Restore original error handling
+\saveexpandmode\expandarg
+% PARSE FOOTNOTES
+  \def\bigmessage{#1}% used in fn 1, 2, 3
+    \customFootsParse% parse fn, step one
+    \extractFNnames% parse fn, step two
+    \makeFNmacros% parse fn, step three
+% TEST MESSAGE PUNCTUATION; DEFINE measure and beat
   \testMessagePunct
-  \edef\bigmessage{\detokenize{#1}}
-  \customFootsParse
-  \extractFNnames
-  \makeFNmacros
   \def\currentMeasure{#2}
   \def\currentBeat{#3}
-      \item{\preannType\lytypePfx\TDname\postannType\typeSkipornot
+% APPLY to ITEM
+  \item{
+      \preannType\lytypePfx\TDname\postannType\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
         {\preannArg\lylocationPfx{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -922,21 +961,33 @@ compiles with:
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
-  \def\previousMeasure{#2}
-  \def\previousBeat{#3}
+  % set "previous" mm/beats for use in next annotation
+    \def\previousMeasure{#2}
+    \def\previousBeat{#3}
 }
+
+
+% generic annotations:
 
 \newcommand{\annotation}[6][]{% generic annotation, for custom types
-\resetkeys
-  \setkeys{scholarLYannotations}{#1}
+% set KEYS, defaults, then new from #1
+  \resetkeys
+    \let\KV@errx\@gobble% ignore unknown keys
+    \setkeys{scholarLYannotations}{#1}
+    \let\KV@errx\KV@errx@ORI% Restore original error handling
+\saveexpandmode\expandarg
+% PARSE FOOTNOTES
+  \def\bigmessage{#1}% used in fn 1, 2, 3
+    \customFootsParse% parse fn, step one
+    \extractFNnames% parse fn, step two
+    \makeFNmacros% parse fn, step three
+% TEST MESSAGE PUNCTUATION; DEFINE measure and beat
   \testMessagePunct
-  \edef\bigmessage{\detokenize{#1}}
-  \customFootsParse
-  \extractFNnames
-  \makeFNmacros
   \def\currentMeasure{#2}
   \def\currentBeat{#3}
-      \item{\preannType\lytypePfx\customName\postannType\typeSkipornot
+% APPLY to ITEM
+  \item{
+      \preannType\lytypePfx\customName\postannType\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
         {\preannArg\lylocationPfx{\annMeasure{\lymeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -952,10 +1003,20 @@ compiles with:
         \prependMessageFirst\prependMessage\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip\annFootnote{\footnote{\lyannfootnote}}}\appendMessageLast}}
-  \def\previousMeasure{#2}
-  \def\previousBeat{#3}
+  % set "previous" mm/beats for use in next annotation
+    \def\previousMeasure{#2}
+    \def\previousBeat{#3}
 }
 
+
+\begin{comment}
+
+. . . . . . . . . . THIS FUNCTION NOT READY YET . . . . . . . . . . .
+
+[The use of custom footnotes causes compilation to fail.
+Function will be updated to handle custom footnotes soon enough.]
+
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 % for the entirely custom command: \useCustomAnn{ ... custom stuff ... }
 % NOTE this is really just a placeholder right now..
@@ -1023,9 +1084,11 @@ compiles with:
   }
 }
 
+\end{comment}
+
 % Ignore unknown keys ... this must be last
-\makeatletter
-\let\KV@errx\@gobble
-\makeatother
+%\makeatletter
+%\let\KV@errx\@gobble
+%\makeatother
 
 \endinput
