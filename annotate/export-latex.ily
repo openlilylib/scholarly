@@ -206,16 +206,8 @@
         (format "    {~a}"
           (assq-ref ann 'grob-type)))
 
-       ;; The actual message
-       ;; Invalid characters are escaped except for intended
-       ;; verbatim LaTeX code
-       (append-to-output-stringlist
-        (format "    {~a}"
-          (indent-multiline-latex-string
-           (assq-ref ann 'message))))
-
        ;; For a custom annotation we have to append
-       ;; the type as 7th argument
+       ;; the type as 6th argument
        (let ((type (assq-ref annotation-type-latex-commands
                      (assq-ref ann 'type))))
          (if (not type)
