@@ -38,6 +38,27 @@
    ;; "return" normalized string
    str)
 
+% Temporary function to strip property values from #< > parts
+#(define (sanitize-prop-value prop)
+   (let ((key (car prop))
+         (value (cdr prop)))
+     (cond
+      ((or (string? value)
+           (eq? key 'grob-type)
+           (eq? key 'type))
+       value)
+      ((ly:grob? value) (assq-ref (ly:grob-property value 'meta) 'name))
+      ((ly:input-location? value)
+       (let ((location (ly:input-file-line-char-column value)))
+         (string-append (car location) " "
+           (string-append
+            (number->string (second location)) ":"
+            (number->string (third location)) ":"
+            (number->string (fourth location))))))
+      ((eq? 'grob-location key) "Can't display grob location yet")
+      ((eq? key 'input-file-name) (car value))
+      (else "Can't display yet"))))
+
 % Return a string list for the "remaining" properties,
 % formatted as a list of key=value arguments
 #(define (format-latex-remaining-properties type props loc-props)
@@ -50,7 +71,7 @@
              (cons (car p)
                (if (ly:music? (cdr p))
                    (format-ly-music (cdr p))
-                   (cdr p))))
+                   (sanitize-prop-value p))))
            props))
          (result '()))
      ;; Start with LaTeX command

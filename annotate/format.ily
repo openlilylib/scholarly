@@ -43,9 +43,8 @@
            (ly:music-property music 'denominator)))
         ((eq? 'KeyChangeEvent (ly:music-property music 'name))
          (format "Key: ~a" (ly:music-property music 'tonic)))
-        (else "<LilyPond Music>"))
+        (else "(LilyPond Music)"))
        "No music found"))
-
 
 % Compose a message from the properties of an annotation
 % The 'cmd' argument should be
