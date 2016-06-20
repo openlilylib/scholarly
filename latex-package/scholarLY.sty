@@ -115,21 +115,11 @@ compiles with:
 
 % hide or show annotation types:
 \newcommand{\annHideType}{%
-  \def\CRname{}
-  \def\MIname{}
-  \def\LIname{}
-  \def\Qname{}
-  \def\TDname{}
-  \def\customName{}
+  \def\annName{}
   \renewcommand{\typeSkipornot}{}
 }
 \newcommand{\annShowType}{%
-  \def\CRname{{\annType\annTypeName }}
-  \def\MIname{{\annType\annTypeName }}
-  \def\LIname{\annType{\annTypeName }}
-  \def\Qname{\annType{\annTypeName }}
-  \def\TDname{\annType{\annTypeName }}
-  \def\customName{\annType{\annTypeName }}
+  \def\annName{{\annType\annTypeName }}
   \ifthenelse{\equal{\skipornot}{\letAnnBreakornot}}% (if stacked params)
     {\renewcommand{\typeSkipornot}{\letAnnBreakornot}}
     {\renewcommand{\typeSkipornot}{}}
@@ -148,21 +138,11 @@ compiles with:
 
 \ifex@draft
   \annStacked % default, can be overwritten in custom or global settings
-  \def\CRname{\annType{\annTypeName }}
-  \def\MIname{\annType{\annTypeName }}
-  \def\LIname{\annType{\annTypeName }}
-  \def\Qname{\annType{\annTypeName }}
-  \def\TDname{\annType{\annTypeName }}
-  \def\customName{\annType{\annTypeName }}
+  \def\annName{\annType{\annTypeName }}
   \renewcommand{\annStyleMode}{\customdraftornot}% must be *last*
 \else
   \annInline % default, can be overwritten in custom or global settings
-  \def\CRname{}
-  \def\MIname{}
-  \def\LIname{}
-  \def\Qname{}
-  \def\TDname{}
-  \def\customName{}
+  \def\annName{}
   \renewcommand{\annStyleMode}{\customfinalornot}% must be *last*
 \fi
 
@@ -731,7 +711,7 @@ compiles with:
     \def\currentBeat{#3}
   % APPLY to ITEM
     \item{
-      \annTypePrePrefix\annTypePfx\CRname\annPostType\typeSkipornot
+      \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annArgsPrePrefix\annLocationPfx{\annMeasure{\sameMeasure}}}
         {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -771,7 +751,7 @@ compiles with:
   \def\currentBeat{#3}
 % APPLY to ITEM
   \item{
-    \annTypePrePrefix\annTypePfx\MIname\annPostType\typeSkipornot
+    \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
     \ifthenelse{\equal{#2}{\previousMeasure}}{\annArgsPrePrefix\annLocationPfx{\annMeasure{\sameMeasure}}}
       {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -812,7 +792,7 @@ compiles with:
   \def\currentBeat{#3}
 % APPLY to ITEM
   \item{
-    \annTypePrePrefix\annTypePfx\LIname\annPostType\typeSkipornot
+    \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
     \ifthenelse{\equal{#2}{\previousMeasure}}{\annArgsPrePrefix\annLocationPfx{\annMeasure{\sameMeasure}}}
       {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -853,7 +833,7 @@ compiles with:
   \def\currentBeat{#3}
 % APPLY to ITEM
   \item{
-    \annTypePrePrefix\annTypePfx\Qname\annPostType\typeSkipornot
+    \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
     \ifthenelse{\equal{#2}{\previousMeasure}}{\annArgsPrePrefix\annLocationPfx{\annMeasure{\sameMeasure}}}
       {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -894,7 +874,7 @@ compiles with:
   \def\currentBeat{#3}
 % APPLY to ITEM
   \item{
-    \annTypePrePrefix\annTypePfx\TDname\annPostType\typeSkipornot
+    \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
     \ifthenelse{\equal{#2}{\previousMeasure}}{\annArgsPrePrefix\annLocationPfx{\annMeasure{\sameMeasure}}}
       {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
@@ -935,7 +915,7 @@ compiles with:
   \def\currentBeat{#3}
 % APPLY to ITEM
   \item{
-    \annTypePrePrefix\annTypePfx\TDname\annPostType\typeSkipornot
+    \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
     \ifthenelse{\equal{#2}{\previousMeasure}}{\annArgsPrePrefix\annLocationPfx{\annMeasure{\sameMeasure}}}
       {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
