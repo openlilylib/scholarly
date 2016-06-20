@@ -119,21 +119,21 @@ compiles with:
 
 % hide or show annotation types:
 \newcommand{\annHideType}{%
-  \renewcommand{\CRname}{}
-  \renewcommand{\MIname}{}
-  \renewcommand{\LIname}{}
-  \renewcommand{\Qname}{}
-  \renewcommand{\TDname}{}
+  \def\CRname{}
+  \def\MIname{}
+  \def\LIname{}
+  \def\Qname{}
+  \def\TDname{}
   \def\customName{}
   \renewcommand{\typeSkipornot}{}
 }
 \newcommand{\annShowType}{%
-  \renewcommand{\CRname}{\annType{(Critical Remark) }} % if the user defines a ','
-  \renewcommand{\MIname}{\annType{(Musical Issue) }}   % for \annPostType, they must
-  \renewcommand{\LIname}{\annType{(LilyPond Issue) }}  % also \unskip to remove the
-  \renewcommand{\Qname}{\annType{(Question) }}         % cushion here.
-  \renewcommand{\TDname}{\annType{(To Do) }}
-  \def\customName{\lytype}% TODO this actually needs to be parsed
+  \def\CRname{\annType{\annTypeName }} % if the user defines a ','
+  \def\MIname{\annType{\annTypeName }}   % for \annPostType, they must
+  \def\LIname{\annType{\annTypeName }}  % also \unskip to remove the
+  \def\Qname{\annType{\annTypeName }}         % cushion here.
+  \def\TDname{\annType{\annTypeName }}
+  \def\customName{\annType{\annTypeName }}% TODO this actually needs to be parsed
   \ifthenelse{\equal{\skipornot}{\letAnnBreakornot}}% (if stacked params)
     {\renewcommand{\typeSkipornot}{\letAnnBreakornot}}
     {\renewcommand{\typeSkipornot}{}}
@@ -152,19 +152,21 @@ compiles with:
 
 \ifex@draft
   \stackedParams % default, can be overwritten in custom or global settings
-  \newcommand{\CRname}{\annType{(Critical Remark) }}
-  \newcommand{\MIname}{\annType{(Musical Issue) }}
-  \newcommand{\LIname}{\annType{(LilyPond Issue) }}
-  \newcommand{\Qname}{\annType{(Question) }}
-  \newcommand{\TDname}{\annType{(TODO) }}
+  \def\CRname{\annType{\annTypeName }}
+  \def\MIname{\annType{\annTypeName }}
+  \def\LIname{\annType{\annTypeName }}
+  \def\Qname{\annType{\annTypeName }}
+  \def\TDname{\annType{\annTypeName }}
+  \def\customName{\annType{\annTypeName }}
   \renewcommand{\annStyleMode}{\customdraftornot}% must be *last*
 \else
   \inlineParams % default, can be overwritten in custom or global settings
-  \newcommand{\CRname}{\annType{}}
-  \newcommand{\MIname}{\annType{}}
-  \newcommand{\LIname}{\annType{}}
-  \newcommand{\Qname}{\annType{}}
-  \newcommand{\TDname}{\annType{}}
+  \def\CRname{\annType{}}
+  \def\MIname{\annType{}}
+  \def\LIname{\annType{}}
+  \def\Qname{\annType{}}
+  \def\TDname{\annType{}}
+  \def\customName{\annType{}}
   \renewcommand{\annStyleMode}{\customfinalornot}% must be *last*
 \fi
 
@@ -684,14 +686,10 @@ compiles with:
   \renewcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage\appendMessage\unskip\annMessagePunct}}}}
 
 
-% generic annotation, custom type: name parser:
-\def\customName{
-  \StrCut{\lyanntype}{-}\splitA\splitB% remove first hyphen, if one
-  \def\expandedonce{\splitA{} \splitB}
-    \StrCut{\expandedonce}{-}\splitC\splitD% remove second hyphen, if two
-    \def\expandedtwice{\splitC{} \splitD}
-      \StrCut{\expandedtwice}{-}\splitE\splitF% remove third hyphen, if three
-  \titlecap{\splitE{} \splitF}% result
+% get type from key
+\def\annTypeName{
+  \StrSubstitute{\lyanntype}{-}{ }[\annTypeCleaned]
+  \titlecap{\annTypeCleaned}
 }
 
 
@@ -937,7 +935,7 @@ compiles with:
   \def\currentBeat{#3}
 % APPLY to ITEM
   \item{
-    \annTypePrePrefix\annTypePfx\CRname\annPostType\typeSkipornot
+    \annTypePrePrefix\annTypePfx\customName\annPostType\typeSkipornot
     \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
       {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
