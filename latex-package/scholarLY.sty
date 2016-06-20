@@ -76,10 +76,6 @@ compiles with:
 % create custom settings for `final` mode:
 \newcommand{\customfinal}{}
 \newcommand\setcustomfinal[1]{\renewcommand{\customfinal}{#1}}
-  \setcustomfinal{
-    \styleAnnMessage{##1}
-    \styleAnnMeasure{\color{red}{\textit{##1}}}
-  } % the default settings for FINAL mode (just example for now; make bland later)
 
 \def\customfinalornot{}
 \newcommand{\usecustomfinal}{\def\customfinalornot{\customfinal}} % apply custom
@@ -117,8 +113,9 @@ compiles with:
 % custom type name . stub
 \define@key{scholarLYannotations}{type}{\def\lytype{#1}}
 
-\def\prependType{}
-\def\appendType{}
+\def\prependType{}% stub
+\def\appendType{}% stub
+\def\annType{}% stub
 
 % hide or show annotation types:
 \newcommand{\annHideType}{%
@@ -131,8 +128,8 @@ compiles with:
   \renewcommand{\typeSkipornot}{}
 }
 \newcommand{\annShowType}{%
-  \def\CRname{\annType{\annTypeName }}
-  \def\MIname{\annType{\annTypeName }}
+  \def\CRname{{\annType\annTypeName }}
+  \def\MIname{{\annType\annTypeName }}
   \def\LIname{\annType{\annTypeName }}
   \def\Qname{\annType{\annTypeName }}
   \def\TDname{\annType{\annTypeName }}
@@ -190,6 +187,7 @@ compiles with:
 % first message wrapper (goes inside ann-footnote)
 \def\prependMessage{}
 \def\appendMessage{}
+%
 \newcommand\annMessageWrap[1]{
   \noexpandarg\IfSubStr{#1}{/}
     {\def\prependMessage{\StrBefore{#1}{/}}
@@ -201,23 +199,23 @@ compiles with:
 % complete message wrapper
 \def\prependMessageFirst{}
 \def\appendMessageLast{}
+%
 \newcommand\annMessageWrapOuter[1]{
-  \noexpandarg\IfSubStr{#1}{/}
-    {\StrBefore{#1}{/}[\tempFirst]
-    \def\prependMessageFirst{\tempFirst}
-    \StrBehind{\fullexpandarg#1}{/}[\tempLast]
-    \def\appendMessageLast{\tempLast}}
+  \IfSubStr{#1}{/}
+    {\def\prependMessageFirst{\StrBefore{#1}{/}}
+    \def\appendMessageLast{\StrBehind{#1}{/}}}
     {\def\prependMessageFirst{#1}
     \def\appendMessageLast{#1}}
 }
 
 % ann type wrapper
+\def\prependType{}
+\def\appendType{}
+%
 \newcommand\annTypeWrap[1]{
-  \noexpandarg\IfSubStr{#1}{/}
-    {\StrBefore{#1}{/}[\temprFirst]
-    \def\prependType{\temprFirst}
-    \StrBehind{\fullexpandarg#1}{/}[\temprLast]
-    \def\appendType{\temprLast}}
+  \IfSubStr{#1}{/}
+    {\def\prependType{\StrBefore{#1}{/}}
+    \def\appendType{\StrBehind{#1}{/}}}
     {\def\prependType{#1}
     \def\appendType{#1}}
 }
@@ -718,9 +716,7 @@ compiles with:
 
 \let\KV@errx@ORI\KV@errx% store original error handling
 
-
 % critical remark:
-
 \newcommand{\criticalRemark}[6][]{%
   % set KEYS, defaults, then new from #1
     \resetkeys
@@ -740,7 +736,7 @@ compiles with:
   % APPLY to ITEM
     \item{
       \annTypePrePrefix\annTypePfx\CRname\annPostType\typeSkipornot
-      \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
+      \ifthenelse{\equal{#2}{\previousMeasure}}{\annArgsPrePrefix\annLocationPfx{\annMeasure{\sameMeasure}}}
         {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
@@ -755,14 +751,13 @@ compiles with:
         \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
-  % set "previous" mm/beats for use in next annotation
+    % set "previous" mm/beats for use in next annotation
     \def\previousMeasure{#2}
     \def\previousBeat{#3}
 }
 
 
 % musical issue:
-
 \newcommand{\musicalIssue}[6][]{%
 % set KEYS, defaults, then new from #1
   \resetkeys
@@ -782,7 +777,7 @@ compiles with:
 % APPLY to ITEM
   \item{
     \annTypePrePrefix\annTypePfx\MIname\annPostType\typeSkipornot
-    \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
+    \ifthenelse{\equal{#2}{\previousMeasure}}{\annArgsPrePrefix\annLocationPfx{\annMeasure{\sameMeasure}}}
       {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
       {\ifthenelse{\equal{#3}{}}{\unskip{}}
@@ -797,14 +792,13 @@ compiles with:
       \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
     \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
       {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
-% set "previous" mm/beats for use in next annotation
+  % set "previous" mm/beats for use in next annotation
   \def\previousMeasure{#2}
   \def\previousBeat{#3}
 }
 
 
 % lilypond issue:
-
 \newcommand{\lilypondIssue}[6][]{%
 % set KEYS, defaults, then new from #1
   \resetkeys
@@ -824,7 +818,7 @@ compiles with:
 % APPLY to ITEM
   \item{
     \annTypePrePrefix\annTypePfx\LIname\annPostType\typeSkipornot
-    \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
+    \ifthenelse{\equal{#2}{\previousMeasure}}{\annArgsPrePrefix\annLocationPfx{\annMeasure{\sameMeasure}}}
       {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
       {\ifthenelse{\equal{#3}{}}{\unskip{}}
@@ -846,7 +840,6 @@ compiles with:
 
 
 % question:
-
 \newcommand{\annotateQuestion}[6][]{%
 % set KEYS, defaults, then new from #1
   \resetkeys
@@ -866,7 +859,7 @@ compiles with:
 % APPLY to ITEM
   \item{
     \annTypePrePrefix\annTypePfx\Qname\annPostType\typeSkipornot
-    \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
+    \ifthenelse{\equal{#2}{\previousMeasure}}{\annArgsPrePrefix\annLocationPfx{\annMeasure{\sameMeasure}}}
       {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
       {\ifthenelse{\equal{#3}{}}{\unskip{}}
@@ -888,7 +881,6 @@ compiles with:
 
 
 % todo:
-
 \newcommand{\annotateTodo}[6][]{%
 % set KEYS, defaults, then new from #1
   \resetkeys
@@ -908,7 +900,7 @@ compiles with:
 % APPLY to ITEM
   \item{
     \annTypePrePrefix\annTypePfx\TDname\annPostType\typeSkipornot
-    \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
+    \ifthenelse{\equal{#2}{\previousMeasure}}{\annArgsPrePrefix\annLocationPfx{\annMeasure{\sameMeasure}}}
       {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
       {\ifthenelse{\equal{#3}{}}{\unskip{}}
@@ -930,7 +922,6 @@ compiles with:
 
 
 % generic annotations:
-
 \newcommand{\annotation}[6][]{% generic annotation, for custom types
 % set KEYS, defaults, then new from #1
   \resetkeys
@@ -949,8 +940,8 @@ compiles with:
   \def\currentBeat{#3}
 % APPLY to ITEM
   \item{
-    \annTypePrePrefix\annTypePfx\customName\annPostType\typeSkipornot
-    \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
+    \annTypePrePrefix\annTypePfx\TDname\annPostType\typeSkipornot
+    \ifthenelse{\equal{#2}{\previousMeasure}}{\annArgsPrePrefix\annLocationPfx{\annMeasure{\sameMeasure}}}
       {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
       {\ifthenelse{\equal{#3}{}}{\unskip{}}
