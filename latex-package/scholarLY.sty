@@ -100,12 +100,12 @@ compiles with:
 \newcommand{\skipornot}{}
 \newcommand{\typeSkipornot}{}
 
-\newcommand{\inlineParams}{%
+\newcommand{\annInline}{%
   \renewcommand{\skipornot}{, }
   \renewcommand{\typeSkipornot}{}
 }
 
-\newcommand{\stackedParams}{%
+\newcommand{\annStacked}{%
   \renewcommand{\skipornot}{\letAnnBreakornot}
   \renewcommand{\typeSkipornot}{\letAnnBreakornot}
 }
@@ -151,7 +151,7 @@ compiles with:
 \ProcessOptions*
 
 \ifex@draft
-  \stackedParams % default, can be overwritten in custom or global settings
+  \annStacked % default, can be overwritten in custom or global settings
   \def\CRname{\annType{\annTypeName }}
   \def\MIname{\annType{\annTypeName }}
   \def\LIname{\annType{\annTypeName }}
@@ -160,7 +160,7 @@ compiles with:
   \def\customName{\annType{\annTypeName }}
   \renewcommand{\annStyleMode}{\customdraftornot}% must be *last*
 \else
-  \inlineParams % default, can be overwritten in custom or global settings
+  \annInline % default, can be overwritten in custom or global settings
   \def\CRname{}
   \def\MIname{}
   \def\LIname{}
@@ -294,7 +294,7 @@ compiles with:
 \def\sameMeasure{\sameMeasureStub}% NOTE this isn't a redundancy (see below - it's a default)
 \def\currentMeasure{0}
 % \verboseMeasures = makes measures always show; TODO discuss the name
-\newcommand{\verboseMeasures}{\def\sameMeasure{\annMeasurePfx\currentMeasure,}}
+\newcommand{\annVerboseMeasures}{\def\sameMeasure{\annMeasurePfx\currentMeasure,}}
 
 % optionally substitute same beat (if *also* same measure)
 \def\previousBeat{0}
@@ -303,7 +303,7 @@ compiles with:
 \def\sameBeat{\sameBeatStub}% NOTE this isn't a redundancy (see below - it's a default)
 \def\currentBeat{0}
 % \verboseBeats
-\newcommand{\verboseBeats}{\def\sameBeat{\annBeatPfx\currentBeat}}
+\newcommand{\annVerboseBeats}{\def\sameBeat{\annBeatPfx\currentBeat}}
 
 
 \ifthenelse{\equal{\sameMeasure}{\annMeasurePfx\currentMeasure,}}% if verbose measures
