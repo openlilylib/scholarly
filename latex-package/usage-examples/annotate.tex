@@ -1,130 +1,62 @@
 \documentclass{article}
 
-\usepackage[final]{scholarLY}
+\usepackage[draft]{../scholarLY}
 \usepackage[margin=1in]{geometry}
 \usepackage{multicol}
 \usepackage{xcolor}
 
 \begin{document}
 
-\section{Annotations}
+\section{example 1}
 
-% \letAnnBreak % allow annotations to break anywhere
-\avoidAnnBreak % prevent annotations from breaking, though not messages yet
+  \setkeys{annPrefixes}{
+    grob={the grob prefix},
+    measure={M.},
+    beat={b.}
+  }
 
-% Affect the itemization, which uses the enumitem pacakge.
-% \setEnumOptions{ ... typical enumitem stuff ... }
-%NOTE wrap all enum options in a single set, otherwise only the last one will apply
-
-\setEnumOptions{% currently only supported *outside* of custom settings
-\renewcommand\labelenumi{\framebox[2\width]{\theenumi}}
-}
-
-\setcustomdraft{ % note: use double hash marks (##) in these defs
-  \styleAnnType{\uppercase{##1}}
-  %\inlineParams
-  %\hideAnnTypes
-  \verboseMeasures
-  \verboseBeats
-}
-\usecustomdraft % lets \setcustomdraft override defaults in draft mode
-
-\setcustomfinal{ % note: use double hash marks (##) in these defs
-  \styleAnnType{\uppercase{##1}}
-  \styleAnnMessage{\color{cyan}{##1}}
-  \stackedParams
-  \verboseMeasures
-  \verboseBeats
-  \hideAnnTypes
-}
- \usecustomfinal % lets \setcustomfinal override defaults in final mode
-% \finalfordraft % keeps custom final styles when switching to custom draft mode
-
-\setPreMessFirst{\{\hspace{0.5em}} % This will precede the entire message, on the left.
-\setPreMess{``} % If you would like message in quotes (or something else), set left side here
-\setAppMess{''} % and set right side here
-\setAppMessLast{\hspace{0.5em}\}} % This will follow the entire message, on the right.
-
-\annMessAppendPunct
-
-\annotations{annotate.annotations.inp} % compile the annotations
-
-\section{Same Annotations Restyled}
-
-\setEnumOptions{
-  \renewcommand\labelenumi{\theenumi)}
-}
-
-\setAppMess{'}
-\setPreMess{`}
-
-\setcustomfinal{ % redefines custom final for the new annotations
-  \styleAnnType{\textbf{\textit{##1}}}
-  \showAnnTypes
-  \inlineParams
-  \def\lybeatPfx{b.}
-}
-\usecustomfinal
+  \setkeys{annStyles}{
+    message={\color{cyan}},
+    message-2nd={\textit}
+  }
+  \annVerboseMeasures
+  \annInline
+  \annShowType
+  \annMessageWrap{$\cdot$ /}
+  \annTypeWrap{( / \} }
 
 \annotations{annotate.annotations.inp}
 
-\section{Restyled Again}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\setEnumOptions{
-  \renewcommand\labelenumi{}
-  \setlength{\itemsep}{15pt}
-  \setlength{\parskip}{3pt}
-  \setlength{\parsep}{2pt}
-}
+\section{example 2}
 
-\setcustomfinal{
-  \styleAnnType{\color{purple}{\uppercase{##1}}}
-  \showAnnTypes
-  \setpostannType{\hrule\nobreak}
-  \styleAnnVoice{\color{cyan}##1}
-  \styleAnnAffected{\color{red}##1}
-  \styleAnnMessage{\color{purple}##1}
-  \inlineParams
-  \def\lymeasurePfx{measure: }
-  \def\lybeatPfx{beat: }
-}
-\usecustomfinal
+  \setkeys{annPrefixes}{
+    grob={the grob prefix},% not used though
+    measure={\textbf{M.}},
+    beat={\textbf{b.}},
+    message={NOTE: },
+    post-type={\\\vspace{-0.25cm}\hrule},
+    pre-args={$\cdot$ }
+  }
 
-\begin{multicols}{2}
-\annotations{annotate.annotations.inp}
-\annotations{annotate.annotations.inp}
-\annotations{annotate.annotations.inp}
-\annotations{annotate.annotations.inp}
-\annotations{annotate.annotations.inp}
-\end{multicols}
+  \setkeys{annStyles}{
+    measure={\color{gray}},
+    type={\textit},
+    message={},% resets to nothing
+    message-2nd={}% ""
+  }
 
-\section{And Again}
+  \setkeys{annExtras}{
+    same-beat={...},
+    same-measure={...}
+  }
 
-\setEnumOptions{
-  \renewcommand\labelenumi{}
-  \setlength{\itemsep}{1cm}
-  \setlength{\parskip}{3pt}
-  \setlength{\parsep}{5pt}
-}
-
-\setcustomfinal{
-  \def\lylocationPfx{LOCATION: }
-  \def\lymeasurePfx{\textbf{measure }}
-  \def\lybeatPfx{\textbf{beat }}
-  \def\lycontextPfx{CONTEXT: }
-  \def\lygrobtypePfx{AFFECTS: }
-  \def\lymessagePfx{NOTE: }
-  \stackedParams
-  \showAnnTypes
-  \styleAnnType{\Large{##1}}
-  \def\preannType{\hrule\begin{center}\Large | }
-  \def\postannType{|\end{center}\par\hrule\vspace{5pt}}
-  \styleAnnMessage{\color{blue}##1}
-}
-\usecustomfinal
-
-\setAppMess{}
-\setPreMess{}
+  \annStacked
+  \annShowType
+  \annMessageWrap{/}
+  \annMessageWrapOuter{/}
+  \annTypeWrap{}
 
 \annotations{annotate.annotations.inp}
 
