@@ -22,27 +22,20 @@ compiles with:
 - support not-yet-defined footnote names
 - check need for titlecap in custom annotation names
 - types shouldn't always be parenthesized
+- itemization should be optional, not madatory
+  . perhaps the environment around \input{file.inp} should be left open, and the
+  . 'item{}' prewritten, but prepared (as a toggle, if possible) for the user.
 ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 \end{comment}
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% OPTIONS ... the customizable part of the package
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Some options can be applied by wrapping the \annotations{filename.annotations.inp} in
-% respective environment, such as {multicols}, {xcolor}, etc.
-%
-% If specific changes are made to items within the text of the actual .inp lists (written
-% by the user in the LilyPond document), they will override wrappers as applicable.
-
-
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ GLOBAL STYLING OPTIONS ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 
 % default styles:
 \def\annType{}
@@ -69,9 +62,7 @@ compiles with:
 %% ~ ~ ~ DRAFT or FINAL MODE, and styling therein ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-
 % create custom settings for `draft` mode:
-
 \newcommand{\customdraft}{}
 \newcommand\setcustomdraft[1]{\renewcommand{\customdraft}{#1}}
   \setcustomdraft{
@@ -83,7 +74,6 @@ compiles with:
 
 
 % create custom settings for `final` mode:
-
 \newcommand{\customfinal}{}
 \newcommand\setcustomfinal[1]{\renewcommand{\customfinal}{#1}}
   \setcustomfinal{
@@ -94,14 +84,10 @@ compiles with:
 \def\customfinalornot{}
 \newcommand{\usecustomfinal}{\def\customfinalornot{\customfinal}} % apply custom
 
-
-% let custom final settings carry over to draft mode
-
+% let custom final settings carry over to draft mode:
 \newcommand{\finalfordraft}{\renewcommand{\customdraft}{\customfinal}}
 
-
 % break annotations or not:
-
 \newcommand{\letAnnBreakornot}{\par\nobreak} % default = no break
 \newcommand{\annBreakAllow}{\renewcommand{\letAnnBreakornot}{\par}} % let break
 \newcommand{\annBreakAvoid}{\renewcommand{\letAnnBreakornot}{\par\nobreak}} % avoid break
@@ -110,9 +96,11 @@ compiles with:
 %      is more likely to result in breaks. Otherwise, LaTeX will try to avoid breaking
 %      even with \annBreakAllow employed.
 
+% apply any of the usual enumerate arguments to the list:
+\newcommand{\enumOptions}{}
+\newcommand{\setEnumOptions}[1]{\renewcommand{\enumOptions}{#1}}
 
 % inline or stacked annotations:
-
 \newcommand{\skipornot}{}
 \newcommand{\typeSkipornot}{}
 
@@ -126,13 +114,10 @@ compiles with:
   \renewcommand{\typeSkipornot}{\letAnnBreakornot}
 }
 
-
 % custom type name . stub
 \define@key{scholarLYannotations}{type}{\def\lytype{#1}}
 
-
 % hide or show annotation types:
-
 \newcommand{\annHideType}{%
   \renewcommand{\CRname}{}
   \renewcommand{\MIname}{}
@@ -142,10 +127,9 @@ compiles with:
   \def\customName{}
   \renewcommand{\typeSkipornot}{}
 }
-
 \newcommand{\annShowType}{%
   \renewcommand{\CRname}{\annType{(Critical Remark) }} % if the user defines a ','
-  \renewcommand{\MIname}{\annType{(Musical Issue) }}   % for \postannType, they must
+  \renewcommand{\MIname}{\annType{(Musical Issue) }}   % for \annPostType, they must
   \renewcommand{\LIname}{\annType{(LilyPond Issue) }}  % also \unskip to remove the
   \renewcommand{\Qname}{\annType{(Question) }}         % cushion here.
   \renewcommand{\TDname}{\annType{(To Do) }}
@@ -155,11 +139,10 @@ compiles with:
     {\renewcommand{\typeSkipornot}{}}
 }
 
+
 \newcommand{\annStyleMode}{}
 
-
 % declare draft/final options:
-
 \newif\ifex@draft % (implicitly final) ... i.e. draft mode if set, otherwise final mode,
                   % which can also be explicitly set: \usepackage[final]{scholarLY}
 
@@ -188,32 +171,18 @@ compiles with:
 
 %% ~ ~ ~ ADDITIONAL CUSTOMIZATIONS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-% apply any of the usual enumerate arguments to the list:
-
-\newcommand{\enumOptions}{}
-\newcommand{\setEnumOptions}[1]{\renewcommand{\enumOptions}{#1}}
-
-
 % do something immediately after the type (only effective if type present)
+\def\annPostType{}
+\define@key{annPrefixes}{post-type}{\def\annPostType{#1}}
+% for example, could be used to add vspace, hspace, characters, etc. after type
 
-\newcommand{\postannType}{} % add vspace, hspace, characters, etc. *after* type
-\newcommand{\setpostannType}[1]{\renewcommand{\postannType}{#1}}
-%
-% NOTE: add \par to correct vspace behavior, i.e. \setpostannType{\par\vspace{1cm}}
+% do something immediately before each type or arg (arg presently affects all):
+\def\annTypePrePrefix{}
+\define@key{annPrefixes}{pre-type}{\def\annTypePrePrefix{#1}}
+\def\annArgsPrePrefix{}
+\define@key{annPrefixes}{pre-args}{\def\annArgsPrePrefix{#1}}
 
-
-% do something immediately before each of the arguments (presently affects all):
-
-\def\preannType{}
-\newcommand{\setpreannType}[1]{\def\preannType{#1}}
-\def\preannArg{}
-\newcommand{\setpreannArg}[1]{\def\preannArg{#1}}
-
-
-% {prependFirst}{prepend} (MESSAGE) {append} {appendLast}:
-
-
-
+% first message wrapper (goes inside ann-footnote)
 \def\prependMessage{}
 \def\appendMessage{}
 \newcommand\annMessageWrap[1]{
@@ -224,6 +193,7 @@ compiles with:
     \def\prependMessage{#1}}
 }
 
+% complete message wrapper
 \def\prependMessageFirst{}
 \def\appendMessageLast{}
 \newcommand\annMessageWrapOuter[1]{
@@ -304,22 +274,23 @@ compiles with:
 
 
 % if same measure, optionally substitute:
-
 \def\previousMeasure{0}
 \def\sameMeasureStub{---}
-\def\sameMeasure{\sameMeasureStub} % user may redefine sameMeasureStub
+\define@key{annExtras}{same-measure}{\def\sameMeasureStub{#1}}
+\def\sameMeasure{\sameMeasureStub}% NOTE this isn't a redundancy (see below - it's a default)
 \def\currentMeasure{0}
+% \verboseMeasures = makes measures always show; TODO discuss the name
 \newcommand{\verboseMeasures}{\def\sameMeasure{\annMeasurePfx\currentMeasure,}}
-% \verboseMeasures = makes measures always show
 
-
-% optionally substitute same beat (if *also* same measure):
-
+% optionally substitute same beat (if *also* same measure)
 \def\previousBeat{0}
 \def\sameBeatStub{{---}\unskip}
-\def\sameBeat{\sameBeatStub}
+\define@key{annExtras}{same-beat}{\def\sameBeatStub{#1}}
+\def\sameBeat{\sameBeatStub}% NOTE this isn't a redundancy (see below - it's a default)
 \def\currentBeat{0}
+% \verboseBeats
 \newcommand{\verboseBeats}{\def\sameBeat{\annBeatPfx\currentBeat}}
+
 
 \ifthenelse{\equal{\sameMeasure}{\annMeasurePfx\currentMeasure,}}% if verbose measures
   %true
@@ -344,12 +315,8 @@ compiles with:
 %%%%%
 % FOOTNOTES
 
-% generic \bigmessage is replaced by arg#1 in \annotation parsers
-%\def\bigmessage{}% leave this first
-
-
-% determine if there are custom footnotes, by searching arg #1
-
+%determine if there are custom footnotes, by searching arg #1
+% (\bigmessage is defined by arg #1 for each annotation)
 \def\customFootsParse{
   \StrCount{\bigmessage}{-text=}[\howmanytext]
   \StrCount{\bigmessage}{ann-footnote=}[\howmanyannfn]
@@ -672,35 +639,34 @@ compiles with:
 
 % parse messages:
 % TODO unskip ONLY if prependMessage is NOT equal to {}? Make user set that?
-
 \newcommand{\annMessageParse}{%
   %\saveexpandmode\expandarg
     \IfEndWith{\lymessage}{.}
       % true; the user set a period for punctuation
       {%
       \StrGobbleRight{\lymessage}{1}[\lymessage]
-        \unskip\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
+        \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
       }
       % false
       {\IfEndWith{\lymessage}{?}
         % true; the user set a question mark for punctuation
         {%
         \StrGobbleRight{\lymessage}{1}[\lymessage]
-          \unskip\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
+          \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
         }
         % false
         {\IfEndWith{\lymessage}{!}
           % true; the user set an exclamation point for punctuation
           {%
           \StrGobbleRight{\lymessage}{1}[\lymessage]
-            \unskip\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
+            \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
           }
           % false
           {\ifthenelse{\equal{\lymessage}{no value given}}{\unskip\noMessError}
             % else
             {\ifthenelse{\equal{\lymessage}{}}{\unskip\noMessError}
               % else
-              {\unskip\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak}}}
+              {\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak}}}
         }
       }
   %\restoreexpandmode
@@ -708,7 +674,6 @@ compiles with:
 
 
 % set the append/punct vs. punct/append orientations:
-
 \newcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage\annMessagePunct\appendMessage}}} % default = Punct, Append
 
 % user command, set order: punct, append
@@ -720,7 +685,6 @@ compiles with:
 
 
 % generic annotation, custom type: name parser:
-
 \def\customName{
   \StrCut{\lyanntype}{-}\splitA\splitB% remove first hyphen, if one
   \def\expandedonce{\splitA{} \splitB}
@@ -763,19 +727,19 @@ compiles with:
     \def\currentBeat{#3}
   % APPLY to ITEM
     \item{
-      \preannType\annTypePfx\CRname\postannType\typeSkipornot
+      \annTypePrePrefix\annTypePfx\CRname\annPostType\typeSkipornot
       \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-        {\preannArg\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
+        {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
       \ifthenelse{\equal{#2}{\previousMeasure}}
         {\ifthenelse{\equal{#3}{}}{\unskip{}}
           {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
             {\annBeat{\annBeatPfx#3}\skipornot}}}
         {\annBeat{\annBeatPfx#3}\skipornot}
       \ifthenelse{\equal{#4}{}}{\unskip{}}
-        {\preannArg\annContextPfx\annVoice{#4}\skipornot}
+        {\annArgsPrePrefix\annContextPfx\annVoice{#4}\skipornot}
       \ifthenelse{\equal{#5}{}}{\unskip{}}
-        {\preannArg\annGrobTypePfx\annAffected{#5}\skipornot}
-      \preannArg\annMessagePfx{{{%
+        {\annArgsPrePrefix\annGrobTypePfx\annAffected{#5}\skipornot}
+      \annArgsPrePrefix\annMessagePfx{{{%
         \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
         {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
@@ -805,19 +769,19 @@ compiles with:
   \def\currentBeat{#3}
 % APPLY to ITEM
   \item{
-    \preannType\annTypePfx\MIname\postannType\typeSkipornot
+    \annTypePrePrefix\annTypePfx\MIname\annPostType\typeSkipornot
     \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-      {\preannArg\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
+      {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
       {\ifthenelse{\equal{#3}{}}{\unskip{}}
         {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
           {\annBeat{\annBeatPfx#3}\skipornot}}}
       {\annBeat{\annBeatPfx#3}\skipornot}
     \ifthenelse{\equal{#4}{}}{\unskip{}}
-      {\preannArg\annContextPfx\annVoice{#4}\skipornot}
+      {\annArgsPrePrefix\annContextPfx\annVoice{#4}\skipornot}
     \ifthenelse{\equal{#5}{}}{\unskip{}}
-      {\preannArg\annGrobTypePfx\annAffected{#5}\skipornot}
-    \preannArg\annMessagePfx{{{%
+      {\annArgsPrePrefix\annGrobTypePfx\annAffected{#5}\skipornot}
+    \annArgsPrePrefix\annMessagePfx{{{%
       \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
     \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
       {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
@@ -847,19 +811,19 @@ compiles with:
   \def\currentBeat{#3}
 % APPLY to ITEM
   \item{
-    \preannType\annTypePfx\LIname\postannType\typeSkipornot
+    \annTypePrePrefix\annTypePfx\LIname\annPostType\typeSkipornot
     \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-      {\preannArg\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
+      {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
       {\ifthenelse{\equal{#3}{}}{\unskip{}}
         {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
           {\annBeat{\annBeatPfx#3}\skipornot}}}
       {\annBeat{\annBeatPfx#3}\skipornot}
     \ifthenelse{\equal{#4}{}}{\unskip{}}
-      {\preannArg\annContextPfx\annVoice{#4}\skipornot}
+      {\annArgsPrePrefix\annContextPfx\annVoice{#4}\skipornot}
     \ifthenelse{\equal{#5}{}}{\unskip{}}
-      {\preannArg\annGrobTypePfx\annAffected{#5}\skipornot}
-    \preannArg\annMessagePfx{{{%
+      {\annArgsPrePrefix\annGrobTypePfx\annAffected{#5}\skipornot}
+    \annArgsPrePrefix\annMessagePfx{{{%
       \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
     \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
       {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
@@ -889,19 +853,19 @@ compiles with:
   \def\currentBeat{#3}
 % APPLY to ITEM
   \item{
-    \preannType\annTypePfx\Qname\postannType\typeSkipornot
+    \annTypePrePrefix\annTypePfx\Qname\annPostType\typeSkipornot
     \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-      {\preannArg\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
+      {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
       {\ifthenelse{\equal{#3}{}}{\unskip{}}
         {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
           {\annBeat{\annBeatPfx#3}\skipornot}}}
       {\annBeat{\annBeatPfx#3}\skipornot}
     \ifthenelse{\equal{#4}{}}{\unskip{}}
-      {\preannArg\annContextPfx\annVoice{#4}\skipornot}
+      {\annArgsPrePrefix\annContextPfx\annVoice{#4}\skipornot}
     \ifthenelse{\equal{#5}{}}{\unskip{}}
-      {\preannArg\annGrobTypePfx\annAffected{#5}\skipornot}
-    \preannArg\annMessagePfx{{{%
+      {\annArgsPrePrefix\annGrobTypePfx\annAffected{#5}\skipornot}
+    \annArgsPrePrefix\annMessagePfx{{{%
       \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
     \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
       {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
@@ -931,19 +895,19 @@ compiles with:
   \def\currentBeat{#3}
 % APPLY to ITEM
   \item{
-    \preannType\annTypePfx\TDname\postannType\typeSkipornot
+    \annTypePrePrefix\annTypePfx\TDname\annPostType\typeSkipornot
     \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-      {\preannArg\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
+      {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
       {\ifthenelse{\equal{#3}{}}{\unskip{}}
         {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
           {\annBeat{\annBeatPfx#3}\skipornot}}}
       {\annBeat{\annBeatPfx#3}\skipornot}
     \ifthenelse{\equal{#4}{}}{\unskip{}}
-      {\preannArg\annContextPfx\annVoice{#4}\skipornot}
+      {\annArgsPrePrefix\annContextPfx\annVoice{#4}\skipornot}
     \ifthenelse{\equal{#5}{}}{\unskip{}}
-      {\preannArg\annGrobTypePfx\annAffected{#5}\skipornot}
-    \preannArg\annMessagePfx{{{%
+      {\annArgsPrePrefix\annGrobTypePfx\annAffected{#5}\skipornot}
+    \annArgsPrePrefix\annMessagePfx{{{%
       \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
     \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
       {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
@@ -973,19 +937,19 @@ compiles with:
   \def\currentBeat{#3}
 % APPLY to ITEM
   \item{
-    \preannType\annTypePfx\CRname\postannType\typeSkipornot
+    \annTypePrePrefix\annTypePfx\CRname\annPostType\typeSkipornot
     \ifthenelse{\equal{#2}{\previousMeasure}}{\annMeasure{\sameMeasure}}
-      {\preannArg\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
+      {\annArgsPrePrefix\annLocationPfx{\annMeasure{\annMeasurePfx#2,}}}
     \ifthenelse{\equal{#2}{\previousMeasure}}
       {\ifthenelse{\equal{#3}{}}{\unskip{}}
         {\ifthenelse{\equal{#3}{\previousBeat}}{\sameBeat\skipornot}
           {\annBeat{\annBeatPfx#3}\skipornot}}}
       {\annBeat{\annBeatPfx#3}\skipornot}
     \ifthenelse{\equal{#4}{}}{\unskip{}}
-      {\preannArg\annContextPfx\annVoice{#4}\skipornot}
+      {\annArgsPrePrefix\annContextPfx\annVoice{#4}\skipornot}
     \ifthenelse{\equal{#5}{}}{\unskip{}}
-      {\preannArg\annGrobTypePfx\annAffected{#5}\skipornot}
-    \preannArg\annMessagePfx{{{%
+      {\annArgsPrePrefix\annGrobTypePfx\annAffected{#5}\skipornot}
+    \annArgsPrePrefix\annMessagePfx{{{%
       \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
     \ifthenelse{\equal{\lyannfootnote}{no value given}}{}
       {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
