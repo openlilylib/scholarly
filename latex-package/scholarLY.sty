@@ -117,6 +117,9 @@ compiles with:
 % custom type name . stub
 \define@key{scholarLYannotations}{type}{\def\lytype{#1}}
 
+\def\prependType{}
+\def\appendType{}
+
 % hide or show annotation types:
 \newcommand{\annHideType}{%
   \def\CRname{}
@@ -128,12 +131,12 @@ compiles with:
   \renewcommand{\typeSkipornot}{}
 }
 \newcommand{\annShowType}{%
-  \def\CRname{\annType{\annTypeName }} % if the user defines a ','
-  \def\MIname{\annType{\annTypeName }}   % for \annPostType, they must
-  \def\LIname{\annType{\annTypeName }}  % also \unskip to remove the
-  \def\Qname{\annType{\annTypeName }}         % cushion here.
+  \def\CRname{\annType{\annTypeName }}
+  \def\MIname{\annType{\annTypeName }}
+  \def\LIname{\annType{\annTypeName }}
+  \def\Qname{\annType{\annTypeName }}
   \def\TDname{\annType{\annTypeName }}
-  \def\customName{\annType{\annTypeName }}% TODO this actually needs to be parsed
+  \def\customName{\annType{\annTypeName }}
   \ifthenelse{\equal{\skipornot}{\letAnnBreakornot}}% (if stacked params)
     {\renewcommand{\typeSkipornot}{\letAnnBreakornot}}
     {\renewcommand{\typeSkipornot}{}}
@@ -161,12 +164,12 @@ compiles with:
   \renewcommand{\annStyleMode}{\customdraftornot}% must be *last*
 \else
   \inlineParams % default, can be overwritten in custom or global settings
-  \def\CRname{\annType{}}
-  \def\MIname{\annType{}}
-  \def\LIname{\annType{}}
-  \def\Qname{\annType{}}
-  \def\TDname{\annType{}}
-  \def\customName{\annType{}}
+  \def\CRname{}
+  \def\MIname{}
+  \def\LIname{}
+  \def\Qname{}
+  \def\TDname{}
+  \def\customName{}
   \renewcommand{\annStyleMode}{\customfinalornot}% must be *last*
 \fi
 
@@ -192,7 +195,7 @@ compiles with:
     {\def\prependMessage{\StrBefore{#1}{/}}
     \def\appendMessage{\StrBehind{#1}{/}}}
     {\def\prependMessage{#1}
-    \def\prependMessage{#1}}
+    \def\appendMessage{#1}}
 }
 
 % complete message wrapper
@@ -205,7 +208,18 @@ compiles with:
     \StrBehind{\fullexpandarg#1}{/}[\tempLast]
     \def\appendMessageLast{\tempLast}}
     {\def\prependMessageFirst{#1}
-    \def\prependMessageLast{#1}}
+    \def\appendMessageLast{#1}}
+}
+
+% ann type wrapper
+\newcommand\annTypeWrap[1]{
+  \noexpandarg\IfSubStr{#1}{/}
+    {\StrBefore{#1}{/}[\temprFirst]
+    \def\prependType{\temprFirst}
+    \StrBehind{\fullexpandarg#1}{/}[\temprLast]
+    \def\appendType{\temprLast}}
+    {\def\prependType{#1}
+    \def\appendType{#1}}
 }
 
 %% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -687,9 +701,9 @@ compiles with:
 
 
 % get type from key
-\def\annTypeName{
+\def\annTypeName{%
   \StrSubstitute{\lyanntype}{-}{ }[\annTypeCleaned]
-  \titlecap{\annTypeCleaned}
+  \prependType\titlecap{\annTypeCleaned}\appendType
 }
 
 
