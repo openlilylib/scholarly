@@ -15,3 +15,8 @@
 
 # log files by ScholarLY
 *.inp
+
+# tex
+*.aux
+*.fdb_latexmk
+*.fls
