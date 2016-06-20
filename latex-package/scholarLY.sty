@@ -292,11 +292,11 @@ compiles with:
 \define@key{annPrefixes}{grob-type}{\def\annGrobTypePfx{#1}}
 \define@key{annPrefixes}{input-file-name}{\def\annInputFileNamePfx{#1}}
 \define@key{annPrefixes}{context-id}{\def\annContextIDPfx{#1}}
-\define@key{annPrefixes}{location}{\def\annGrobPfx{#1}}
-\define@key{annPrefixes}{type}{\def\annGrobPfx{#1}}
-\define@key{annPrefixes}{message}{\def\annGrobPfx{#1}}
-\define@key{annPrefixes}{context}{\def\annGrobPfx{#1}}
-\define@key{annPrefixes}{measure}{\def\annGrobPfx{#1}}
+\define@key{annPrefixes}{location}{\def\annLocationPfx{#1}}
+\define@key{annPrefixes}{type}{\def\annTypePfx{#1}}
+\define@key{annPrefixes}{message}{\def\annMessagePfx{#1}}
+\define@key{annPrefixes}{context}{\def\annContextPfx{#1}}
+\define@key{annPrefixes}{measure}{\def\annMeasurePfx{#1}}
 \define@key{annPrefixes}{beat}{\def\annBeatPfx{#1}}
 
 
@@ -676,28 +676,28 @@ compiles with:
       % true; the user set a period for punctuation
       {%
       \StrGobbleRight{\lymessage}{1}[\lymessage]
-        \unskip\annMessageOO{\annMessageO{\annMessage{\prependMessage\lymessage}}}\nobreak
+        \unskip\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
       }
       % false
       {\IfEndWith{\lymessage}{?}
         % true; the user set a question mark for punctuation
         {%
         \StrGobbleRight{\lymessage}{1}[\lymessage]
-          \unskip\annMessageOO{\annMessageO{\annMessage{\prependMessage\lymessage}}}\nobreak
+          \unskip\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
         }
         % false
         {\IfEndWith{\lymessage}{!}
           % true; the user set an exclamation point for punctuation
           {%
           \StrGobbleRight{\lymessage}{1}[\lymessage]
-            \unskip\annMessageOO{\annMessageO{\annMessage{\prependMessage\lymessage}}}\nobreak
+            \unskip\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
           }
           % false
           {\ifthenelse{\equal{\lymessage}{no value given}}{\unskip\noMessError}
             % else
             {\ifthenelse{\equal{\lymessage}{}}{\unskip\noMessError}
               % else
-              {\unskip\annMessageOO{\annMessageO{\annMessage{\prependMessage\lymessage}}}\nobreak}}}
+              {\unskip\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak}}}
         }
       }
   %\restoreexpandmode
@@ -706,14 +706,14 @@ compiles with:
 
 % set the append/punct vs. punct/append orientations:
 
-\newcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage{\annMessagePunct\appendMessage}}}} % default = Punct, Append
+\newcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage\annMessagePunct\appendMessage}}} % default = Punct, Append
 
 % user command, set order: punct, append
 \newcommand{\annMessPunctAppend}{%
-  \renewcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage{\annMessagePunct\unskip\appendMessage}}}}}
+  \renewcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage\annMessagePunct\unskip\appendMessage}}}}
 % set order: append, punct
 \newcommand{\annMessAppendPunct}{%
-  \renewcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage{\appendMessage\unskip\annMessagePunct}}}}}
+  \renewcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage\appendMessage\unskip\annMessagePunct}}}}
 
 
 % generic annotation, custom type: name parser:
