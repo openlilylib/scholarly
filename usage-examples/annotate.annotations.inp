@@ -1,0 +1,34 @@
+\criticalRemark
+   [grob={#<Grob NoteHead >},
+    grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . #<Mom 0>) (our-beat . 4) (measure-pos . #<Mom 3/4>) (measure-no . 1) (rhythmic-location 1 . #<Mom 3/4>) (meter 4 . 4))},
+    grob-type={NoteHead},
+    input-file-name={(annotate.ly)},
+    context-id={Some staff},
+    location={#<location /Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly:16:5>},
+    type={critical-remark},
+    message={Go to \textit{school}\fnOne and\\ \noindent{sit back}! This
+        is another sentence\fnThree with a footnote.},
+    context={Some staff},
+    fn-one-text={This is my first nested footnote},
+    fn-two-text={This is another nested footnote, but it isn't used.},
+    ann-footnote={This is an annotation footnote}]
+    {1}{4}
+    {Some staff}
+    {NoteHead}
+    {Go to \textit{school}\fnOne and\\ \noindent{sit back}! This
+     is another sentence\fnThree with a footnote.}
+ 
+\musicalIssue
+   [grob={#<Grob KeySignature >},
+    grob-location={((beat-string . 1) (beat-fraction . 0) (beat-part . #<Mom 0>) (our-beat . 1) (measure-pos . #<Mom 0>) (measure-no . 3) (rhythmic-location 3 . #<Mom 0>) (meter 4 . 4))},
+    grob-type={KeySignature},
+    input-file-name={(annotate.ly)},
+    context-id={My Staff},
+    location={#<location /Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly:27:3>},
+    type={musical-issue},
+    message={Another test}]
+    {3}{1}
+    {My Staff}
+    {KeySignature}
+    {Another test}
+ 
