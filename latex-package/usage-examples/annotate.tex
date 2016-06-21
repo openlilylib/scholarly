@@ -19,24 +19,27 @@
     message={\color{cyan}},
     message-2nd={\textit}
   }
-  \annVerboseMeasures
+  %\annVerboseMeasures
   \annInline
   \annShowType
   \annMessageWrap{$\cdot$ /}
-  \annTypeWrap{( / \} }
+  \annTypeWrap{/ ) }
 
 \annotations{annotate.annotations.inp}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\pagebreak
 \section{example 2}
+\small
 
   \setkeys{annPrefixes}{
     grob={the grob prefix},% not used though
     measure={\textbf{M.}},
     beat={\textbf{b.}},
     message={NOTE: },
-    post-type={\\\vspace{-0.25cm}\hrule},
+    pre-type={\vspace{.5cm}\hrule\vspace{0.05cm}},
+    post-type={\\\vspace{-0.25cm}\hrule\vspace{0.05cm}},
     pre-args={$\cdot$ }
   }
 

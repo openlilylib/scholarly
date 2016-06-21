@@ -6,7 +6,7 @@
 
 %\registerOption documentation.include-file "scholarly/annotate"
 %\loadModule "_internal/doc-include/usage-example.ily"
-   
+
 \markup \vspace #1
 
 \setOption scholarly.annotate.export-targets #'(plaintext latex)
@@ -14,9 +14,9 @@
 music = \relative c'{
   c4 d e
     \criticalRemark \with {
-      message = "Go to \\textit{school} and \noindent{sit back}! This
+      message = "Go to \\textit{school} and \\textcolor{red}{sit back}! This
         is a second sentence, which\fnblue has a footnote."
-      fn-blue-text = "This is my first nested footnote, for the second sentence of the first annotation."
+      fn-blue-text = "This is my \uppercase{first nested footnote}, for the \\textcolor{red}{second sentence} of the first annotation."
       fn-yellow-text = "This is another nested footnote for the first annotation, but it isn't used."
       ann-footnote = "This is a footnote for the entire annotation."
     }
@@ -29,41 +29,49 @@ music = \relative c'{
     Staff.KeySignature
   \key a \major
   a d
-    <<
-      {
-        \voiceOne
-          \criticalRemark \with {
-            message = "go to @\emph{school}@!"
-          }
-          Accidental
-        cis? d
-      }
-      \new Voice {
-        \voiceTwo
-        ais b
-      }
-    >>
+  <<
+    { \voiceOne
+        \criticalRemark \with {
+          message = "An annotation for the top voice."
+        }
+        NoteHead
+      cis d
+    }
+     \new Voice = "voice two"
+    { \voiceTwo
+        \criticalRemark \with {
+          message="A note about the second voice."
+        }
+        NoteHead
+      ais b
+    }
+  >>
   \oneVoice
-  e  
+  e
     \lilypondIssue \with {
       message = "A message about the trill."
     }
     TrillSpanner
   cis2\startTrillSpan
   d4\stopTrillSpan
-  b 
+  b
     \question \with {
-      message = "A question with a footnote\fnTemporary about the slur."
-      fn-Temporary-text = "A temporary footnote for the question."
+      message = "A question with a footnote\fnRandom about the slur."
+      fn-R-a-n-d-o-m-text = "A random footnote for the question."
     }
     Slur
-  gis8( a) b4 
+  gis8( a) b4
     \todo \with {
-      message = "A todo in the same measure as the last annotation."
+      message = "A todo for the flag."
     }
-    Stem
-  a
-  
+    Flag
+  \appoggiatura a8
+    \lilypondIssue \with {
+      message = "Message about this note."
+    }
+    NoteHead
+  gis4
+
 }
 
 \score { \music }
