@@ -294,7 +294,12 @@ compiles with:
     %false
     {}}% do nothing.. current beat displayed always
   %false
-  {}% else nothing
+  {\ifthenelse{\equal{\currentMeasure}{\previousMeasure}}
+    {\ifthenelse{\equal{\currentBeat}{\previousBeat}}
+      {\def\sameBeat{\unskip}}
+      {}}
+    {}
+  }% else nothing
 
 
 %% ~ ~ ~ the PARSERS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
