@@ -163,11 +163,13 @@ compiles with:
 % first message wrapper (goes inside ann-footnote)
 \def\prependMessage{}
 \def\appendMessage{}
+\def\aMWSep{/}
+% to redefine the seperator
+\newcommand\annMessageWrapSep[1]{\def\aMWSep{#1}}
 %
 \newcommand\annMessageWrap[1]{
-  \noexpandarg\IfSubStr{#1}{/}
-    {\def\prependMessage{\StrBefore{#1}{/}}
-    \def\appendMessage{\StrBehind{#1}{/}}}
+  \expandarg\IfSubStr{#1}{\aMWSep}
+    {\StrCut{#1}{\aMWSep}\prependMessage\appendMessage}
     {\def\prependMessage{#1}
     \def\appendMessage{#1}}
 }
@@ -175,11 +177,13 @@ compiles with:
 % complete message wrapper
 \def\prependMessageFirst{}
 \def\appendMessageLast{}
+\def\aMWOSep{/}
+% to redefine the seperator
+\newcommand\annMessageWrapOuterSep[1]{\def\aMWOSep{#1}}
 %
 \newcommand\annMessageWrapOuter[1]{
-  \IfSubStr{#1}{/}
-    {\def\prependMessageFirst{\StrBefore{#1}{/}}
-    \def\appendMessageLast{\StrBehind{#1}{/}}}
+  \expandarg\IfSubStr{#1}{\aMWOSep}
+    {\StrCut{#1}{\aMWOSep}\prependMessageFirst\appendMessageLast}
     {\def\prependMessageFirst{#1}
     \def\appendMessageLast{#1}}
 }
@@ -187,24 +191,21 @@ compiles with:
 % ann type wrapper
 \def\prependType{}
 \def\appendType{}
+\def\aTWSep{/}
+% to redefine the seperator
+\newcommand\annTypeWrapSep[1]{\def\aTWSep{#1}}
 %
 \newcommand\annTypeWrap[1]{
-  \IfSubStr{#1}{/}
-    {\def\prependType{\StrBefore{#1}{/}}
-    \def\appendType{\StrBehind{#1}{/}}}
+  \expandarg\IfSubStr{#1}{\aTWSep}
+    {\StrCut{#1}{\aTWSep}\prependType\appendType}
     {\def\prependType{#1}
     \def\appendType{#1}}
 }
 
 %% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 \newcommand{\annotations}[1]
 {\begin{enumerate}[mode=boxed]\enumOptions\annStyleMode\input{#1}\end{enumerate}}
-%
-% ex: \annotations{annotate.annotations.inp}
 
-
-%% ~ ~ ~ KEY / VALUE arguments ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 % keys originally set in arg 1, exported from lilypond
 \define@key{scholarLYannotations}{grob}{\edef\lygrob{\detokenize{#1}}}
@@ -304,13 +305,7 @@ compiles with:
 
 %% ~ ~ ~ the PARSERS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-%
-%%
-%%%%
-%%%%%
-% FOOTNOTES
-
-%determine if there are custom footnotes, by searching arg #1
+% determine if there are custom footnotes, by searching arg #1
 % (\bigmessage is defined by arg #1 for each annotation)
 \def\customFootsParse{
   \StrCount{\bigmessage}{-text=}[\howmanytext]
@@ -472,7 +467,6 @@ compiles with:
 
 
 % define the macro names for custom footnotes:
-
 \def\extractFNnames{%
   \expandarg\StrCount{\bigmessage}{fn-}[\theFNnum]
   \ifthenelse{\equal{\theFNnum}{0}}
@@ -547,9 +541,7 @@ compiles with:
 }
 
 
-
 % create the macros that are used in the messages:
-
 \def\makeFNmacros{
   \ifthenelse{\equal{\theFNnum}{0}}
     {}% don't make any macros
@@ -600,71 +592,60 @@ compiles with:
 }
 
 
-
-%
-%%
-%%%%
-%%%%%
-% MESSAGES
-
-% test the message for punctuations, and store the result:
-
 \def\annMessagePunct{}% default, no punctuation
 
+% test the message for punctuations, and store the result:
 \newcommand{\testMessagePunct}{%
-  %\saveexpandmode\expandarg
-    \IfEndWith{\lymessage}{.}
+  \IfEndWith{\lymessage}{.}
+    % true
+    {\def\annMessagePunct{.}}
+    % false
+    {\IfEndWith{\lymessage}{?}
       % true
-      {\def\annMessagePunct{.}}
+      {\def\annMessagePunct{?}}
       % false
-      {\IfEndWith{\lymessage}{?}
+      {\IfEndWith{\lymessage}{!}
         % true
-        {\def\annMessagePunct{?}}
+        {\def\annMessagePunct{!}}
         % false
-        {\IfEndWith{\lymessage}{!}
-          % true
-          {\def\annMessagePunct{!}}
-          % false
-          {\def\annMessagePunct{\unskip}}
-        }
+        {\def\annMessagePunct{\unskip}}
       }
-  %\restoreexpandmode
+    }
 }
 
 
 % parse messages:
-% TODO unskip ONLY if prependMessage is NOT equal to {}? Make user set that?
 \newcommand{\annMessageParse}{%
-  %\saveexpandmode\expandarg
-    \IfEndWith{\lymessage}{.}
-      % true; the user set a period for punctuation
+  \IfEndWith{\lymessage}{.}
+    % true; the user set a period for punctuation
+    {%
+    \StrGobbleRight{\lymessage}{1}[\lymessage]
+      \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
+    }
+    % false
+    {\IfEndWith{\lymessage}{?}
+      % true; the user set a question mark for punctuation
       {%
       \StrGobbleRight{\lymessage}{1}[\lymessage]
         \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
       }
       % false
-      {\IfEndWith{\lymessage}{?}
-        % true; the user set a question mark for punctuation
+      {\IfEndWith{\lymessage}{!}
+        % true; the user set an exclamation point for punctuation
         {%
         \StrGobbleRight{\lymessage}{1}[\lymessage]
           \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
         }
         % false
-        {\IfEndWith{\lymessage}{!}
-          % true; the user set an exclamation point for punctuation
-          {%
-          \StrGobbleRight{\lymessage}{1}[\lymessage]
-            \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
-          }
-          % false
-          {\ifthenelse{\equal{\lymessage}{no value given}}{\unskip\noMessError}
+        {\ifthenelse{\equal{\lymessage}{no value given}}{\unskip\noMessError}
+          % else
+          {\ifthenelse{\equal{\lymessage}{}}{\unskip\noMessError}
             % else
-            {\ifthenelse{\equal{\lymessage}{}}{\unskip\noMessError}
-              % else
-              {\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak}}}
+            {\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak}
+          }
         }
       }
-  %\restoreexpandmode
+    }
 }
 
 
@@ -674,6 +655,7 @@ compiles with:
 % user command, set order: punct, append
 \newcommand{\annMessPunctAppend}{%
   \renewcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage\annMessagePunct\unskip\appendMessage}}}}
+
 % set order: append, punct
 \newcommand{\annMessAppendPunct}{%
   \renewcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage\appendMessage\unskip\annMessagePunct}}}}
@@ -686,16 +668,10 @@ compiles with:
 }
 
 
-%
-%%
-%%%%
-%%%%%
-% ANNOTATIONS
-
 % default annotation parsers: for stacked and inline modes that can be easily
 % hacked/reconfigured to custom designs.
 
-\let\KV@errx@ORI\KV@errx% store original error handling
+\let\KV@errx@ORI\KV@errx% store original error handling for unknown keys
 
 % critical remark:
 \newcommand{\criticalRemark}[5][]{%
@@ -1018,10 +994,5 @@ Function will be updated to handle custom footnotes soon enough.]
 }
 
 \end{comment}
-
-% Ignore unknown keys ... this must be last
-%\makeatletter
-%\let\KV@errx\@gobble
-%\makeatother
 
 \endinput
