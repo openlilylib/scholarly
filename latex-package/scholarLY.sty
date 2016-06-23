@@ -305,7 +305,7 @@ compiles with:
 }
 
 % to sub same ONLY when both same:
-\def\sameLocationExact{
+\def\sameLocationStrict{
   \ifthenelse{\equal{\currentMeasure}{\previousMeasure}}% if measure same..
     % true
     {\ifthenelse{\equal{\currentBeat}{\previousBeat}}% and beat same..
@@ -324,9 +324,16 @@ compiles with:
     }
 }
 
-\def\annSameLocationExact{\def\testLocation{\sameLocationExact}}
+% to always show both
+\def\sameLocationShow{
+  \def\thisMeasure{\annMeasurePfx\currentMeasure,}
+  \def\thisBeat{\annBeatPfx\currentBeat}
+}
+
+\def\annSameLocationShow{\def\testLocation{\sameLocationShow}}
+\def\annSameLocationStrict{\def\testLocation{\sameLocationStrict}}
 \def\annSameLocationLoose{\def\testLocation{\sameLocationLoose}}
-\annSameLocationExact
+\annSameLocationShow% default
 
 %% ~ ~ ~ the PARSERS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
