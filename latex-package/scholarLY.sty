@@ -127,24 +127,40 @@ compiles with:
 }
 
 
-\newcommand{\annStyleMode}{}
-
-% declare draft/final options:
-\newif\ifex@draft % (implicitly final) ... i.e. draft mode if set, otherwise final mode,
-                  % which can also be explicitly set: \usepackage[final]{scholarLY}
-
-\DeclareOption{draft}{\ex@drafttrue}
-\DeclareOption{final}{\ex@draftfalse}
+\def\annStyleMode{}
+\def\annSMRevisit{}
+\def\annDrevisitornot{}
+\def\annFrevisitornot{}
+%
+% PACKAGE OPTIONS:
+\newif\ifex@draft
+  \DeclareOption{draft}{\ex@drafttrue}
+  \DeclareOption{final}{\ex@draftfalse}
+\newif\ifex@nocustom
+  \DeclareOption{nocustom}{\ex@nocustomtrue}
+  \DeclareOption{custom}{\ex@nocustomfalse}
 \ProcessOptions*
-
+%
+% use custom (implicit) or don't:
+\ifex@nocustom
+  \def\annDrevisitornot{
+    \annSetDraft{}
+  }
+  \def\annFrevisitornot{
+    \annSetFinal{}
+  }
+\else
+\fi
+%
+% use final (implicit) or draft:
 \ifex@draft
   \annStacked % default, can be overwritten in custom or global settings
   \def\annName{\annType{\annTypeName }}
-  \renewcommand{\annStyleMode}{\customdraftornot}% must be *last*
+  \def\annStyleMode{\customdraftornot\annDrevisitornot}% must be *last*
 \else
   \annInline % default, can be overwritten in custom or global settings
   \def\annName{}
-  \renewcommand{\annStyleMode}{\customfinalornot}% must be *last*
+  \def\annStyleMode{\customfinalornot\annFrevisitornot}% must be *last*
 \fi
 
 
