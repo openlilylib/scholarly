@@ -58,26 +58,27 @@ compiles with:
 %% ~ ~ ~ DRAFT or FINAL MODE, and styling therein ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-% create custom settings for `draft` mode:
-\newcommand{\customdraft}{}
-\newcommand\setcustomdraft[1]{\renewcommand{\customdraft}{#1}}
-  \setcustomdraft{
-    \styleAnnMessage{##1}
-  } % the default settings for DRAFT mode = nothing
-
 \def\customdraftornot{}
-\newcommand{\usecustomdraft}{\def\customdraftornot{\customdraft}}
-
-
-% create custom settings for `final` mode:
-\newcommand{\customfinal}{}
-\newcommand\setcustomfinal[1]{\renewcommand{\customfinal}{#1}}
+\def\customdraft{}
+\def\usecustomdraft{\def\customdraftornot{\customdraft}}
+% create custom settings for `draft` mode:
+\newcommand\annSetDraft[1]{
+  \def\customdraft{#1}
+  \usecustomdraft
+}
 
 \def\customfinalornot{}
-\newcommand{\usecustomfinal}{\def\customfinalornot{\customfinal}} % apply custom
+\def\customfinal{}
+\def\usecustomfinal{\def\customfinalornot{\customfinal}}
+% create custom settings for `final` mode:
+\newcommand\annSetFinal[1]{
+  \def\customfinal{#1}
+  \usecustomfinal
+}
+
 
 % let custom final settings carry over to draft mode:
-\newcommand{\finalfordraft}{\renewcommand{\customdraft}{\customfinal}}
+\newcommand{\finalfordraft}{\def\customdraft{\customfinal}}
 
 % break annotations or not:
 \newcommand{\letAnnBreakornot}{\par\nobreak} % default = no break
@@ -87,11 +88,11 @@ compiles with:
 % NOTE If \enumoptions (see below) specifies vertical spacing within items, \letAnnBreak
 %      is more likely to result in breaks. Otherwise, LaTeX will try to avoid breaking
 %      even with \annBreakAllow employed.
-
+%
 % apply any of the usual enumerate arguments to the list:
 \newcommand{\enumOptions}{}
 \newcommand{\setEnumOptions}[1]{\renewcommand{\enumOptions}{#1}}
-
+%
 % inline or stacked annotations:
 \newcommand{\skipornot}{}
 \newcommand{\typeSkipornot}{}
