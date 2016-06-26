@@ -723,7 +723,7 @@ compiles with:
 \let\KV@errx@ORI\KV@errx% store original error handling for unknown keys
 
 % critical remark:
-\newcommand{\criticalRemark}[5][]{%
+\newcommand{\criticalRemark}[3][]{%
   % set KEYS, defaults, then new from #1
     \resetkeys
       \let\KV@errx\@gobble% ignore unknown keys
@@ -745,12 +745,12 @@ compiles with:
       \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
       {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
       {\annBeat{\thisBeat}\skipornot}
-      \ifthenelse{\equal{#4}{}}
+      \ifthenelse{\equal{\lycontextid}{}}
         {\unskip{}}
-        {\annArgsPrePrefix\annContextPfx\annVoice{#4}\skipornot}
-      \ifthenelse{\equal{#5}{}}
+        {\annArgsPrePrefix\annContextPfx\annVoice{\lycontextid}\skipornot}
+      \ifthenelse{\equal{\lygrobtype}{}}
         {\unskip{}}
-        {\annArgsPrePrefix\annGrobTypePfx\annAffected{#5}\skipornot}
+        {\annArgsPrePrefix\annGrobTypePfx\annAffected{\lygrobtype}\skipornot}
       \annArgsPrePrefix\annMessagePfx{{{%
         \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
         \ifthenelse{\equal{\lyannfootnote}{no value given}}
@@ -763,7 +763,7 @@ compiles with:
 
 
 % musical issue:
-\newcommand{\musicalIssue}[5][]{%
+\newcommand{\musicalIssue}[3][]{%
   \resetkeys
     \let\KV@errx\@gobble% ignore unknown keys
     \setkeys{scholarLYannotations}{#1}
@@ -784,12 +784,12 @@ compiles with:
     \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
     {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
     {\annBeat{\thisBeat}\skipornot}
-    \ifthenelse{\equal{#4}{}}
+    \ifthenelse{\equal{\lycontextid}{}}
       {\unskip{}}
-      {\annArgsPrePrefix\annContextPfx\annVoice{#4}\skipornot}
-    \ifthenelse{\equal{#5}{}}
+      {\annArgsPrePrefix\annContextPfx\annVoice{\lycontextid}\skipornot}
+    \ifthenelse{\equal{\lygrobtype}{}}
       {\unskip{}}
-      {\annArgsPrePrefix\annGrobTypePfx\annAffected{#5}\skipornot}
+      {\annArgsPrePrefix\annGrobTypePfx\annAffected{\lygrobtype}\skipornot}
     \annArgsPrePrefix\annMessagePfx{{{%
       \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}
@@ -802,7 +802,7 @@ compiles with:
 
 
 % lilypond issue:
-\newcommand{\lilypondIssue}[5][]{%
+\newcommand{\lilypondIssue}[3][]{%
 % set KEYS, defaults, then new from #1
   \resetkeys
     \let\KV@errx\@gobble% ignore unknown keys
@@ -824,12 +824,12 @@ compiles with:
     \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
     {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
     {\annBeat{\thisBeat}\skipornot}
-    \ifthenelse{\equal{#4}{}}
+    \ifthenelse{\equal{\lycontextid}{}}
       {\unskip{}}
-      {\annArgsPrePrefix\annContextPfx\annVoice{#4}\skipornot}
-    \ifthenelse{\equal{#5}{}}
+      {\annArgsPrePrefix\annContextPfx\annVoice{\lycontextid}\skipornot}
+    \ifthenelse{\equal{\lygrobtype}{}}
       {\unskip{}}
-      {\annArgsPrePrefix\annGrobTypePfx\annAffected{#5}\skipornot}
+      {\annArgsPrePrefix\annGrobTypePfx\annAffected{\lygrobtype}\skipornot}
     \annArgsPrePrefix\annMessagePfx{{{%
       \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}
@@ -842,7 +842,7 @@ compiles with:
 
 
 % question:
-\newcommand{\annotateQuestion}[5][]{%
+\newcommand{\annotateQuestion}[3][]{%
 % set KEYS, defaults, then new from #1
   \resetkeys
     \let\KV@errx\@gobble% ignore unknown keys
@@ -864,12 +864,12 @@ compiles with:
     \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
     {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
     {\annBeat{\thisBeat}\skipornot}
-    \ifthenelse{\equal{#4}{}}
+    \ifthenelse{\equal{\lycontextid}{}}
       {\unskip{}}
-      {\annArgsPrePrefix\annContextPfx\annVoice{#4}\skipornot}
-    \ifthenelse{\equal{#5}{}}
+      {\annArgsPrePrefix\annContextPfx\annVoice{\lycontextid}\skipornot}
+    \ifthenelse{\equal{\lygrobtype}{}}
       {\unskip{}}
-      {\annArgsPrePrefix\annGrobTypePfx\annAffected{#5}\skipornot}
+      {\annArgsPrePrefix\annGrobTypePfx\annAffected{\lygrobtype}\skipornot}
     \annArgsPrePrefix\annMessagePfx{{{%
       \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}
@@ -882,7 +882,7 @@ compiles with:
 
 
 % todo:
-\newcommand{\annotateTodo}[5][]{%
+\newcommand{\annotateTodo}[3][]{%
 % set KEYS, defaults, then new from #1
   \resetkeys
     \let\KV@errx\@gobble% ignore unknown keys
@@ -904,12 +904,12 @@ compiles with:
     \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
     {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
     {\annBeat{\thisBeat}\skipornot}
-    \ifthenelse{\equal{#4}{}}
+    \ifthenelse{\equal{\lycontextid}{}}
       {\unskip{}}
-      {\annArgsPrePrefix\annContextPfx\annVoice{#4}\skipornot}
-    \ifthenelse{\equal{#5}{}}
+      {\annArgsPrePrefix\annContextPfx\annVoice{\lycontextid}\skipornot}
+    \ifthenelse{\equal{\lygrobtype}{}}
       {\unskip{}}
-      {\annArgsPrePrefix\annGrobTypePfx\annAffected{#5}\skipornot}
+      {\annArgsPrePrefix\annGrobTypePfx\annAffected{\lygrobtype}\skipornot}
     \annArgsPrePrefix\annMessagePfx{{{%
       \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}
@@ -922,7 +922,7 @@ compiles with:
 
 
 % generic annotations:
-\newcommand{\annotation}[5][]{% generic annotation, for custom types
+\newcommand{\annotation}[3][]{% generic annotation, for custom types
 % set KEYS, defaults, then new from #1
   \resetkeys
     \let\KV@errx\@gobble% ignore unknown keys
@@ -943,12 +943,12 @@ compiles with:
     \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
     {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
     {\annBeat{\thisBeat}\skipornot}
-    \ifthenelse{\equal{#4}{}}
+    \ifthenelse{\equal{\lycontextid}{}}
       {\unskip{}}
-      {\annArgsPrePrefix\annContextPfx\annVoice{#4}\skipornot}
-    \ifthenelse{\equal{#5}{}}
+      {\annArgsPrePrefix\annContextPfx\annVoice{\lycontextid}\skipornot}
+    \ifthenelse{\equal{\lygrobtype}{}}
       {\unskip{}}
-      {\annArgsPrePrefix\annGrobTypePfx\annAffected{#5}\skipornot}
+      {\annArgsPrePrefix\annGrobTypePfx\annAffected{\lygrobtype}\skipornot}
     \annArgsPrePrefix\annMessagePfx{{{%
       \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}

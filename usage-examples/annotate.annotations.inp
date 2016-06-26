@@ -12,8 +12,6 @@
     fn-yellow-text={This is another nested footnote for the first annotation, but it isn't used.},
     ann-footnote={This is a footnote for the entire annotation.}]
     {1}{4}
-    {usage-examples}
-    {NoteHead}
  
 \musicalIssue
    [grob={KeySignature},
@@ -25,8 +23,6 @@
     type={musical-issue},
     message={This is a musical issue with not footnotes.}]
     {3}{1}
-    {usage-examples}
-    {KeySignature}
  
 \criticalRemark
    [grob={NoteHead},
@@ -38,8 +34,6 @@
     type={critical-remark},
     message={An annotation for the top voice.}]
     {3}{3}
-    {usage-examples}
-    {NoteHead}
  
 \criticalRemark
    [grob={NoteHead},
@@ -51,8 +45,6 @@
     type={critical-remark},
     message={A note about the second voice.}]
     {3}{3}
-    {usage-examples}
-    {NoteHead}
  
 \lilypondIssue
    [grob={TrillSpanner},
@@ -64,8 +56,6 @@
     type={lilypond-issue},
     message={A message about the trill.}]
     {4}{2}
-    {usage-examples}
-    {TrillSpanner}
  
 \annotateQuestion
    [grob={Slur},
@@ -78,8 +68,6 @@
     message={A question with a footnote\fnRandom about the slur.},
     fn-R-a-n-d-o-m-text={A random footnote for the question.}]
     {5}{2}
-    {usage-examples}
-    {Slur}
  
 \annotateTodo
    [grob={Flag},
@@ -91,8 +79,6 @@
     type={todo},
     message={A todo for the flag.}]
     {5}{3 1}
-    {usage-examples}
-    {Flag}
  
 \lilypondIssue
    [grob={NoteHead},
@@ -104,6 +90,4 @@
     type={lilypond-issue},
     message={Message about this note.}]
     {5}{4}
-    {usage-examples}
-    {NoteHead}
  

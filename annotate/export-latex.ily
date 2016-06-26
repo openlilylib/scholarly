@@ -197,15 +197,6 @@
               (lilyglyphs-beat-string loc-props)
               (beat-string loc-props))))
 
-       ;; Affected context
-       (append-to-output-stringlist
-        (format "    {~a}"
-          (assq-ref ann 'context-id)))
-       ;; Affected grob type
-       (append-to-output-stringlist
-        (format "    {~a}"
-          (assq-ref ann 'grob-type)))
-
        ;; For a custom annotation we have to append
        ;; the type as 6th argument
        (let ((type (assq-ref annotation-type-latex-commands
@@ -219,4 +210,3 @@
 
    ;; write to output file
    (write-output-file "inp"))
-
