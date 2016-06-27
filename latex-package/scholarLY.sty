@@ -722,167 +722,9 @@ compiles with:
 
 \let\KV@errx@ORI\KV@errx% store original error handling for unknown keys
 
-% critical remark:
-\newcommand{\criticalRemark}[3][]{%
-  % set KEYS, defaults, then new from #1
-    \resetkeys
-      \let\KV@errx\@gobble% ignore unknown keys
-      \setkeys{scholarLYannotations}{#1}
-      \let\KV@errx\KV@errx@ORI% Restore original error handling
-  \saveexpandmode\expandarg
-  % PARSE FOOTNOTES
-    \def\bigmessage{#1}% used in fn 1, 2, 3
-      \customFootsParse% parse fn, step one
-      \extractFNnames% parse fn, step two
-      \makeFNmacros% parse fn, step three
-  % TEST MESSAGE PUNCTUATION, MEASURE and BEAT
-    \testMessagePunct
-    \def\currentMeasure{#2}
-    \def\currentBeat{#3}
-    \testLocation
-  % APPLY to ITEM
-    \item{
-      \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
-      {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
-      {\annBeat{\thisBeat}\skipornot}
-      \ifthenelse{\equal{\lycontextid}{}}
-        {\unskip{}}
-        {\annArgsPrePrefix\annContextPfx\annVoice{\lycontextid}\skipornot}
-      \ifthenelse{\equal{\lygrobtype}{}}
-        {\unskip{}}
-        {\annArgsPrePrefix\annGrobTypePfx\annAffected{\lygrobtype}\skipornot}
-      \annArgsPrePrefix\annMessagePfx{{{%
-        \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
-        \ifthenelse{\equal{\lyannfootnote}{no value given}}
-          {}
-          {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
-    % set "previous" mm/beats for use in next annotation
-    \def\previousMeasure{#2}
-    \def\previousBeat{#3}
-}
-
-
-% musical issue:
-\newcommand{\musicalIssue}[3][]{%
-  \resetkeys
-    \let\KV@errx\@gobble% ignore unknown keys
-    \setkeys{scholarLYannotations}{#1}
-    \let\KV@errx\KV@errx@ORI% Restore original error handling
-\saveexpandmode\expandarg
-% PARSE FOOTNOTES
-  \def\bigmessage{#1}% used in fn 1, 2, 3
-    \customFootsParse% parse fn, step one
-    \extractFNnames% parse fn, step two
-    \makeFNmacros% parse fn, step three
-% TEST MESSAGE PUNCTUATION, MEASURE and BEAT
-  \testMessagePunct
-  \def\currentMeasure{#2}
-  \def\currentBeat{#3}
-  \testLocation
-  % APPLY to ITEM
-  \item{
-    \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
-    {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
-    {\annBeat{\thisBeat}\skipornot}
-    \ifthenelse{\equal{\lycontextid}{}}
-      {\unskip{}}
-      {\annArgsPrePrefix\annContextPfx\annVoice{\lycontextid}\skipornot}
-    \ifthenelse{\equal{\lygrobtype}{}}
-      {\unskip{}}
-      {\annArgsPrePrefix\annGrobTypePfx\annAffected{\lygrobtype}\skipornot}
-    \annArgsPrePrefix\annMessagePfx{{{%
-      \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
-      \ifthenelse{\equal{\lyannfootnote}{no value given}}
-        {}
-        {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
-  % set "previous" mm/beats for use in next annotation
-  \def\previousMeasure{#2}
-  \def\previousBeat{#3}
-}
-
-
-% lilypond issue:
-\newcommand{\lilypondIssue}[3][]{%
-% set KEYS, defaults, then new from #1
-  \resetkeys
-    \let\KV@errx\@gobble% ignore unknown keys
-    \setkeys{scholarLYannotations}{#1}
-    \let\KV@errx\KV@errx@ORI% Restore original error handling
-\saveexpandmode\expandarg
-% PARSE FOOTNOTES
-  \def\bigmessage{#1}% used in fn 1, 2, 3
-    \customFootsParse% parse fn, step one
-    \extractFNnames% parse fn, step two
-    \makeFNmacros% parse fn, step three
-% TEST MESSAGE PUNCTUATION, MEASURE and BEAT
-  \testMessagePunct
-  \def\currentMeasure{#2}
-  \def\currentBeat{#3}
-  \testLocation
-  % APPLY to ITEM
-  \item{
-    \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
-    {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
-    {\annBeat{\thisBeat}\skipornot}
-    \ifthenelse{\equal{\lycontextid}{}}
-      {\unskip{}}
-      {\annArgsPrePrefix\annContextPfx\annVoice{\lycontextid}\skipornot}
-    \ifthenelse{\equal{\lygrobtype}{}}
-      {\unskip{}}
-      {\annArgsPrePrefix\annGrobTypePfx\annAffected{\lygrobtype}\skipornot}
-    \annArgsPrePrefix\annMessagePfx{{{%
-      \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
-      \ifthenelse{\equal{\lyannfootnote}{no value given}}
-        {}
-        {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
-  % set "previous" mm/beats for use in next annotation
-  \def\previousMeasure{#2}
-  \def\previousBeat{#3}
-}
-
-
-% question:
-\newcommand{\annotateQuestion}[3][]{%
-% set KEYS, defaults, then new from #1
-  \resetkeys
-    \let\KV@errx\@gobble% ignore unknown keys
-    \setkeys{scholarLYannotations}{#1}
-    \let\KV@errx\KV@errx@ORI% Restore original error handling
-\saveexpandmode\expandarg
-% PARSE FOOTNOTES
-  \def\bigmessage{#1}% used in fn 1, 2, 3
-    \customFootsParse% parse fn, step one
-    \extractFNnames% parse fn, step two
-    \makeFNmacros% parse fn, step three
-% TEST MESSAGE PUNCTUATION, MEASURE and BEAT
-  \testMessagePunct
-  \def\currentMeasure{#2}
-  \def\currentBeat{#3}
-  \testLocation
-  % APPLY to ITEM
-  \item{
-    \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
-    {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
-    {\annBeat{\thisBeat}\skipornot}
-    \ifthenelse{\equal{\lycontextid}{}}
-      {\unskip{}}
-      {\annArgsPrePrefix\annContextPfx\annVoice{\lycontextid}\skipornot}
-    \ifthenelse{\equal{\lygrobtype}{}}
-      {\unskip{}}
-      {\annArgsPrePrefix\annGrobTypePfx\annAffected{\lygrobtype}\skipornot}
-    \annArgsPrePrefix\annMessagePfx{{{%
-      \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
-      \ifthenelse{\equal{\lyannfootnote}{no value given}}
-        {}
-        {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
-  % set "previous" mm/beats for use in next annotation
-  \def\previousMeasure{#2}
-  \def\previousBeat{#3}
-}
-
-
-% todo:
-\newcommand{\annotateTodo}[3][]{%
+% default annotation parser
+%
+\newcommand\annotationParse[3]{
 % set KEYS, defaults, then new from #1
   \resetkeys
     \let\KV@errx\@gobble% ignore unknown keys
@@ -921,43 +763,31 @@ compiles with:
 }
 
 
+% critical remark:
+\newcommand{\criticalRemark}[3][]{%
+  \annotationParse{#1}{#2}{#3}
+}
+% musical issue:
+\newcommand{\musicalIssue}[3][]{%
+  \annotationParse{#1}{#2}{#3}
+}
+% lilypond issue:
+\newcommand{\lilypondIssue}[3][]{%
+  \annotationParse{#1}{#2}{#3}
+}
+% question:
+\newcommand{\annotateQuestion}[3][]{%
+  \annotationParse{#1}{#2}{#3}
+}
+% todo:
+\newcommand{\annotateTodo}[3][]{%
+  \annotationParse{#1}{#2}{#3}
+}
 % generic annotations:
 \newcommand{\annotation}[3][]{% generic annotation, for custom types
-% set KEYS, defaults, then new from #1
-  \resetkeys
-    \let\KV@errx\@gobble% ignore unknown keys
-    \setkeys{scholarLYannotations}{#1}
-    \let\KV@errx\KV@errx@ORI% Restore original error handling
-\saveexpandmode\expandarg
-% PARSE FOOTNOTES
-  \def\bigmessage{#1}% used in fn 1, 2, 3
-    \customFootsParse% parse fn, step one
-    \extractFNnames% parse fn, step two
-    \makeFNmacros% parse fn, step three
-% TEST MESSAGE PUNCTUATION; DEFINE measure and beat
-  \testMessagePunct
-  \def\currentMeasure{#2}
-  \def\currentBeat{#3}
-  % APPLY to ITEM
-  \item{
-    \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
-    {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
-    {\annBeat{\thisBeat}\skipornot}
-    \ifthenelse{\equal{\lycontextid}{}}
-      {\unskip{}}
-      {\annArgsPrePrefix\annContextPfx\annVoice{\lycontextid}\skipornot}
-    \ifthenelse{\equal{\lygrobtype}{}}
-      {\unskip{}}
-      {\annArgsPrePrefix\annGrobTypePfx\annAffected{\lygrobtype}\skipornot}
-    \annArgsPrePrefix\annMessagePfx{{{%
-      \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
-      \ifthenelse{\equal{\lyannfootnote}{no value given}}
-        {}
-        {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
-  % set "previous" mm/beats for use in next annotation
-  \def\previousMeasure{#2}
-  \def\previousBeat{#3}
+  \annotationParse{#1}{#2}{#3}
 }
+
 
 
 \begin{comment}
