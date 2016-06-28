@@ -8,27 +8,6 @@
 \RequirePackage{verbatim}% for comments
 \RequirePackage{titlecaps}% for custom names
 
-
-\begin{comment}
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-compiles with:
-\pdflatex? YES
-\lualatex? YES
-\xelatex?
-
-% TODO:
-- consider reorganizing package structure (this file master, with subfiles)
-- itemization should be optional, not madatory
-  . perhaps the environment around \input{file.inp} should be left open, and the
-  . 'item{}' prewritten, but prepared (as a toggle, if possible) for the user.
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-\end{comment}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% OPTIONS ... the customizable part of the package
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ GLOBAL STYLING OPTIONS ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
@@ -53,29 +32,21 @@ compiles with:
 \define@key{annStyles}{message-2nd}{\def\annMessageO{#1}}
 \define@key{annStyles}{message-3rd}{\def\annMessageOO{#1}}
 
-
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 %% ~ ~ ~ DRAFT or FINAL MODE, and styling therein ~
 % ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-\def\customdraftornot{}
 \def\customdraft{}
-\def\usecustomdraft{\def\customdraftornot{\customdraft}}
 % create custom settings for `draft` mode:
 \newcommand\annSetDraft[1]{
   \def\customdraft{#1}
-  \usecustomdraft
 }
 
-\def\customfinalornot{}
 \def\customfinal{}
-\def\usecustomfinal{\def\customfinalornot{\customfinal}}
 % create custom settings for `final` mode:
 \newcommand\annSetFinal[1]{
   \def\customfinal{#1}
-  \usecustomfinal
 }
-
 
 % let custom final settings carry over to draft mode:
 \newcommand{\finalfordraft}{\def\customdraft{\customfinal}}
@@ -127,40 +98,36 @@ compiles with:
 }
 
 
+\input{../default-stylesheet.inp}% TODO recheck this
 \def\annStyleMode{}
-\def\annSMRevisit{}
-\def\annDrevisitornot{}
-\def\annFrevisitornot{}
-%
+\def\annRevisit{}
+
 % PACKAGE OPTIONS:
-\newif\ifex@draft
-  \DeclareOption{draft}{\ex@drafttrue}
-  \DeclareOption{final}{\ex@draftfalse}
-\newif\ifex@nocustom
-  \DeclareOption{nocustom}{\ex@nocustomtrue}
-  \DeclareOption{custom}{\ex@nocustomfalse}
+\newif\ifDraft
+  \DeclareOption{draft}{\Drafttrue}
+  \DeclareOption{final}{\Draftfalse}
+
+\newif\ifDefault
+  \DeclareOption{default}{\Defaulttrue}
+  \DeclareOption{custom}{\Defaultfalse}
+
 \ProcessOptions*
 %
-% use custom (implicit) or don't:
-\ifex@nocustom
-  \def\annDrevisitornot{
-    \annSetDraft{}
-  }
-  \def\annFrevisitornot{
-    \annSetFinal{}
-  }
-\else
-\fi
-%
 % use final (implicit) or draft:
-\ifex@draft
-  \annStacked % default, can be overwritten in custom or global settings
-  \def\annName{\annType{\annTypeName }}
-  \def\annStyleMode{\customdraftornot\annDrevisitornot}% must be *last*
+\ifDraft
+  \def\annStyleMode{\customdraft}
+  \def\annRevisit{\revisitDraftorNot}
 \else
-  \annInline % default, can be overwritten in custom or global settings
-  \def\annName{}
-  \def\annStyleMode{\customfinalornot\annFrevisitornot}% must be *last*
+  \def\annStyleMode{\customfinal}
+  \def\annRevisit{\revisitFinalorNot}
+\fi
+
+\ifDefault
+  \def\revisitFinalorNot{\defaultFinal}
+  \def\revisitDraftorNot{\defaultDraft}
+\else
+  \def\revisitFinalorNot{}
+  \def\revisitDraforNot{}
 \fi
 
 
@@ -221,7 +188,7 @@ compiles with:
 
 %% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 \newcommand{\annotations}[1]
-{\begin{enumerate}[mode=boxed]\enumOptions\annStyleMode\input{#1}\end{enumerate}}
+{\begin{enumerate}[mode=boxed]\enumOptions\annStyleMode\annRevisit\input{#1}\end{enumerate}}
 
 
 % keys originally set in arg 1, exported from lilypond
@@ -866,5 +833,3 @@ Function will be updated to handle custom footnotes soon enough.]
 }
 
 \end{comment}
-
-\endinput

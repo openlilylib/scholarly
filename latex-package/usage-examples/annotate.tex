@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage[final, nocustom]{../scholarLY}
+\usepackage[draft, default]{../scholarLY}
 \usepackage[margin=1in]{geometry}
 \usepackage{multicol}
 \usepackage{xcolor}
@@ -19,26 +19,23 @@
 
 \annSetFinal{
   \setkeys{annPrefixes}{
-    measure={M.},
-    beat={b.}
+    measure={Meas.},
+    beat={bea.}
   }
   \annMessageWrap{ . . / . . }
-}
-
-% these will affect output regardless of final/draft since they are outside of
-% the \annSetFinal \annSetDraft definitions.
   \annInline
   \annShowType
   \annTypeWrap{/ ) }
+}
 
 \annotations{annotate.annotations.inp}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \pagebreak
 \section{example 2}
 \small
 
+\annSetFinal{
   \setkeys{annPrefixes}{
     grob={the grob prefix},% not used though
     measure={\textbf{M.}},
@@ -48,19 +45,16 @@
     post-type={\\\vspace{-0.25cm}\hrule\vspace{0.05cm}},
     pre-args={$\cdot$ }
   }
-
   \setkeys{annStyles}{
     measure={\color{gray}},
     type={\textit},
     message={},% resets to nothing
     message-2nd={}% ""
   }
-
   \setkeys{annExtras}{
     same-beat={...},
     same-measure={...}
   }
-
   \annSameLocationStrict
   \annStacked
   \annShowType
@@ -68,6 +62,7 @@
   \annMessageWrapOuter{/}
   \annTypeWrapSep{.}
   \annTypeWrap{/./}
+}
 
 \annotations{annotate.annotations.inp}
 

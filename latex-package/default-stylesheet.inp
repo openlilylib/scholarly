@@ -1,0 +1,73 @@
+% default stylesheet for scholarLY
+
+% default final
+\def\defaultFinal{
+  \setkeys{annStyles}{
+    type={},
+    measure={},
+    beat={},
+    voice={},
+    affected={},
+    message={},
+    message-2nd={},
+    message-3rd={}
+  }
+  \setkeys{annPrefixes}{
+    post-type={},
+    pre-type={},
+    pre-args={},
+    grob={},
+    grob-location={},
+    grob-type={},
+    input-file-name={},
+    context-id={},
+    location={},
+    type={},
+    message={},
+    context={},
+    measure={M.},
+    beat={b.}
+  }
+  \setkeys{annExtras}{
+    same-measure={---},
+    same-beat={---}
+  }
+  \annInline
+  \annHideType
+  \annSameLocationStrict
+  \annMessageWrap{}
+  \annMessageWrapOuter{}
+}
+
+% default draft
+\def\defaultDraft{
+  \setkeys{annStyles}{
+    type={},
+    measure={},
+    beat={},
+    voice={},
+    affected={},
+    message={},
+    message-2nd={},
+    message-3rd={}
+  }
+  \setkeys{annPrefixes}{
+    post-type={},
+    pre-type={},
+    pre-args={},
+    grob={},
+    grob-location={},
+    grob-type={},
+    input-file-name={},
+    context-id={},
+    location={},
+    type={},
+    message={},
+    context={},
+    measure={Measure {}},
+    beat={beat }
+  }
+  \annStacked
+  \annShowType
+  \annSameLocationShow
+}
