@@ -8,7 +8,7 @@
 \RequirePackage{verbatim}% for comments
 \RequirePackage{titlecaps}% for custom names
 
-% default styles:
+% styles:
 \def\annType{}
 \def\annMeasure{}
 \def\annBeat{}
@@ -58,18 +58,14 @@
 \newcommand{\setEnumOptions}[1]{\renewcommand{\enumOptions}{#1}}
 %
 % inline or stacked annotations:
-\newcommand{\skipornot}{}
-\newcommand{\typeSkipornot}{}
-
+  \newcommand{\skipornot}{}
+  \newcommand{\typeSkipornot}{}
 \newcommand{\annInline}{%
   \renewcommand{\skipornot}{, }
-  \renewcommand{\typeSkipornot}{}
-}
-
+  \renewcommand{\typeSkipornot}{}}
 \newcommand{\annStacked}{%
   \renewcommand{\skipornot}{\letAnnBreakornot}
-  \renewcommand{\typeSkipornot}{\letAnnBreakornot}
-}
+  \renewcommand{\typeSkipornot}{\letAnnBreakornot}}
 
 % custom type name . stub
 \define@key{scholarLYannotations}{type}{\def\lytype{#1}}
@@ -90,9 +86,7 @@
     {\renewcommand{\typeSkipornot}{}}
 }
 
-
-\input{default-stylesheet.inp} % TODO recheck this
-
+\input{default-stylesheet.inp}
 \def\annStyleMode{}
 \def\annRevisit{}
 
@@ -100,13 +94,10 @@
 \newif\ifDraft
   \DeclareOption{draft}{\Drafttrue}
   \DeclareOption{final}{\Draftfalse}
-
 \newif\ifDefault
   \DeclareOption{default}{\Defaulttrue}
   \DeclareOption{custom}{\Defaultfalse}
-
 \ProcessOptions*
-%
 % use final (implicit) or draft:
 \ifDraft
   \def\annStyleMode{\customdraft}
@@ -115,7 +106,7 @@
   \def\annStyleMode{\customfinal}
   \def\annRevisit{\revisitFinalorNot}
 \fi
-
+% use custom (implicit) or default
 \ifDefault
   \def\revisitFinalorNot{\defaultFinal}
   \def\revisitDraftorNot{\defaultDraft}
@@ -137,46 +128,47 @@
 % first message wrapper (goes inside ann-footnote)
 \def\prependMessage{}
 \def\appendMessage{}
-\def\aMWSep{/}
-% to redefine the seperator
+\def\aMWSep{/}% default
+% macro to redefine the seperator
 \newcommand\annMessageWrapSep[1]{\def\aMWSep{#1}}
-%
+% macro to define message wrap
 \newcommand\annMessageWrap[1]{
   \expandarg\IfSubStr{#1}{\aMWSep}
     {\StrCut{#1}{\aMWSep}\prependMessage\appendMessage}
     {\def\prependMessage{#1}
-    \def\appendMessage{#1}}
-}
-% complete message wrapper
+    \def\appendMessage{#1}}}
+% outer message wrap
 \def\prependMessageFirst{}
 \def\appendMessageLast{}
-\def\aMWOSep{/}
-% to redefine the seperator
+\def\aMWOSep{/}% default
+% macro to redefine the seperator
 \newcommand\annMessageWrapOuterSep[1]{\def\aMWOSep{#1}}
-%
+% macro to define outer message wrap
 \newcommand\annMessageWrapOuter[1]{
   \expandarg\IfSubStr{#1}{\aMWOSep}
     {\StrCut{#1}{\aMWOSep}\prependMessageFirst\appendMessageLast}
     {\def\prependMessageFirst{#1}
-    \def\appendMessageLast{#1}}
-}
+    \def\appendMessageLast{#1}}}
 % ann type wrapper
 \def\prependType{}
 \def\appendType{}
-\def\aTWSep{/}
-% to redefine the seperator
+\def\aTWSep{/}% default
+% macro to redefine the seperator
 \newcommand\annTypeWrapSep[1]{\def\aTWSep{#1}}
-%
+% macro to define type wrap
 \newcommand\annTypeWrap[1]{
   \expandarg\IfSubStr{#1}{\aTWSep}
     {\StrCut{#1}{\aTWSep}\prependType\appendType}
     {\def\prependType{#1}
-    \def\appendType{#1}}
-}
+    \def\appendType{#1}}}
 
 %% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+\def\begEnumerate{\begin{enumerate}[mode=boxed]\enumOptions}
+\def\endEnumerate{\end{enumerate}}
+
 \newcommand{\annotations}[1]
-{\begin{enumerate}[mode=boxed]\enumOptions\annStyleMode\annRevisit\input{#1}\end{enumerate}}
+{\begEnumerate\annStyleMode\annRevisit\input{#1}\endEnumerate}
 
 % keys originally set in arg 1, exported from lilypond
 \define@key{scholarLYannotations}{grob}{\edef\lygrob{\detokenize{#1}}}
@@ -189,9 +181,8 @@
 \define@key{scholarLYannotations}{type}{\def\lyanntype{#1}}
 \define@key{scholarLYannotations}{context}{\def\lycontext{#1}}
 \define@key{scholarLYannotations}{ann-footnote}{\def\lyannfootnote{#1}}
-
 \def\resetkeys{
-  \setkeys{scholarLYannotations}{% default values
+  \setkeys{scholarLYannotations}{% default values, placed in each annotation first
     grob = no value given,
     grob-location = no value given,
     grob-type = no value given,
@@ -219,7 +210,6 @@
 \def\annContextPfx{}
 \def\annMeasurePfx{M.}
 \def\annBeatPfx{beat }
-% key family/names for overrides
 \define@key{annPrefixes}{grob}{\def\annGrobPfx{#1}}
 \define@key{annPrefixes}{grob-location}{\def\annGrobLocationPfx{#1}}
 \define@key{annPrefixes}{grob-type}{\def\annGrobTypePfx{#1}}
@@ -290,8 +280,7 @@
 % to always show both
 \def\sameLocationShow{
   \def\thisMeasure{\annMeasurePfx\currentMeasure,}
-  \def\thisBeat{\annBeatPfx\currentBeat}
-}
+  \def\thisBeat{\annBeatPfx\currentBeat}}
 % macros for show / strict-hide / loose-hide
 \def\annSameLocationShow{\def\testLocation{\sameLocationShow}}
 \def\annSameLocationStrict{\def\testLocation{\sameLocationStrict}}
@@ -459,7 +448,6 @@
       }
     }
 }
-
 % define the macro names for custom footnotes:
 \def\extractFNnames{%
   \expandarg\StrCount{\bigmessage}{fn-}[\theFNnum]
@@ -588,17 +576,11 @@
 % observe the punctuation:
 \newcommand{\testMessagePunct}{%
   \IfEndWith{\lymessage}{.}
-    % true
     {\def\annMessagePunct{.}}
-    % false
     {\IfEndWith{\lymessage}{?}
-      % true
       {\def\annMessagePunct{?}}
-      % false
       {\IfEndWith{\lymessage}{!}
-        % true
         {\def\annMessagePunct{!}}
-        % false
         {\def\annMessagePunct{\unskip}}
       }
     }
@@ -606,30 +588,22 @@
 % parse messages:
 \newcommand{\annMessageParse}{%
   \IfEndWith{\lymessage}{.}
-    % true; the user set a period for punctuation
     {%
     \StrGobbleRight{\lymessage}{1}[\lymessage]
       \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
     }
-    % false
     {\IfEndWith{\lymessage}{?}
-      % true; the user set a question mark for punctuation
       {%
       \StrGobbleRight{\lymessage}{1}[\lymessage]
         \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
       }
-      % false
       {\IfEndWith{\lymessage}{!}
-        % true; the user set an exclamation point for punctuation
         {%
         \StrGobbleRight{\lymessage}{1}[\lymessage]
           \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak
         }
-        % false
         {\ifthenelse{\equal{\lymessage}{no value given}}{\unskip\noMessError}
-          % else
           {\ifthenelse{\equal{\lymessage}{}}{\unskip\noMessError}
-            % else
             {\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak}
           }
         }
@@ -653,6 +627,11 @@
   \prependType\titlecap{\annTypeCleaned}\appendType
 }
 
+\def\itemornot{}
+\def\useitems{\def\itemornot{\item}}
+\def\nonitems{\def\itemornot{}}
+\useitems
+
 \let\KV@errx@ORI\KV@errx% store original error handling for unknown keys
 
 % default annotation parser
@@ -675,7 +654,7 @@
   \def\currentBeat{#3}
   \testLocation
 % APPLY to ITEM
-  \item{
+  \itemornot
     \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
     {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
     {\annBeat{\thisBeat}\skipornot}
@@ -689,7 +668,7 @@
       \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}
         {}
-        {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}}
+        {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}
   % set "previous" mm/beats for use in next annotation
   \def\previousMeasure{#2}
   \def\previousBeat{#3}
@@ -703,30 +682,10 @@
 \newcommand{\annotateTodo}[3][]{\annotationParse{#1}{#2}{#3}}
 \newcommand{\annotation}[3][]{\annotationParse{#1}{#2}{#3}}
 
-
-\begin{comment}
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-% for the entirely custom command: \useCustomAnn{ ... custom stuff ... }
-% NOTE this is really just a placeholder right now..
-
-\newcommand{\customannotations}[3]{
-  \expandafter{#1}
-  \input{#2}
-  \expandafter{#3}
-}
-
-\newcommand\useCustomAnn[1]{
-  \renewcommand\criticalRemark[3][]{
-    \resetkeys
-      \setkeys{scholarLYannotations}{##1}
-      \def\currentMeasure{##2}
-      \def\currentBeat{##3}
-      {#1}
-      \def\previousMeasure{##2}
-      \def\previousBeat{##3}
-  }
-}
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-\end{comment}
+% custom annotations
+% macro to set
+\newcommand{\setCustomAnn}[1]{\def\customAnnParse{#1}}
+% macro to use
+\newcommand\useCustomAnn{\renewcommand\criticalRemark[3][]{\customAnnParse}}
 
 \endinput
