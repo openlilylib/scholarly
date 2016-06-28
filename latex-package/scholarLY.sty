@@ -164,8 +164,15 @@
 
 %% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-\def\begEnumerate{\begin{enumerate}[mode=boxed]\enumOptions}
-\def\endEnumerate{\end{enumerate}}
+\def\annEnumerateOn{
+  \def\itemornot{\item}
+  \def\begEnumerate{\begin{enumerate}[mode=boxed]\enumOptions}
+  \def\endEnumerate{\end{enumerate}}}
+\def\annEnumerateOff{
+  \def\itemornot{}
+  \def\begEnumerate{}
+  \def\endEnumerate{}}
+\annEnumerateOn% default
 
 \newcommand{\annotations}[1]
 {\begEnumerate\annStyleMode\annRevisit\input{#1}\endEnumerate}
@@ -626,11 +633,6 @@
   \StrSubstitute{\lyanntype}{-}{ }[\annTypeCleaned]
   \prependType\titlecap{\annTypeCleaned}\appendType
 }
-
-\def\itemornot{}
-\def\useitems{\def\itemornot{\item}}
-\def\nonitems{\def\itemornot{}}
-\useitems
 
 \let\KV@errx@ORI\KV@errx% store original error handling for unknown keys
 

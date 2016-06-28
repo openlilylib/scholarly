@@ -37,6 +37,8 @@
   \annSameLocationStrict
   \annMessageWrap{}
   \annMessageWrapOuter{}
+  \annTypeWrap{}
+  \annEnumerateOn
 }
 
 % default draft
@@ -70,4 +72,8 @@
   \annStacked
   \annShowType
   \annSameLocationShow
+  \annMessageWrap{}
+  \annMessageWrapOuter{}
+  \annTypeWrap{}
+  \annEnumerateOn
 }

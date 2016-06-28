@@ -1,6 +1,6 @@
 \documentclass{article}
 \makeatletter \def\input@path{{../}} \makeatother
-\usepackage[draft, default]{scholarLY}
+\usepackage[final, default]{scholarLY}
 \usepackage[margin=1in]{geometry}
 \usepackage{multicol}
 \usepackage{xcolor}
@@ -34,7 +34,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
 \section{example 2}
-\small
 
 \annSetFinal{
   \setkeys{annPrefixes}{
@@ -63,6 +62,15 @@
   \annMessageWrapOuter{/}
   \annTypeWrapSep{.}
   \annTypeWrap{/./}
+}
+
+\annotations{annotate.annotations.inp}
+
+\pagebreak
+
+\annSetFinal{
+  \annEnumerateOff% this is a poor use case; it will be most useful for custom
+                  % annotation parsing.
 }
 
 \annotations{annotate.annotations.inp}
