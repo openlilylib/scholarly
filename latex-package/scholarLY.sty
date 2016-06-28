@@ -8,10 +8,6 @@
 \RequirePackage{verbatim}% for comments
 \RequirePackage{titlecaps}% for custom names
 
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-%% ~ ~ ~ GLOBAL STYLING OPTIONS ~
-% ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
 % default styles:
 \def\annType{}
 \def\annMeasure{}
@@ -21,7 +17,6 @@
 \def\annMessage{}
 \def\annMessageO{}
 \def\annMessageOO{}
-
 % `annStyles` keys to update styles:
 \define@key{annStyles}{type}{\def\annType{#1}}
 \define@key{annStyles}{measure}{\def\annMeasure{#1}}
@@ -41,13 +36,11 @@
 \newcommand\annSetDraft[1]{
   \def\customdraft{#1}
 }
-
 \def\customfinal{}
 % create custom settings for `final` mode:
 \newcommand\annSetFinal[1]{
   \def\customfinal{#1}
 }
-
 % let custom final settings carry over to draft mode:
 \newcommand{\finalfordraft}{\def\customdraft{\customfinal}}
 
@@ -98,7 +91,8 @@
 }
 
 
-\input{../default-stylesheet.inp}% TODO recheck this
+\input{../default-stylesheet.inp} % TODO recheck this
+
 \def\annStyleMode{}
 \def\annRevisit{}
 
@@ -130,20 +124,16 @@
   \def\revisitDraforNot{}
 \fi
 
-
 %% ~ ~ ~ ADDITIONAL CUSTOMIZATIONS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 % do something immediately after the type (only effective if type present)
 \def\annPostType{}
 \define@key{annPrefixes}{post-type}{\def\annPostType{#1}}
-% for example, could be used to add vspace, hspace, characters, etc. after type
-
 % do something immediately before each type or arg (arg presently affects all):
 \def\annTypePrePrefix{}
 \define@key{annPrefixes}{pre-type}{\def\annTypePrePrefix{#1}}
 \def\annArgsPrePrefix{}
 \define@key{annPrefixes}{pre-args}{\def\annArgsPrePrefix{#1}}
-
 % first message wrapper (goes inside ann-footnote)
 \def\prependMessage{}
 \def\appendMessage{}
@@ -157,7 +147,6 @@
     {\def\prependMessage{#1}
     \def\appendMessage{#1}}
 }
-
 % complete message wrapper
 \def\prependMessageFirst{}
 \def\appendMessageLast{}
@@ -171,7 +160,6 @@
     {\def\prependMessageFirst{#1}
     \def\appendMessageLast{#1}}
 }
-
 % ann type wrapper
 \def\prependType{}
 \def\appendType{}
@@ -189,7 +177,6 @@
 %% ~ ~ ~ \annotations = the main command ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 \newcommand{\annotations}[1]
 {\begin{enumerate}[mode=boxed]\enumOptions\annStyleMode\annRevisit\input{#1}\end{enumerate}}
-
 
 % keys originally set in arg 1, exported from lilypond
 \define@key{scholarLYannotations}{grob}{\edef\lygrob{\detokenize{#1}}}
@@ -220,7 +207,6 @@
 
 \def\noMessError{\color{red} Oops! No message has been entered for this annotation.}
 
-
 % default Prefixes
 \def\annGrobPrx{}
 \def\annGrobLocationPfx{}
@@ -233,7 +219,6 @@
 \def\annContextPfx{}
 \def\annMeasurePfx{M.}
 \def\annBeatPfx{beat }
-
 % key family/names for overrides
 \define@key{annPrefixes}{grob}{\def\annGrobPfx{#1}}
 \define@key{annPrefixes}{grob-location}{\def\annGrobLocationPfx{#1}}
@@ -247,20 +232,16 @@
 \define@key{annPrefixes}{measure}{\def\annMeasurePfx{#1}}
 \define@key{annPrefixes}{beat}{\def\annBeatPfx{#1}}
 
-
 % if same measure, optionally substitute:
 \def\previousMeasure{0}
 \def\currentMeasure{0}
 \def\sameMeasureStub{---}% default.. is redefined by key:
 \define@key{annExtras}{same-measure}{\def\sameMeasureStub{#1}}
-
 % optionally substitute same beat (if *also* same measure)
 \def\previousBeat{0}
 \def\currentBeat{0}
 \def\sameBeatStub{{---}\unskip}% default.. is redefined by key:
 \define@key{annExtras}{same-beat}{\def\sameBeatStub{#1}}
-
-
 % to sub same (measure, or measure+beat (never just beat)) when same:
 \def\sameLocationLoose{
   \ifthenelse{\equal{\currentBeat}{\previousBeat}}% if same beat
@@ -287,7 +268,6 @@
         }
     }
 }
-
 % to sub same ONLY when both same:
 \def\sameLocationStrict{
   \ifthenelse{\equal{\currentMeasure}{\previousMeasure}}% if measure same..
@@ -307,13 +287,12 @@
     \def\thisBeat{\annBeatPfx\currentBeat}
     }
 }
-
 % to always show both
 \def\sameLocationShow{
   \def\thisMeasure{\annMeasurePfx\currentMeasure,}
   \def\thisBeat{\annBeatPfx\currentBeat}
 }
-
+% macros for show / strict-hide / loose-hide
 \def\annSameLocationShow{\def\testLocation{\sameLocationShow}}
 \def\annSameLocationStrict{\def\testLocation{\sameLocationStrict}}
 \def\annSameLocationLoose{\def\testLocation{\sameLocationLoose}}
@@ -481,7 +460,6 @@
     }
 }
 
-
 % define the macro names for custom footnotes:
 \def\extractFNnames{%
   \expandarg\StrCount{\bigmessage}{fn-}[\theFNnum]
@@ -556,7 +534,6 @@
     }
 }
 
-
 % create the macros that are used in the messages:
 \def\makeFNmacros{
   \ifthenelse{\equal{\theFNnum}{0}}
@@ -607,10 +584,8 @@
     }
 }
 
-
 \def\annMessagePunct{}% default, no punctuation
-
-% test the message for punctuations, and store the result:
+% observe the punctuation:
 \newcommand{\testMessagePunct}{%
   \IfEndWith{\lymessage}{.}
     % true
@@ -628,8 +603,6 @@
       }
     }
 }
-
-
 % parse messages:
 \newcommand{\annMessageParse}{%
   \IfEndWith{\lymessage}{.}
@@ -663,29 +636,22 @@
       }
     }
 }
-
-
 % set the append/punct vs. punct/append orientations:
-\newcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage\annMessagePunct\appendMessage}}} % default = Punct, Append
-
-% user command, set order: punct, append
+\newcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage\annMessagePunct\appendMessage}}}
+% macro to set order: punct, append
 \newcommand{\annMessPunctAppend}{%
-  \renewcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage\annMessagePunct\unskip\appendMessage}}}}
-
-% set order: append, punct
+  \renewcommand{\annMessTail}{
+    \annMessageOO{\annMessageO{\annMessage\annMessagePunct\unskip\appendMessage}}}}
+% macro to set order: append, punct
 \newcommand{\annMessAppendPunct}{%
-  \renewcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage\appendMessage\unskip\annMessagePunct}}}}
-
+  \renewcommand{\annMessTail}{%
+    \annMessageOO{\annMessageO{\annMessage\appendMessage\unskip\annMessagePunct}}}}
 
 % get type from key
 \def\annTypeName{%
   \StrSubstitute{\lyanntype}{-}{ }[\annTypeCleaned]
   \prependType\titlecap{\annTypeCleaned}\appendType
 }
-
-
-% default annotation parsers: for stacked and inline modes that can be easily
-% hacked/reconfigured to custom designs.
 
 \let\KV@errx@ORI\KV@errx% store original error handling for unknown keys
 
@@ -729,43 +695,17 @@
   \def\previousBeat{#3}
 }
 
-
-% critical remark:
-\newcommand{\criticalRemark}[3][]{%
-  \annotationParse{#1}{#2}{#3}
-}
-% musical issue:
-\newcommand{\musicalIssue}[3][]{%
-  \annotationParse{#1}{#2}{#3}
-}
-% lilypond issue:
-\newcommand{\lilypondIssue}[3][]{%
-  \annotationParse{#1}{#2}{#3}
-}
-% question:
-\newcommand{\annotateQuestion}[3][]{%
-  \annotationParse{#1}{#2}{#3}
-}
-% todo:
-\newcommand{\annotateTodo}[3][]{%
-  \annotationParse{#1}{#2}{#3}
-}
-% generic annotations:
-\newcommand{\annotation}[3][]{% generic annotation, for custom types
-  \annotationParse{#1}{#2}{#3}
-}
-
+% annotation macros:
+\newcommand{\criticalRemark}[3][]{\annotationParse{#1}{#2}{#3}}
+\newcommand{\musicalIssue}[3][]{\annotationParse{#1}{#2}{#3}}
+\newcommand{\lilypondIssue}[3][]{\annotationParse{#1}{#2}{#3}}
+\newcommand{\annotateQuestion}[3][]{\annotationParse{#1}{#2}{#3}}
+\newcommand{\annotateTodo}[3][]{\annotationParse{#1}{#2}{#3}}
+\newcommand{\annotation}[3][]{\annotationParse{#1}{#2}{#3}}
 
 
 \begin{comment}
-
-. . . . . . . . . . THIS FUNCTION NOT READY YET . . . . . . . . . . .
-
-[The use of custom footnotes causes compilation to fail.
-Function will be updated to handle custom footnotes soon enough.]
-
-~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 % for the entirely custom command: \useCustomAnn{ ... custom stuff ... }
 % NOTE this is really just a placeholder right now..
 
@@ -776,52 +716,7 @@ Function will be updated to handle custom footnotes soon enough.]
 }
 
 \newcommand\useCustomAnn[1]{
-  \renewcommand\criticalRemark[6][]{
-    \resetkeys
-      \setkeys{scholarLYannotations}{##1}
-      \def\currentMeasure{##2}
-      \def\currentBeat{##3}
-      {#1}
-      \def\previousMeasure{##2}
-      \def\previousBeat{##3}
-  }
-  \renewcommand\musicalIssue[6][]{
-    \resetkeys
-      \setkeys{scholarLYannotations}{##1}
-      \def\currentMeasure{##2}
-      \def\currentBeat{##3}
-      {#1}
-      \def\previousMeasure{##2}
-      \def\previousBeat{##3}
-  }
-  \renewcommand\lilypondIssue[6][]{
-    \resetkeys
-      \setkeys{scholarLYannotations}{##1}
-      \def\currentMeasure{##2}
-      \def\currentBeat{##3}
-      {#1}
-      \def\previousMeasure{##2}
-      \def\previousBeat{##3}
-  }
-  \renewcommand\annotateQuestion[6][]{
-    \resetkeys
-      \setkeys{scholarLYannotations}{##1}
-      \def\currentMeasure{##2}
-      \def\currentBeat{##3}
-      {#1}
-      \def\previousMeasure{##2}
-      \def\previousBeat{##3}
-  }
-  \renewcommand\annotateTodo[6][]{
-    \resetkeys
-      \setkeys{scholarLYannotations}{##1}
-      \def\currentMeasure{##2}
-      \def\currentBeat{##3}
-      {#1}
-      \def\previousMeasure{##2}
-      \def\previousBeat{##3}
-  }
-  \renewcommand\annotation[6][]{
+  \renewcommand\criticalRemark[3][]{
     \resetkeys
       \setkeys{scholarLYannotations}{##1}
       \def\currentMeasure{##2}
@@ -831,5 +726,7 @@ Function will be updated to handle custom footnotes soon enough.]
       \def\previousBeat{##3}
   }
 }
-
+~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 \end{comment}
+
+\endinput
