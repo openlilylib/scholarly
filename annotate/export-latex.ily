@@ -56,7 +56,6 @@
             (number->string (second location)) ":"
             (number->string (third location)) ":"
             (number->string (fourth location))))))
-      ;;((eq? 'grob-location key) "Can't display grob location yet")
       ((eq? 'grob-location key)
         (list
           (assoc 'beat-string value)
