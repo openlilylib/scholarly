@@ -1,6 +1,6 @@
 \criticalRemark
    [grob={NoteHead},
-    grob-location={Can't display grob location yet},
+    grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
     grob-type={NoteHead},
     input-file-name={annotate.ly},
     context-id={usage-examples},
@@ -10,60 +10,61 @@
         is a second sentence, which\fnblue has a footnote.},
     fn-blue-text={This is my \uppercase{first nested footnote}, for the \textcolor{red}{second sentence} of the first annotation.},
     fn-yellow-text={This is another nested footnote for the first annotation, but it isn't used.},
-    ann-footnote={This is a footnote for the entire annotation.}]
+    ann-footnote={This is a footnote for the entire annotation.},
+    priority={1}]
     {1}{4}
  
 \musicalIssue
    [grob={KeySignature},
-    grob-location={Can't display grob location yet},
+    grob-location={((beat-string . 1) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 1) (measure-pos . Mom 0) (measure-no . 3) (rhythmic-location 3 . Mom 0))},
     grob-type={KeySignature},
     input-file-name={annotate.ly},
     context-id={usage-examples},
-    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 26:4:4},
+    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 27:4:4},
     type={musical-issue},
     message={This is a musical issue with not footnotes.}]
     {3}{1}
  
 \criticalRemark
    [grob={NoteHead},
-    grob-location={Can't display grob location yet},
+    grob-location={((beat-string . 3) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 3) (measure-pos . Mom 1/2) (measure-no . 3) (rhythmic-location 3 . Mom 1/2))},
     grob-type={NoteHead},
     input-file-name={annotate.ly},
     context-id={usage-examples},
-    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 34:8:8},
+    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 35:8:8},
     type={critical-remark},
     message={An annotation for the top voice.}]
     {3}{3}
  
 \criticalRemark
    [grob={NoteHead},
-    grob-location={Can't display grob location yet},
+    grob-location={((beat-string . 3) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 3) (measure-pos . Mom 1/2) (measure-no . 3) (rhythmic-location 3 . Mom 1/2))},
     grob-type={NoteHead},
     input-file-name={annotate.ly},
     context-id={usage-examples},
-    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 42:8:8},
+    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 43:8:8},
     type={critical-remark},
     message={A note about the second voice.}]
     {3}{3}
  
 \lilypondIssue
    [grob={TrillSpanner},
-    grob-location={Can't display grob location yet},
+    grob-location={((beat-string . 2) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 2) (measure-pos . Mom 1/4) (measure-no . 4) (rhythmic-location 4 . Mom 1/4))},
     grob-type={TrillSpanner},
     input-file-name={annotate.ly},
     context-id={usage-examples},
-    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 51:4:4},
+    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 52:4:4},
     type={lilypond-issue},
     message={A message about the trill.}]
     {4}{2}
  
 \annotateQuestion
    [grob={Slur},
-    grob-location={Can't display grob location yet},
+    grob-location={((beat-string . 2) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 2) (measure-pos . Mom 1/4) (measure-no . 5) (rhythmic-location 5 . Mom 1/4))},
     grob-type={Slur},
     input-file-name={annotate.ly},
     context-id={usage-examples},
-    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 58:4:4},
+    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 59:4:4},
     type={question},
     message={A question with a footnote\fnRandom about the slur.},
     fn-R-a-n-d-o-m-text={A random footnote for the question.}]
@@ -71,22 +72,22 @@
  
 \annotateTodo
    [grob={Flag},
-    grob-location={Can't display grob location yet},
+    grob-location={((beat-string . 3 1) (beat-fraction . 1) (beat-part . Mom 1/4G-1/8) (our-beat . 3) (measure-pos . Mom 3/4G-1/8) (measure-no . 5) (rhythmic-location 5 . Mom 3/4G-1/8))},
     grob-type={Flag},
     input-file-name={annotate.ly},
     context-id={usage-examples},
-    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 64:4:4},
+    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 65:4:4},
     type={todo},
     message={A todo for the flag.}]
     {5}{3 1}
  
 \lilypondIssue
    [grob={NoteHead},
-    grob-location={Can't display grob location yet},
+    grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 5) (rhythmic-location 5 . Mom 3/4))},
     grob-type={NoteHead},
     input-file-name={annotate.ly},
     context-id={usage-examples},
-    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 69:4:4},
+    location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 70:4:4},
     type={lilypond-issue},
     message={Message about this note.}]
     {5}{4}

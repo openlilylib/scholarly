@@ -39,6 +39,7 @@
    str)
 
 % Temporary function to strip property values from #< > parts
+#(define badchars (char-set #\# #\< #\>))
 #(define (sanitize-prop-value prop)
    (let ((key (car prop))
          (value (cdr prop)))
@@ -55,9 +56,20 @@
             (number->string (second location)) ":"
             (number->string (third location)) ":"
             (number->string (fourth location))))))
-      ((eq? 'grob-location key) "Can't display grob location yet")
+      ;;((eq? 'grob-location key) "Can't display grob location yet")
+      ((eq? 'grob-location key)
+        (list
+          (assoc 'beat-string value)
+          (assoc 'beat-fraction value)
+          (cons 'beat-part (string-delete (object->string (cdr (assoc 'beat-part value))) badchars))
+          (assoc 'our-beat value)
+          (cons 'measure-pos (string-delete (object->string (cdr (assoc 'measure-pos value))) badchars))
+          (assoc 'measure-no value)
+          (cons 'rhythmic-location
+            (cons (cadr (assoc 'rhythmic-location value))
+                  (string-delete (object->string (cddr (assoc 'rhythmic-location value))) badchars)))))
       ((eq? key 'input-file-name) (car value))
-      (else "Can't display yet"))))
+      (else value))))
 
 % Return a string list for the "remaining" properties,
 % formatted as a list of key=value arguments
