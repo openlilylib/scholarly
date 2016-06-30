@@ -178,12 +178,12 @@
 {\begEnumerate\annStyleMode\annRevisit\input{#1}\endEnumerate}
 
 % keys originally set in arg 1, exported from lilypond
-\define@key{scholarLYannotations}{grob}{\edef\lygrob{\detokenize{#1}}}
-\define@key{scholarLYannotations}{grob-location}{\edef\lygroblocation{\detokenize{#1}}}
+\define@key{scholarLYannotations}{grob}{\def\lygrob{#1}}
+\define@key{scholarLYannotations}{grob-location}{\def\lygroblocation{#1}}
 \define@key{scholarLYannotations}{grob-type}{\def\lygrobtype{#1}}
 \define@key{scholarLYannotations}{input-file-name}{\def\lyinputfilename{#1}}
 \define@key{scholarLYannotations}{context-id}{\def\lycontextid{#1}}
-\define@key{scholarLYannotations}{location}{\edef\lylocation{\detokenize{#1}}}
+\define@key{scholarLYannotations}{location}{\def\lylocation{#1}}
 \define@key{scholarLYannotations}{message}{\def\lymessage{#1}}
 \define@key{scholarLYannotations}{type}{\def\lyanntype{#1}}
 \define@key{scholarLYannotations}{context}{\def\lycontext{#1}}
@@ -202,7 +202,6 @@
     ann-footnote = {no value given}
   }
 }
-
 \def\noMessError{\color{red} Oops! No message has been entered for this annotation.}
 
 % default Prefixes
@@ -228,6 +227,24 @@
 \define@key{annPrefixes}{context}{\def\annContextPfx{#1}}
 \define@key{annPrefixes}{measure}{\def\annMeasurePfx{#1}}
 \define@key{annPrefixes}{beat}{\def\annBeatPfx{#1}}
+
+% retrieve measure and beat from grob-location (TODO: figure out how to address beat fractions)
+\def\processGrobLocation{
+  \StrBetween[1,1]{\lygroblocation}{(beat-string .}{)}[\lybeatstring]
+    \StrDel{\lybeatstring}{ }[\lybeatstring]
+  \StrBetween[1,2]{\lygroblocation}{(beat-fraction .}{)}[\lybeatfraction]
+    \StrDel{\lybeatfraction}{ }[\lybeatfraction]
+  \StrBetween[1,3]{\lygroblocation}{(beat-part .}{)}[\lybeatpart]
+    \StrDel{\lybeatpart}{ }[\lybeatpart]
+  \StrBetween[1,4]{\lygroblocation}{(our-beat .}{)}[\lyourbeat]
+    \StrDel{\lyourbeat}{ }[\lyourbeat]
+    \StrDel{\lyourbeat}{ }[\lyourbeatPrev]
+  \StrBetween[1,5]{\lygroblocation}{(measure-pos .}{)}[\lymeasurepos]
+    \StrDel{\lymeasurepos}{ }[\lymeasurepos]
+  \StrBetween[1,6]{\lygroblocation}{(measure-no .}{)}[\lymeasureno]
+    \StrDel{\lymeasureno}{ }[\lymeasureno]
+  \StrBetween[1,7]{\lygroblocation}{(rhythmic-location }{)}[\lyrhythmiclocation]
+}
 
 % if same measure, optionally substitute:
 \def\previousMeasure{0}
@@ -638,7 +655,7 @@
 
 % default annotation parser
 %
-\newcommand\annotationParse[3]{
+\newcommand\annotationParse[1]{
 % set KEYS, defaults, then new from #1
   \resetkeys
     \let\KV@errx\@gobble% ignore unknown keys
@@ -652,8 +669,9 @@
     \makeFNmacros% parse fn, step three
 % TEST MESSAGE PUNCTUATION, MEASURE and BEAT
   \testMessagePunct
-  \def\currentMeasure{#2}
-  \def\currentBeat{#3}
+  \processGrobLocation
+  \def\currentMeasure{\lymeasureno}
+  \def\currentBeat{\lyourbeat}
   \testLocation
 % APPLY to ITEM
   \itemornot
@@ -672,22 +690,22 @@
         {}
         {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}
   % set "previous" mm/beats for use in next annotation
-  \def\previousMeasure{#2}
-  \def\previousBeat{#3}
+  \StrDel{\lymeasureno}{ }[\previousMeasure]% arbitrary string parse, to return new value
+  \StrDel{\lyourbeat}{ }[\previousBeat]% arbitrary string parse, to return new value
 }
 
 % annotation macros:
-\newcommand{\criticalRemark}[3][]{\annotationParse{#1}{#2}{#3}}
-\newcommand{\musicalIssue}[3][]{\annotationParse{#1}{#2}{#3}}
-\newcommand{\lilypondIssue}[3][]{\annotationParse{#1}{#2}{#3}}
-\newcommand{\annotateQuestion}[3][]{\annotationParse{#1}{#2}{#3}}
-\newcommand{\annotateTodo}[3][]{\annotationParse{#1}{#2}{#3}}
-\newcommand{\annotation}[3][]{\annotationParse{#1}{#2}{#3}}
+\newcommand{\criticalRemark}[1][]{\annotationParse{#1}}
+\newcommand{\musicalIssue}[1][]{\annotationParse{#1}}
+\newcommand{\lilypondIssue}[1][]{\annotationParse{#1}}
+\newcommand{\annotateQuestion}[1][]{\annotationParse{#1}}
+\newcommand{\annotateTodo}[1][]{\annotationParse{#1}}
+\newcommand{\annotation}[1][]{\annotationParse{#1}}
 
 % custom annotations
 % macro to set
 \newcommand{\setCustomAnn}[1]{\def\customAnnParse{#1}}
 % macro to use
-\newcommand\useCustomAnn{\renewcommand\criticalRemark[3][]{\customAnnParse}}
+\newcommand\useCustomAnn{\renewcommand\criticalRemark[1][]{\customAnnParse}}
 
 \endinput

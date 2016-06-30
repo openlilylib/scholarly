@@ -12,7 +12,6 @@
     fn-yellow-text={This is another nested footnote for the first annotation, but it isn't used.},
     ann-footnote={This is a footnote for the entire annotation.},
     priority={1}]
-    {1}{4}
  
 \musicalIssue
    [grob={KeySignature},
@@ -23,7 +22,6 @@
     location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 27:4:4},
     type={musical-issue},
     message={This is a musical issue with not footnotes.}]
-    {3}{1}
  
 \criticalRemark
    [grob={NoteHead},
@@ -34,7 +32,6 @@
     location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 35:8:8},
     type={critical-remark},
     message={An annotation for the top voice.}]
-    {3}{3}
  
 \criticalRemark
    [grob={NoteHead},
@@ -45,7 +42,6 @@
     location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 43:8:8},
     type={critical-remark},
     message={A note about the second voice.}]
-    {3}{3}
  
 \lilypondIssue
    [grob={TrillSpanner},
@@ -56,7 +52,6 @@
     location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 52:4:4},
     type={lilypond-issue},
     message={A message about the trill.}]
-    {4}{2}
  
 \annotateQuestion
    [grob={Slur},
@@ -68,7 +63,6 @@
     type={question},
     message={A question with a footnote\fnRandom about the slur.},
     fn-R-a-n-d-o-m-text={A random footnote for the question.}]
-    {5}{2}
  
 \annotateTodo
    [grob={Flag},
@@ -79,7 +73,6 @@
     location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 65:4:4},
     type={todo},
     message={A todo for the flag.}]
-    {5}{3 1}
  
 \lilypondIssue
    [grob={NoteHead},
@@ -90,5 +83,4 @@
     location={/Users/Jeffery/Documents/code_clones/scholarLY/usage-examples/annotate.ly 70:4:4},
     type={lilypond-issue},
     message={Message about this note.}]
-    {5}{4}
  

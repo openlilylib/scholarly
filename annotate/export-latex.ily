@@ -200,13 +200,6 @@
               ;                     (format "~a{~a}{~a}"
               (assq-ref annotation-type-latex-commands
                 (assq-ref ann 'type)))))
-       ;; output location arguments
-       (append-to-output-stringlist
-        (format "    {~a}{~a}"
-          (assq-ref loc-props 'measure-no)
-          (if (getOption '(scholarly annotate export latex use-lilyglyphs))
-              (lilyglyphs-beat-string loc-props)
-              (beat-string loc-props))))
 
        ;; For a custom annotation we have to append
        ;; the type as 6th argument
