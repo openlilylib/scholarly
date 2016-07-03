@@ -1,4 +1,4 @@
-\version "2.19.22"
+\version "2.19.42"
 
 \include "scholarly/package.ly"
 
@@ -14,36 +14,63 @@
 music = \relative c'{
   c4 d e
     \criticalRemark \with {
-      message = "Go \"to \textit{school} \vand \noindent{sit back}!"
-      context = "Some staff"
+      message = "Go to \\textit{school} and \\textcolor{red}{sit back}! This
+        is a second sentence, which\fnblue has a footnote."
+      fn-blue-text = "This is my \uppercase{first nested footnote}, for the \\textcolor{red}{second sentence} of the first annotation."
+      fn-yellow-text = "This is another nested footnote for the first annotation, but it isn't used."
+      ann-footnote = "This is a footnote for the entire annotation."
     }
     NoteHead
-    f ( |
+  f ( |
   g a ) b c
-  \musicalIssue \with {
-    message = "Another test"
-  }
-  Staff.KeySignature
+    \musicalIssue \with {
+      message = "This is a musical issue with not footnotes."
+    }
+    Staff.KeySignature
   \key a \major
   a d
-    <<
-      {
-        \voiceOne
+  <<
+    { \voiceOne
         \criticalRemark \with {
-          message = "go to @\emph{school}@!"
+          message = "An annotation for the top voice."
         }
-        Accidental
-        cis? d
-      }
-      \new Voice {
-        \voiceTwo
-        ais b
-      }
-    >>
-    \oneVoice
-    cis d
+        NoteHead
+      cis d
+    }
+     \new Voice = "voice two"
+    { \voiceTwo
+        \criticalRemark \with {
+          message="A note about the second voice."
+        }
+        NoteHead
+      ais b
+    }
+  >>
+  \oneVoice
+  e
+    \lilypondIssue \with {
+      message = "A message about the trill."
+    }
+    TrillSpanner
+  cis2\startTrillSpan
+  d4\stopTrillSpan
+  b
+    \question \with {
+      message = "A question with a footnote\fnRandom about the slur."
+      fn-R-a-n-d-o-m-text = "A random footnote for the question."
+    }
+    Slur
+  gis8( a) b4
+    \todo \with {
+      message = "A todo for the flag."
+    }
+    Flag
+  \appoggiatura a8
+    \lilypondIssue \with {
+      message = "Message about this note."
+    } #'(1 . 3) "my footnote message"
+    NoteHead \lyfootnote gis4
+
 }
 
-\score {
-  \new Staff = "My Staff" \music
-}
+\score { \music }
