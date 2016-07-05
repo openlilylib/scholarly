@@ -19,7 +19,7 @@ lyfootnote =
    ((markup?) symbol-list-or-music?)
      (let ((xoff (car (assq-ref footnote-props 'offset)))
             (yoff (cdr (assq-ref footnote-props 'offset)))
-            (ftex (cdr (assoc 'footnote footnote-props))))
+            (ftex (assq-ref footnote-props 'footnote)))
            (let ((mus (make-music
                        'FootnoteEvent
                        'X-offset xoff
