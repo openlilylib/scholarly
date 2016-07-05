@@ -113,18 +113,30 @@ annotate =
           ;; annotate the named grob
           #{
             \tweak #`(,name input-annotation) #props #item
+            #(if (equal? (assq-ref footnote-props 'footnote-case) #t)
+              #{
+              \lyfootnote #item
+              #})
           #})
          ((ly:music? item)
           ;; item is music
           ;; -> annotate the music item (usually the NoteHead)
           #{
             \tweak #'input-annotation #props #item
+            #(if (equal? (assq-ref footnote-props 'footnote-case) #t)
+              #{
+              \lyfootnote #item
+              #})
           #})
          (else
           ;; item is a symbol list (i.e. grob name)
           ;; -> annotate the next item of the given grob name
           #{
             \once \override #item #'input-annotation = #props
+            #(if (equal? (assq-ref footnote-props 'footnote-case) #t)
+              #{
+              \lyfootnote #item
+              #})
           #}))
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
