@@ -5,9 +5,8 @@
 music = {
     \criticalRemark
       \with{
-        message = "my message about the slur"
+        message = "my message/footnote about the slur"
         offset = #'(1 . -2)
-        footnote = "my special footnote text"
     } Slur a4_\lyfootnote ( 
     b c') b
     \criticalRemark

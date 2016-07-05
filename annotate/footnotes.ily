@@ -11,7 +11,13 @@
         (cadr pair) (caddr pair))))
 
 #(define (set-footnote-proplist proplist)
-    (map send-footnote-props (ly:get-context-mods proplist)))
+    (begin
+      (set! footnote-props (assoc-set! footnote-props 'footnote ""))
+      (map send-footnote-props (ly:get-context-mods proplist))
+      (if (string-null? (assq-ref footnote-props 'footnote))
+          (set! footnote-props
+            (assoc-set! footnote-props 'footnote
+              (assq-ref footnote-props 'message))))))
 
 % footnote hook (TODO: make automated)
 lyfootnote =
