@@ -1,26 +1,30 @@
 %
 % footnotes functionality for scholarLY; to be continued
 
-% footnote stub; footnote-props holds temporary footnote information
-#(define footnote-props '((fnoffset 0 . 0)(fntext "")))
+% footnote-props holds temporary footnote information
+#(define footnote-props '())
 
-% in ctiricalRemark, etc. sets optional arguments pair and string to footnote-props
-#(define (set-footnote-props offs texts)
-   (set! footnote-props (assoc-set! footnote-props 'fnoffset offs))
-   (set! footnote-props (assoc-set! footnote-props 'fntext texts)))
+% TODO amend to make 'message' the 'fntext' arg if fntext not present
+#(define (send-footnote-props pair)
+    (set! footnote-props
+      (assoc-set! footnote-props
+        (cadr pair) (caddr pair))))
 
-% an only slightly altered footnote procedure
+#(define (set-footnote-proplist proplist)
+    (map send-footnote-props (ly:get-context-mods proplist)))
+
+% footnote hook (TODO: make automated)
 lyfootnote =
 #(define-music-function (mark item)
    ((markup?) symbol-list-or-music?)
-     (let ((xoff (car (assq-ref footnote-props 'fnoffset)))
-            (yoff (cdr (assq-ref footnote-props 'fnoffset)))
-            (tex (assq-ref footnote-props 'fntext)))
+     (let ((xoff (car (assq-ref footnote-props 'offset)))
+            (yoff (cdr (assq-ref footnote-props 'offset)))
+            (ftex (cdr (assoc 'footnote footnote-props))))
            (let ((mus (make-music
                        'FootnoteEvent
                        'X-offset xoff
                        'Y-offset yoff
                        'automatically-numbered (not mark)
                        'text (or mark (make-null-markup))
-                       'footnote-text tex)))
+                       'footnote-text ftex)))
                  (once (propertyTweak 'footnote-music mus item)))))
