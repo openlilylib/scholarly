@@ -113,7 +113,7 @@ annotate =
           ;; annotate the named grob
           #{
             \tweak #`(,name input-annotation) #props #item
-            #(if (equal? (assq-ref footnote-props 'footnote-case) #t)
+            #(if (equal? (assq-ref temp-props 'footnote-case) #t)
               #{
               \lyfootnote #item
               #})
@@ -123,7 +123,7 @@ annotate =
           ;; -> annotate the music item (usually the NoteHead)
           #{
             \tweak #'input-annotation #props #item
-            #(if (equal? (assq-ref footnote-props 'footnote-case) #t)
+            #(if (equal? (assq-ref temp-props 'footnote-case) #t)
               #{
               \lyfootnote #item
               #})
@@ -133,7 +133,7 @@ annotate =
           ;; -> annotate the next item of the given grob name
           #{
             \once \override #item #'input-annotation = #props
-            #(if (equal? (assq-ref footnote-props 'footnote-case) #t)
+            #(if (equal? (assq-ref temp-props 'footnote-case) #t)
               #{
               \lyfootnote #item
               #})
@@ -158,7 +158,7 @@ annotation =
 % Note: a 'type' property is mandatory for this command
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
+    (set-temp-proplist properties)
     (if (symbol? name)
         (annotate name properties 'none item)
         (annotate properties 'none item)))
@@ -167,7 +167,7 @@ criticalRemark =
 % Final annotation about an editorial decision
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
+    (set-temp-proplist properties)
     (if (symbol? name)
         (annotate name properties 'critical-remark item)
         (annotate properties 'critical-remark item)))
@@ -176,7 +176,7 @@ lilypondIssue =
 % Annotate a LilyPond issue that hasn't been resolved yet
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
+    (set-temp-proplist properties)
     (if (symbol? name)
         (annotate name properties 'lilypond-issue item)
         (annotate properties 'lilypond-issue item)))
@@ -185,7 +185,7 @@ musicalIssue =
 % Annotate a musical issue that hasn't been resolved yet
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
+    (set-temp-proplist properties)
     (if (symbol? name)
         (annotate name properties 'musical-issue item)
         (annotate properties 'musical-issue item)))
@@ -194,7 +194,7 @@ question =
 % Annotation about a general question
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
+    (set-temp-proplist properties)
     (if (symbol? name)
         (annotate name properties 'question item)
         (annotate properties 'question item)))
@@ -203,7 +203,7 @@ todo =
 % Annotate a task that *has* to be finished
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
+    (set-temp-proplist properties)
     (if (symbol? name)
         (annotate name properties 'todo item)
         (annotate properties 'todo item)))

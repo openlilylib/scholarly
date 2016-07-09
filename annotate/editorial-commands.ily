@@ -20,6 +20,6 @@
 % to be factored into 'annotate'
 #(define (conditional-edit grp item)
     (if ((assq-ref scholarly-edition-bools 'applylocaledit) #t)
-        (let* ((faml (assq-ref footnote-props 'apply))
+        (let* ((faml (assq-ref temp-props 'apply))
                (func (hash-ref scholarly.editions '(faml grp))))
               #{ #func #item #})))
