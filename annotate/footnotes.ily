@@ -23,14 +23,14 @@
 lyfootnote =
 #(define-music-function (mark item)
    ((markup?) symbol-list-or-music?)
-     (let ((xoff (car (assq-ref temp-props 'offset)))
+     (let* ((xoff (car (assq-ref temp-props 'offset)))
             (yoff (cdr (assq-ref temp-props 'offset)))
-            (ftex (assq-ref temp-props 'footnote)))
-           (let ((mus (make-music
+            (ftex (assq-ref temp-props 'footnote))
+            ((mus (make-music
                        'FootnoteEvent
                        'X-offset xoff
                        'Y-offset yoff
                        'automatically-numbered (not mark)
                        'text (or mark (make-null-markup))
-                       'footnote-text ftex)))
-                 (once (propertyTweak 'footnote-music mus item)))))
+                       'footnote-text ftex))))
+                 (once (propertyTweak 'footnote-music mus item))))
