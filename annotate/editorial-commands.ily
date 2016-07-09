@@ -18,8 +18,10 @@
 #(setEdition 'emendation 'Slur slurDashed)
 
 % to be factored into 'annotate'
-#(define (conditional-edit grp item)
-    (if ((assq-ref scholarly-edition-bools 'applylocaledit) #t)
-        (let* ((faml (assq-ref temp-props 'apply))
-               (func (hash-ref scholarly.editions '(faml grp))))
-              #{ #func #item #})))
+#(define (conditional-edit grp itm)
+    (cond (and ((assq-ref scholarly-edition-bools 'applylocaledit) #t)
+               (not (eq? (hash-ref scholarly.editions '((assq-ref temp-props 'apply) grp)) #f)))
+          (let* ((faml (assq-ref temp-props 'apply))
+                 (func (hash-ref scholarly.editions '(faml grp))))
+                #{ #func #itm #})
+          (else (ly:input-message (*location*) "Instructions for this edition have not been set. Applying nothing..."))))
