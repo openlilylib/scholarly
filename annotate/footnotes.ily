@@ -12,7 +12,11 @@
     (begin
       (set! temp-props (assoc-set! temp-props 'footnote ""))
       (set! temp-props (assoc-set! temp-props 'offset '()))
+      (set! temp-props (assoc-set! temp-props 'apply '()))
       (map send-temp-props (ly:get-context-mods proplist))
+      (if (null? (assq-ref temp-props 'apply))
+          (hash-set! scholarly-edition-bools 'applylocaledit #f)
+          (hash-set! scholarly-edition-bools 'applylocaledit #t))
       (if (string-null? (assq-ref temp-props 'footnote))
           (set! temp-props (assoc-set! temp-props 'footnote (assq-ref temp-props 'message))))
       (if (null? (assq-ref temp-props 'offset))
@@ -26,11 +30,11 @@ lyfootnote =
      (let* ((xoff (car (assq-ref temp-props 'offset)))
             (yoff (cdr (assq-ref temp-props 'offset)))
             (ftex (assq-ref temp-props 'footnote))
-            ((mus (make-music
+            (mus (make-music
                        'FootnoteEvent
                        'X-offset xoff
                        'Y-offset yoff
                        'automatically-numbered (not mark)
                        'text (or mark (make-null-markup))
-                       'footnote-text ftex))))
+                       'footnote-text ftex)))
                  (once (propertyTweak 'footnote-music mus item))))

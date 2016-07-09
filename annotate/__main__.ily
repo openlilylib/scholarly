@@ -63,6 +63,7 @@
 \include "export-plaintext.ily"
 \include "engraver.ily"
 \include "footnotes.ily"
+\include "editorial-commands.ily"
 
 annotate =
 #(define-music-function (name properties type item)
@@ -80,7 +81,8 @@ annotate =
       (input-directory (car ctx))
       ;; extract segment name
       ; currently this is still *with* the extension
-      (input-file-name (cdr ctx)))
+      (input-file-name (cdr ctx))
+      (itm item))
 
     ;; The "type" is passed as an argument from the wrapper functions
     ;; The symbol 'none refers to the generic \annotation function. In this case
@@ -113,7 +115,7 @@ annotate =
           ;; annotate the named grob
           #{
             \tweak #`(,name input-annotation) #props #item
-            #(if (equal? (assq-ref temp-props 'footnote-case) #t)
+            #(if (assq-ref temp-props 'footnote-case)
                   #{ \lyfootnote #item #})
           #})
          ((ly:music? item)
@@ -121,7 +123,7 @@ annotate =
           ;; -> annotate the music item (usually the NoteHead)
           #{
             \tweak #'input-annotation #props #item
-            #(if (equal? (assq-ref temp-props 'footnote-case) #t)
+            #(if (assq-ref temp-props 'footnote-case)
                   #{ \lyfootnote #item #})
           #})
          (else
@@ -129,8 +131,19 @@ annotate =
           ;; -> annotate the next item of the given grob name
           #{
             \once \override #item #'input-annotation = #props
-            #(if (equal? (assq-ref temp-props 'footnote-case) #t)
-                  #{ \lyfootnote #item #})
+            #(if (and (assq-ref temp-props 'footnote-case)
+                      (hash-ref scholarly-edition-bools 'applylocaledit))
+                 (let* ((grp (car item))
+                        (applic (assq-ref temp-props 'apply)) ;; not used yet
+                        (func (hash-ref scholarly.editions.add grp)))
+                       #{ \lyfootnote #item #func #})
+                 (if (assq-ref temp-props 'footnote-case)
+                     #{ \lyfootnote #item #}
+                     (if (hash-ref scholarly-edition-bools 'applylocaledit)
+                         (let* ((grp (car item))
+                                (applic (assq-ref temp-props 'apply)) ;; not used yet
+                                (func (hash-ref scholarly.editions.add grp)))
+                               #{ #func #}))))
           #}))
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
