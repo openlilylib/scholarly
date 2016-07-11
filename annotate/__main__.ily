@@ -175,8 +175,8 @@ annotate =
 annotation =
 % Generic annotation, can be used to "create" custom annotation types
 % Note: a 'type' property is mandatory for this command
-#(define-music-function (name properties item)
-    ((symbol?) ly:context-mod? symbol-list-or-music?)
+#(define-music-function (name properties item mus)
+    ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (set-temp-proplist properties)
     (if (symbol? name)
         (annotate name properties 'none item)
@@ -193,8 +193,8 @@ criticalRemark =
 
 lilypondIssue =
 % Annotate a LilyPond issue that hasn't been resolved yet
-#(define-music-function (name properties item)
-    ((symbol?) ly:context-mod? symbol-list-or-music?)
+#(define-music-function (name properties item mus)
+    ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (set-temp-proplist properties)
     (if (symbol? name)
         (annotate name properties 'lilypond-issue item)
@@ -202,8 +202,8 @@ lilypondIssue =
 
 musicalIssue =
 % Annotate a musical issue that hasn't been resolved yet
-#(define-music-function (name properties item)
-    ((symbol?) ly:context-mod? symbol-list-or-music?)
+#(define-music-function (name properties item mus)
+    ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (set-temp-proplist properties)
     (if (symbol? name)
         (annotate name properties 'musical-issue item)
@@ -211,8 +211,8 @@ musicalIssue =
 
 question =
 % Annotation about a general question
-#(define-music-function (name properties item)
-    ((symbol?) ly:context-mod? symbol-list-or-music?)
+#(define-music-function (name properties item mus)
+    ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (set-temp-proplist properties)
     (if (symbol? name)
         (annotate name properties 'question item)
@@ -220,8 +220,8 @@ question =
 
 todo =
 % Annotate a task that *has* to be finished
-#(define-music-function (name properties item)
-    ((symbol?) ly:context-mod? symbol-list-or-music?)
+#(define-music-function (name properties item mus)
+    ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (set-temp-proplist properties)
     (if (symbol? name)
         (annotate name properties 'todo item)

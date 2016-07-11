@@ -7,7 +7,7 @@ music = {
     \with{
         message = "my message/footnote about deleting the slur"
         apply = #'deletion
-        offset = #'(1 . -2)
+        offset = #'(-0.5 . -2)
     } Slur
     a4( b c')
     \criticalRemark
