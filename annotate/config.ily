@@ -170,3 +170,13 @@
 
 \registerOption scholarly.annotate.context-names
 #'()
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Handling of labels for editorial commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TODO this isn't active yet
+
+\registerOption scholarly.editorial-addition #'()
+\setOption scholarly.editorial-addition #'(
+  (Slur . slurDashed)
+  (NoteHead . parenthesize))

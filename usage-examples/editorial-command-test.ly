@@ -4,11 +4,18 @@
 
 music = {
     \criticalRemark
-      \with{
-        message = "my message/footnote about the slur"
-        %offset = #'(-1 . -2)
-        apply = addition
-    } Slur a4( b c') c'
+    \with{
+        message = "my message/footnote about deleting the slur"
+        apply = #'deletion
+        offset = #'(1 . -2)
+    } Slur
+    a4( b c')
+    \criticalRemark
+    \with{
+        message = "my message about adding the note"
+        apply = #'addition
+    } NoteHead
+    b
 }
 
 \score {

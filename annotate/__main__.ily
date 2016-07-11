@@ -65,9 +65,16 @@
 \include "footnotes.ily"
 \include "editorial-commands.ily"
 
+
+% temporary function used to apply editorial commands to music
+#(define scholarlytempfunc
+   (let ((commandtype (hash-ref scholarly-editorial-temp-func 'temp-applic))
+         (musicitem (hash-ref scholarly-editorial-temp-func 'temp-grp)))
+        (hash-ref scholarly.editions (list commandtype musicitem))))
+
 annotate =
-#(define-music-function (name properties type item)
-   ((symbol?) ly:context-mod? symbol? symbol-list-or-music?)
+#(define-music-function (name properties type item mus)
+   ((symbol?) ly:context-mod? symbol? symbol-list-or-music? (ly:music?))
    ;; generic function to annotate a score item
    ;; not to be called by input documents
 
@@ -135,15 +142,20 @@ annotate =
                       (hash-ref scholarly-edition-bools 'applylocaledit))
                  (let* ((grp (car item))
                         (applic (assq-ref temp-props 'apply)) ;; not used yet
-                        (func (hash-ref scholarly.editions.add grp)))
-                       #{ \lyfootnote #item #func #})
+                        (func (hash-ref scholarly.editions (list applic grp))))
+                       (if (ly:music-function? func)
+                           #{ \lyfootnote \scholarlytempfunc #mus #}
+                           #{ \lyfootnote #func #mus #}))
                  (if (assq-ref temp-props 'footnote-case)
-                     #{ \lyfootnote #item #}
+                     #{ \lyfootnote #mus #}
                      (if (hash-ref scholarly-edition-bools 'applylocaledit)
                          (let* ((grp (car item))
                                 (applic (assq-ref temp-props 'apply)) ;; not used yet
-                                (func (hash-ref scholarly.editions.add grp)))
-                               #{ #func #}))))
+                                (func (hash-ref scholarly.editions (list applic grp))))
+                               (if (ly:music-function? func)
+                                   #{ \scholarlytempfunc #mus #}
+                                   #{ #func #mus #}))
+                         #{ #mus #})))
           #}))
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
@@ -172,12 +184,12 @@ annotation =
 
 criticalRemark =
 % Final annotation about an editorial decision
-#(define-music-function (name properties item)
-    ((symbol?) ly:context-mod? symbol-list-or-music?)
+#(define-music-function (name properties item mus)
+    ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (set-temp-proplist properties)
     (if (symbol? name)
-        (annotate name properties 'critical-remark item)
-        (annotate properties 'critical-remark item)))
+        (annotate name properties 'critical-remark item mus)
+        (annotate properties 'critical-remark item mus)))
 
 lilypondIssue =
 % Annotate a LilyPond issue that hasn't been resolved yet

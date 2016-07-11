@@ -2,19 +2,25 @@
 %
 
 #(define scholarly-edition-bools (make-hash-table))
-
 #(define scholarly.editions (make-hash-table))
 #(define scholarly.editions.add (make-hash-table))
+#(define scholarlyeditions (make-hash-table))
 
-% merely a convenience procedure for now:
-#(define (setEdition family group affect)
-          (hash-set! scholarly.editions (list family group) affect)
-          ;; `group` must also match the grob name if affects grob type
-          ;; rhythm, for example, will require some additional steps later.
-          )
 
-% temporary examples; sent to scholarly.editions
-#(setEdition 'addition 'Slur #{ \slurDashed #})
-#(setEdition 'deletion 'Slur slurDotted)
-#(setEdition 'emendation 'Slur slurDashed)
-#(hash-set! scholarly.editions.add 'Slur slurDashed)
+
+% slurDashed, and other slur commands work normally since they don't depend on music arguments out of context
+#(hash-set! scholarly.editions (list 'addition 'Slur) slurDashed)
+
+% to ignore symbol/list if preprended to music (which annotations most likely do)
+% TODO actually add support for parenthesizing in general from this construct, since
+% text, accidentals, key sig's, etc. could be set in the same fashion in OLL
+
+#(hash-set! scholarly.editions (list 'addition 'NoteHead) parenthesize)
+#(hash-set! scholarly.editions (list 'deletion 'Slur) slurDotted)
+
+
+
+#(define scholarly-editorial-temp-func (make-hash-table))
+% define arbitrary initial value so scholarlytempfunction will pass until used
+#(hash-set! scholarly-editorial-temp-func 'temp-applic 'addition)
+#(hash-set! scholarly-editorial-temp-func 'temp-grp 'NoteHead)
