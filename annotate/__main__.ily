@@ -82,6 +82,9 @@ annotate =
       ; currently this is still *with* the extension
       (input-file-name (cdr ctx)))
 
+    ; TODO: I think it's not clear whether this is the best approach
+    (set-footnote-proplist properties)
+
     ;; The "type" is passed as an argument from the wrapper functions
     ;; The symbol 'none refers to the generic \annotation function. In this case
     ;; we don't set a type at all to ensure proper predicate checking
@@ -152,7 +155,6 @@ annotation =
 % Note: a 'type' property is mandatory for this command
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
     (if (symbol? name)
         (annotate name properties 'none item)
         (annotate properties 'none item)))
@@ -161,7 +163,6 @@ criticalRemark =
 % Final annotation about an editorial decision
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
     (if (symbol? name)
         (annotate name properties 'critical-remark item)
         (annotate properties 'critical-remark item)))
@@ -170,7 +171,6 @@ lilypondIssue =
 % Annotate a LilyPond issue that hasn't been resolved yet
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
     (if (symbol? name)
         (annotate name properties 'lilypond-issue item)
         (annotate properties 'lilypond-issue item)))
@@ -179,7 +179,6 @@ musicalIssue =
 % Annotate a musical issue that hasn't been resolved yet
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
     (if (symbol? name)
         (annotate name properties 'musical-issue item)
         (annotate properties 'musical-issue item)))
@@ -188,7 +187,6 @@ question =
 % Annotation about a general question
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
     (if (symbol? name)
         (annotate name properties 'question item)
         (annotate properties 'question item)))
@@ -197,7 +195,6 @@ todo =
 % Annotate a task that *has* to be finished
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
     (if (symbol? name)
         (annotate name properties 'todo item)
         (annotate properties 'todo item)))
