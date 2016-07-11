@@ -147,7 +147,7 @@ annotate =
                            #{ \lyfootnote \scholarlytempfunc #mus #}
                            #{ \lyfootnote #func #mus #}))
                  (if (assq-ref temp-props 'footnote-case)
-                     #{ \lyfootnote #mus #}
+                     #{ \lyfootnote #item #mus #}
                      (if (hash-ref scholarly-edition-bools 'applylocaledit)
                          (let* ((grp (car item))
                                 (applic (assq-ref temp-props 'apply)) ;; not used yet

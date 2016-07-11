@@ -10,11 +10,6 @@
 
 % slurDashed, and other slur commands work normally since they don't depend on music arguments out of context
 #(hash-set! scholarly.editions (list 'addition 'Slur) slurDashed)
-
-% to ignore symbol/list if preprended to music (which annotations most likely do)
-% TODO actually add support for parenthesizing in general from this construct, since
-% text, accidentals, key sig's, etc. could be set in the same fashion in OLL
-
 #(hash-set! scholarly.editions (list 'addition 'NoteHead) parenthesize)
 #(hash-set! scholarly.editions (list 'deletion 'Slur) slurDotted)
 
