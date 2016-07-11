@@ -72,7 +72,8 @@ annotate =
 
    (let*
     ( ;; read properties from the \with {} clause
-      (props (context-mod->props properties))
+      ;; and check footnote settings
+      (props (footnote-proplist (context-mod->props properties)))
       ;; retrieve a pair with containing directory and input file
       (input-file (string-split (car (ly:input-file-line-char-column (*location*))) #\/ ))
       (ctx (list-tail input-file (- (length input-file) 2)))
@@ -81,9 +82,6 @@ annotate =
       ;; extract segment name
       ; currently this is still *with* the extension
       (input-file-name (cdr ctx)))
-
-    ; TODO: I think it's not clear whether this is the best approach
-    (set-footnote-proplist properties)
 
     ;; The "type" is passed as an argument from the wrapper functions
     ;; The symbol 'none refers to the generic \annotation function. In this case
@@ -116,7 +114,7 @@ annotate =
           ;; annotate the named grob
           #{
             \tweak #`(,name input-annotation) #props #item
-            #(if (equal? (assq-ref temp-props 'footnote-case) #t)
+            #(if (equal? (assq-ref props 'footnote-case) #t)
               #{ \lyfootnote #item #})
           #})
          ((ly:music? item)
@@ -124,7 +122,7 @@ annotate =
           ;; -> annotate the music item (usually the NoteHead)
           #{
             \tweak #'input-annotation #props #item
-            #(if (equal? (assq-ref temp-props 'footnote-case) #t)
+            #(if (equal? (assq-ref props 'footnote-case) #t)
               #{ \lyfootnote #item #})
           #})
          (else
@@ -132,7 +130,7 @@ annotate =
           ;; -> annotate the next item of the given grob name
           #{
             \once \override #item #'input-annotation = #props
-            #(if (equal? (assq-ref temp-props 'footnote-case) #t)
+            #(if (equal? (assq-ref props 'footnote-case) #t)
               #{ \lyfootnote #item #})
           #}))
         (begin

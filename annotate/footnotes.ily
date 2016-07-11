@@ -7,16 +7,23 @@
 #(define (send-temp-props pair)
     (set! temp-props (assoc-set! temp-props (cadr pair) (caddr pair))))
 
-% test props list from annotation procedures
-#(define (set-footnote-proplist proplist)
-      (set! temp-props (assoc-set! temp-props 'footnote ""))
-      (set! temp-props (assoc-set! temp-props 'offset '()))
-      (map send-temp-props (ly:get-context-mods proplist))
-      (if (string-null? (assq-ref temp-props 'footnote))
-          (set! temp-props (assoc-set! temp-props 'footnote (assq-ref temp-props 'message))))
-      (if (null? (assq-ref temp-props 'offset))
-          (set! temp-props (assoc-set! temp-props 'footnote-case #f))
-          (set! temp-props (assoc-set! temp-props 'footnote-case #t))))
+% Set defaults and handle values for annotation footnotes
+#(define (footnote-proplist props)
+   (let
+    ;; Consider a footnote if 'offset is specified
+    ((footnote-case (if (assq-ref props 'offset) #t #f)))
+    (set! props
+          (assq-set! props 'footnote-case footnote-case))
+
+    ;; if we have a footnote but no footnote text is specified
+    ;; assign the message property to the footnote
+    (if (and footnote-case
+             (not (assq-ref props 'footnote)))
+        (set! props
+              (assq-set! props 'footnote
+                (assq-ref props 'message)))))
+   props)
+
 
 % conditionally automated footnote hook
 lyfootnote =
