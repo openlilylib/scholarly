@@ -204,7 +204,8 @@ todo =
      MensuralStaff
      VaticanaStaff
      Dynamics
-     Lyrics)
+     Lyrics
+     FiguredBass)
 
 \layout {
   \context {
