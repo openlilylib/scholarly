@@ -21,11 +21,11 @@
 
 % conditionally automated footnote hook
 lyfootnote =
-#(define-music-function (mark item)
-   ((markup?) symbol-list-or-music?)
-     (let* ((xoff (car (assq-ref temp-props 'offset)))
-            (yoff (cdr (assq-ref temp-props 'offset)))
-            (ftex (assq-ref temp-props 'footnote))
+#(define-music-function (mark item props)
+   ((markup?) symbol-list-or-music? list?)
+     (let* ((xoff (car (assq-ref props 'offset)))
+            (yoff (cdr (assq-ref props 'offset)))
+            (ftex (assq-ref props 'footnote))
             (mus (make-music
                        'FootnoteEvent
                        'X-offset xoff
