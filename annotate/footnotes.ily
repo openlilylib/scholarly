@@ -9,7 +9,6 @@
 
 % test props list from annotation procedures
 #(define (set-footnote-proplist proplist)
-    (begin
       (set! temp-props (assoc-set! temp-props 'footnote ""))
       (set! temp-props (assoc-set! temp-props 'offset '()))
       (map send-temp-props (ly:get-context-mods proplist))
@@ -17,7 +16,7 @@
           (set! temp-props (assoc-set! temp-props 'footnote (assq-ref temp-props 'message))))
       (if (null? (assq-ref temp-props 'offset))
           (set! temp-props (assoc-set! temp-props 'footnote-case #f))
-          (set! temp-props (assoc-set! temp-props 'footnote-case #t)))))
+          (set! temp-props (assoc-set! temp-props 'footnote-case #t))))
 
 % conditionally automated footnote hook
 lyfootnote =
