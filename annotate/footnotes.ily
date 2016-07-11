@@ -1,12 +1,6 @@
 %
 % footnotes functionality for scholarLY; to be continued
 
-% temp-props holds temporary footnote information
-#(define temp-props '())
-
-#(define (send-temp-props pair)
-    (set! temp-props (assoc-set! temp-props (cadr pair) (caddr pair))))
-
 % Set defaults and handle values for annotation footnotes
 #(define (footnote-proplist props)
    (let
