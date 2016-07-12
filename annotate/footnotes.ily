@@ -22,6 +22,12 @@
 % conditionally automated footnote hook
 lyfootnote =
 #(define-music-function (mark item props)
+; QUESTION:
+; I don't see yet whether \lyfootnote is intended to be
+; used by users as well.
+; If so then then props argument should probably be extended
+; to accept either an alist or a ly:context-mod (new predicate)
+; and process it accordingly.
    ((markup?) symbol-list-or-music? list?)
      (let* ((xoff (car (assq-ref props 'offset)))
             (yoff (cdr (assq-ref props 'offset)))
