@@ -63,15 +63,15 @@
 \include "engraver.ily"
 \include "footnotes.ily"
 
-annotate =
-#(define-music-function (name properties type item)
+#(define annotate
+  (define-music-function (name properties type item)
    ((symbol?) ly:context-mod? symbol? symbol-list-or-music?)
    ;; generic function to annotate a score item
    ;; not to be called by input documents
    (let*
     ( ;; read properties from the \with {} clause
       ;; and check footnote settings
-      (props (with-footnote-props (context-mod->props properties)))
+      (props (context-mod->props properties))
       ;; retrieve a pair with containing directory and input file
       (input-file (string-split (car (ly:input-file-line-char-column (*location*))) #\/ ))
       (ctx (list-tail input-file (- (length input-file) 2)))
@@ -113,16 +113,19 @@ annotate =
             (else
              ;; item is symbol list: annotate the next item of the given grob name
              #{ \once \override #item #'input-annotation = #props #}))))
-         ;; If set, add automatic footnote
+         ;; if set, add automatic footnote
          #{
            #tweak-command
-           #(if (assq-ref props 'footnote-case)
-                (ann-footnote item props))
+           #(if (assq-ref props 'offset)
+                (begin
+                  (if (not (assq-ref props 'footnote))
+                      (set! props (assq-set! props 'footnote (assq-ref props 'message))))
+                  (ann-footnote item props)))
          #})
 
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
-         #{ #}))))
+         #{ #})))))
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
