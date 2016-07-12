@@ -70,7 +70,8 @@ annotate =
    ;; not to be called by input documents
    (let*
     ( ;; read properties from the \with {} clause
-      (props (context-mod->props properties))
+      ;; and check footnote settings
+      (props (footnote-proplist (context-mod->props properties)))
       ;; retrieve a pair with containing directory and input file
       (input-file (string-split (car (ly:input-file-line-char-column (*location*))) #\/ ))
       (ctx (list-tail input-file (- (length input-file) 2)))
@@ -96,39 +97,32 @@ annotate =
     ; the Oskar Fried project). As this may become useful for somebody
     ; one day we'll keep it here.
     (set! props (assq-set! props 'input-file-name input-file-name))
-    ;; Check if we do have a valid annotation,
-    ;; then process it.
+
+    ;; Check if we do have a valid annotation, then process it.
     (if (input-annotation? props)
         ;; Apply the annotation object as an override, depending on the input syntax
-        (cond
-         ((and (ly:music? item) (symbol? name))
-          ;; item is music and name directs to a specific grob
-          ;; annotate the named grob
-          #{
-            \tweak #`(,name input-annotation) #props #item
-            #(if (assq-ref temp-props 'footnote-case)
-              #{ \anntofootnote #item #})
-          #})
-         ((ly:music? item)
-          ;; item is music
-          ;; -> annotate the music item (usually the NoteHead)
-          #{
-            \tweak #'input-annotation #props #item
-            #(if (assq-ref temp-props 'footnote-case)
-              #{ \anntofootnote #item #})
-          #})
-         (else
-          ;; item is a symbol list (i.e. grob name)
-          ;; -> annotate the next item of the given grob name
-          #{
-            \once \override #item #'input-annotation = #props
-            #(if (assq-ref temp-props 'footnote-case)
-              #{ \anntofootnote #item #})
-          #}))
+        (let
+         ((tweak-command
+           (cond
+            ((and (ly:music? item) (symbol? name))
+             ;; item is music, name specifies grob: annotate the grob
+             #{ \tweak #`(,name input-annotation) #props #item #})
+            ((ly:music? item)
+             ;; item is music: annotate the music (usually the NoteHead)
+             #{ \tweak #'input-annotation #props #item #})
+            (else
+             ;; item is symbol list: annotate the next item of the given grob name
+             #{ \once \override #item #'input-annotation = #props #}))))
+         ;; If set, add automatic footnote
+         #{
+           #tweak-command
+           #(if (assq-ref props 'footnote-case)
+                (ann-footnote item props))
+         #})
+         
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
          #{ #}))))
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -145,7 +139,6 @@ annotation =
 % Note: a 'type' property is mandatory for this command
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
     (if (symbol? name)
         (annotate name properties 'none item)
         (annotate properties 'none item)))
@@ -154,7 +147,6 @@ criticalRemark =
 % Final annotation about an editorial decision
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
     (if (symbol? name)
         (annotate name properties 'critical-remark item)
         (annotate properties 'critical-remark item)))
@@ -163,7 +155,6 @@ lilypondIssue =
 % Annotate a LilyPond issue that hasn't been resolved yet
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
     (if (symbol? name)
         (annotate name properties 'lilypond-issue item)
         (annotate properties 'lilypond-issue item)))
@@ -172,7 +163,6 @@ musicalIssue =
 % Annotate a musical issue that hasn't been resolved yet
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
     (if (symbol? name)
         (annotate name properties 'musical-issue item)
         (annotate properties 'musical-issue item)))
@@ -181,7 +171,6 @@ question =
 % Annotation about a general question
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
     (if (symbol? name)
         (annotate name properties 'question item)
         (annotate properties 'question item)))
@@ -190,7 +179,6 @@ todo =
 % Annotate a task that *has* to be finished
 #(define-music-function (name properties item)
     ((symbol?) ly:context-mod? symbol-list-or-music?)
-    (set-footnote-proplist properties)
     (if (symbol? name)
         (annotate name properties 'todo item)
         (annotate properties 'todo item)))

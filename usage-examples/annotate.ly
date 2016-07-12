@@ -68,8 +68,9 @@ music = \relative c'{
   \appoggiatura a8
     \lilypondIssue \with {
       message = "Message about this note."
-    } #'(1 . 3) "my footnote message"
-    NoteHead \lyfootnote gis4
+      offset = #'(1 . 5)
+    } NoteHead
+    gis4
 
 }
 
