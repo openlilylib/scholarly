@@ -62,10 +62,6 @@
 \include "export-plaintext.ily"
 \include "engraver.ily"
 \include "footnotes.ily"
-\include "editorial-commands.ily"
-
-
-
 
 annotate =
 #(define-music-function (name properties type item mus)
@@ -84,7 +80,6 @@ annotate =
       ;; extract segment name
       ; currently this is still *with* the extension
       (input-file-name (cdr ctx)))
-
     ;; The "type" is passed as an argument from the wrapper functions
     ;; The symbol 'none refers to the generic \annotation function. In this case
     ;; we don't set a type at all to ensure proper predicate checking
@@ -102,7 +97,6 @@ annotate =
     ; the Oskar Fried project). As this may become useful for somebody
     ; one day we'll keep it here.
     (set! props (assq-set! props 'input-file-name input-file-name))
-
     ;; Check if we do have a valid annotation, then process it.
     (if (input-annotation? props)
         ;; Apply the annotation object as an override, depending on the input syntax
@@ -123,8 +117,8 @@ annotate =
            #tweak-command
            #(if (assq-ref props 'footnote-case)
                 (ann-footnote item props))
+           #mus
          #})
-
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
          #{ #}))))
@@ -145,8 +139,8 @@ annotation =
 #(define-music-function (name properties item mus)
     ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (if (symbol? name)
-        (annotate name properties 'critical-remark item mus)
-        (annotate properties 'critical-remark item mus)))
+        (annotate name properties 'none item mus)
+        (annotate properties 'none item mus)))
 
 criticalRemark =
 % Final annotation about an editorial decision
@@ -161,33 +155,32 @@ lilypondIssue =
 #(define-music-function (name properties item mus)
     ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (if (symbol? name)
-        (annotate name properties 'critical-remark item mus)
-        (annotate properties 'critical-remark item mus)))
+        (annotate name properties 'lilypond-issue item mus)
+        (annotate properties 'lilypond-issue item mus)))
 
 musicalIssue =
 % Annotate a musical issue that hasn't been resolved yet
 #(define-music-function (name properties item mus)
     ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (if (symbol? name)
-        (annotate name properties 'critical-remark item mus)
-        (annotate properties 'critical-remark item mus)))
+        (annotate name properties 'musical-issue item mus)
+        (annotate properties 'musical-issue item mus)))
 
 question =
 % Annotation about a general question
 #(define-music-function (name properties item mus)
     ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
-    ((symbol?) ly:context-mod? symbol-list-or-music?)
     (if (symbol? name)
-        (annotate name properties 'critical-remark item mus)
-        (annotate properties 'critical-remark item mus)))
+        (annotate name properties 'question item)
+        (annotate properties 'question item)))
 
 todo =
 % Annotate a task that *has* to be finished
 #(define-music-function (name properties item mus)
     ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (if (symbol? name)
-        (annotate name properties 'critical-remark item mus)
-        (annotate properties 'critical-remark item mus)))
+        (annotate name properties 'todo item)
+        (annotate properties 'todo item)))
 
 
 
