@@ -66,11 +66,7 @@
 \include "editorial-commands.ily"
 
 
-% temporary function used to apply editorial commands to music
-#(define scholarlytempfunc
-   (let ((commandtype (hash-ref scholarly-editorial-temp-func 'temp-applic))
-         (musicitem (hash-ref scholarly-editorial-temp-func 'temp-grp)))
-        (hash-ref scholarly.editions (list commandtype musicitem))))
+
 
 annotate =
 #(define-music-function (name properties type item mus)
@@ -179,8 +175,8 @@ annotation =
     ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (set-temp-proplist properties)
     (if (symbol? name)
-        (annotate name properties 'none item)
-        (annotate properties 'none item)))
+        (annotate name properties 'critical-remark item mus)
+        (annotate properties 'critical-remark item mus)))
 
 criticalRemark =
 % Final annotation about an editorial decision
@@ -197,8 +193,8 @@ lilypondIssue =
     ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (set-temp-proplist properties)
     (if (symbol? name)
-        (annotate name properties 'lilypond-issue item)
-        (annotate properties 'lilypond-issue item)))
+        (annotate name properties 'critical-remark item mus)
+        (annotate properties 'critical-remark item mus)))
 
 musicalIssue =
 % Annotate a musical issue that hasn't been resolved yet
@@ -206,8 +202,8 @@ musicalIssue =
     ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (set-temp-proplist properties)
     (if (symbol? name)
-        (annotate name properties 'musical-issue item)
-        (annotate properties 'musical-issue item)))
+        (annotate name properties 'critical-remark item mus)
+        (annotate properties 'critical-remark item mus)))
 
 question =
 % Annotation about a general question
@@ -215,8 +211,8 @@ question =
     ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (set-temp-proplist properties)
     (if (symbol? name)
-        (annotate name properties 'question item)
-        (annotate properties 'question item)))
+        (annotate name properties 'critical-remark item mus)
+        (annotate properties 'critical-remark item mus)))
 
 todo =
 % Annotate a task that *has* to be finished
@@ -224,8 +220,8 @@ todo =
     ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (set-temp-proplist properties)
     (if (symbol? name)
-        (annotate name properties 'todo item)
-        (annotate properties 'todo item)))
+        (annotate name properties 'critical-remark item mus)
+        (annotate properties 'critical-remark item mus)))
 
 
 
