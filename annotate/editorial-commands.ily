@@ -10,13 +10,13 @@
 #(hash-set! scholarly.editions (list 'deletion 'Slur) slurDotted)
 
 
-#(define scholarly-editorial-temp-func (make-hash-table))
+#(define scholarly-edit-cmd (make-hash-table))
 % define arbitrary initial value so scholarlytempfunction will pass until used
-#(hash-set! scholarly-editorial-temp-func 'temp-applic 'addition)
-#(hash-set! scholarly-editorial-temp-func 'temp-grp 'NoteHead)
+#(hash-set! scholarly-edit-cmd 'temp-applic 'addition)
+#(hash-set! scholarly-edit-cmd 'temp-grp 'NoteHead)
 
 % temporary function used to apply editorial commands to music
-#(define scholarlytempfunc
-   (let ((commandtype (hash-ref scholarly-editorial-temp-func 'temp-applic))
-         (musicitem (hash-ref scholarly-editorial-temp-func 'temp-grp)))
-        (hash-ref scholarly.editions (list commandtype musicitem))))
+#(define editorialCommand
+   (let ((cmdtype (hash-ref scholarly-edit-cmd 'temp-applic))
+         (musitem (hash-ref scholarly-edit-cmd 'temp-grp)))
+        (hash-ref scholarly.editions (list cmdtype musitem))))

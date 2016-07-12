@@ -10,7 +10,7 @@ music = {
         offset = #'(-0.5 . -2)
     } Slur
     a4( b c')
-    \criticalRemark
+    \musicalIssue
     \with{
         message = "my message about adding the note"
         apply = #'addition

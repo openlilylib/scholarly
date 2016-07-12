@@ -140,7 +140,7 @@ annotate =
                         (applic (assq-ref temp-props 'apply)) ;; not used yet
                         (func (hash-ref scholarly.editions (list applic grp))))
                        (if (ly:music-function? func)
-                           #{ \lyfootnote \scholarlytempfunc #mus #}
+                           #{ \lyfootnote \editorialCommand #mus #}
                            #{ \lyfootnote #func #mus #}))
                  (if (assq-ref temp-props 'footnote-case)
                      #{ \lyfootnote #item #mus #}
@@ -149,7 +149,7 @@ annotate =
                                 (applic (assq-ref temp-props 'apply)) ;; not used yet
                                 (func (hash-ref scholarly.editions (list applic grp))))
                                (if (ly:music-function? func)
-                                   #{ \scholarlytempfunc #mus #}
+                                   #{ \editorialCommand #mus #}
                                    #{ #func #mus #}))
                          #{ #mus #})))
           #}))
