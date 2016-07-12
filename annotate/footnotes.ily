@@ -1,7 +1,7 @@
 %
 
 % duplicate props list and check for footnote
-#(define (footnote-proplist props)
+#(define (with-footnote-props props)
     (let ((footnote-case (if (assq-ref props 'offset) #t #f)))
          (set! props (assq-set! props 'footnote-case footnote-case))
          (if (and footnote-case

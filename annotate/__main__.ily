@@ -71,7 +71,7 @@ annotate =
    (let*
     ( ;; read properties from the \with {} clause
       ;; and check footnote settings
-      (props (footnote-proplist (context-mod->props properties)))
+      (props (with-footnote-props (context-mod->props properties)))
       ;; retrieve a pair with containing directory and input file
       (input-file (string-split (car (ly:input-file-line-char-column (*location*))) #\/ ))
       (ctx (list-tail input-file (- (length input-file) 2)))
@@ -119,7 +119,7 @@ annotate =
            #(if (assq-ref props 'footnote-case)
                 (ann-footnote item props))
          #})
-         
+
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
          #{ #}))))
