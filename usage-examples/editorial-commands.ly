@@ -8,8 +8,7 @@ music = {
         message = "my message/footnote about deleting the slur"
         apply = #'addition
         offset = #'(-0.5 . -2)
-    } NoteHead
-    a4( b c')
+    } NoteHead a4( b c')
     \musicalIssue
     \with{
         message = "my message about adding the note"
