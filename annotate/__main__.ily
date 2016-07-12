@@ -115,7 +115,7 @@ annotate =
           #{
             \tweak #`(,name input-annotation) #props #item
             #(if (assq-ref props 'footnote-case)
-              #{ \lyfootnote #item #props #})
+              (lyfootnote item props))
           #})
          ((ly:music? item)
           ;; item is music
@@ -123,7 +123,7 @@ annotate =
           #{
             \tweak #'input-annotation #props #item
             #(if (assq-ref props 'footnote-case)
-              #{ \lyfootnote #item #props #})
+              (lyfootnote item props))
           #})
          (else
           ;; item is a symbol list (i.e. grob name)
@@ -131,8 +131,9 @@ annotate =
           #{
             \once \override #item #'input-annotation = #props
             #(if (assq-ref props 'footnote-case)
-              #{ \lyfootnote #item #props #})
-          #}))
+                 (lyfootnote item props))
+          #}
+          ))
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
          #{ #}))))
