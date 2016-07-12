@@ -104,43 +104,31 @@ annotate =
     ; one day we'll keep it here.
     (set! props (assq-set! props 'input-file-name input-file-name))
 
-    ;; Check if we do have a valid annotation,
-    ;; then process it.
+    ;; Check if we do have a valid annotation, then process it.
     (if (input-annotation? props)
         ;; Apply the annotation object as an override, depending on the input syntax
         (let
          ((tweak-command
            (cond
             ((and (ly:music? item) (symbol? name))
-             ;; item is music and name directs to a specific grob
-             ;; annotate the named grob
-             #{
-               \tweak #`(,name input-annotation) #props #item
-             #})
+             ;; item is music, name specifies grob: annotate the grob
+             #{ \tweak #`(,name input-annotation) #props #item #})
             ((ly:music? item)
-             ;; item is music
-             ;; -> annotate the music item (usually the NoteHead)
-             #{
-               \tweak #'input-annotation #props #item
-             #})
+             ;; item is music: annotate the music (usually the NoteHead)
+             #{ \tweak #'input-annotation #props #item #})
             (else
-             ;; item is a symbol list (i.e. grob name)
-             ;; -> annotate the next item of the given grob name
-             #{
-               \once \override #item #'input-annotation = #props
-             #}
-             ))))
-         ;; If available add automatic footnote hook
+             ;; item is symbol list: annotate the next item of the given grob name
+             #{ \once \override #item #'input-annotation = #props #}))))
+         ;; If set, add automatic footnote
          #{
            #tweak-command
            #(if (assq-ref props 'footnote-case)
-                (lyfootnote item props))
+                (ann-footnote item props))
          #})
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
          #{ #}))))
-
-
+         
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Public interface
