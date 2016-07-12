@@ -2,11 +2,6 @@
 
 \include "scholarly/package.ly"
 
-#(display "loaded\n")
-
-%\registerOption documentation.include-file "scholarly/annotate"
-%\loadModule "_internal/doc-include/usage-example.ily"
-
 \markup \vspace #1
 
 \setOption scholarly.annotate.export-targets #'(plaintext latex)
@@ -61,17 +56,6 @@ music = \relative c'{
     }
     Slur
   gis8( a) b4
-    \todo \with {
-      message = "A todo for the flag."
-    }
-    Flag
-  \appoggiatura a8
-    \lilypondIssue \with {
-      message = "Message about this note."
-      offset = #'(1 . 5)
-    } NoteHead
-    gis4
-
 }
 
 \score { \music }
