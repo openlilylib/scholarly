@@ -1,3 +1,4 @@
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 % This file is part of ScholarLY,                                             %
@@ -29,7 +30,6 @@
   \annotate - main file
   This file contains the "collector" and "processor" engravers for annotations
   and the interface music functions to enter annotations in LilyPond input files.
-
   TODO:
   - generate clickable links when writing to file
   - enable the music function to apply editorial functions
@@ -37,7 +37,6 @@
     This has to be controlled by extra annotation properties
     and be configurable to a high degree (this is a major task).
   - provide an infrastructure for custom annotation types
-
 %}
 
 \version "2.19.22"
@@ -69,7 +68,6 @@ annotate =
    ((symbol?) ly:context-mod? symbol? symbol-list-or-music?)
    ;; generic function to annotate a score item
    ;; not to be called by input documents
-
    (let*
     ( ;; read properties from the \with {} clause
       (props (context-mod->props properties))
@@ -81,7 +79,6 @@ annotate =
       ;; extract segment name
       ; currently this is still *with* the extension
       (input-file-name (cdr ctx)))
-
     ;; The "type" is passed as an argument from the wrapper functions
     ;; The symbol 'none refers to the generic \annotation function. In this case
     ;; we don't set a type at all to ensure proper predicate checking
@@ -89,20 +86,16 @@ annotate =
     ;; the properties argument)
     (if (not (eq? type 'none))
         (set! props (assq-set! props 'type type)))
-
     ;; pass along the input location to the engraver
     (set! props (assq-set! props 'location (*location*)))
-
     ;; The 'context-id' property is the name of the musical context
     ;; the annotation refers to. As our fallthrough solution we
     ;; initially set this to the name of the enclosing directory
     (set! props (assq-set! props 'context-id input-directory))
-
     ; The input file name is not used so far (as it was a remnant of
     ; the Oskar Fried project). As this may become useful for somebody
     ; one day we'll keep it here.
     (set! props (assq-set! props 'input-file-name input-file-name))
-
     ;; Check if we do have a valid annotation,
     ;; then process it.
     (if (input-annotation? props)
@@ -113,24 +106,24 @@ annotate =
           ;; annotate the named grob
           #{
             \tweak #`(,name input-annotation) #props #item
-            #(if (equal? (assq-ref temp-props 'footnote-case) #t)
-              #{ \lyfootnote #item #})
+            #(if (assq-ref temp-props 'footnote-case)
+              #{ \anntofootnote #item #})
           #})
          ((ly:music? item)
           ;; item is music
           ;; -> annotate the music item (usually the NoteHead)
           #{
             \tweak #'input-annotation #props #item
-            #(if (equal? (assq-ref temp-props 'footnote-case) #t)
-              #{ \lyfootnote #item #})
+            #(if (assq-ref temp-props 'footnote-case)
+              #{ \anntofootnote #item #})
           #})
          (else
           ;; item is a symbol list (i.e. grob name)
           ;; -> annotate the next item of the given grob name
           #{
             \once \override #item #'input-annotation = #props
-            #(if (equal? (assq-ref temp-props 'footnote-case) #t)
-              #{ \lyfootnote #item #})
+            #(if (assq-ref temp-props 'footnote-case)
+              #{ \anntofootnote #item #})
           #}))
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")

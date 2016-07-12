@@ -19,8 +19,8 @@
           (set! temp-props (assoc-set! temp-props 'footnote-case #f))
           (set! temp-props (assoc-set! temp-props 'footnote-case #t)))))
 
-% conditionally automated footnote hook
-lyfootnote =
+% conditionally automated footnote hook; not a
+anntofootnote =
 #(define-music-function (mark item)
    ((markup?) symbol-list-or-music?)
      (let* ((xoff (car (assq-ref temp-props 'offset)))
