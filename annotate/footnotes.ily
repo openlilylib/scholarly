@@ -1,40 +1,26 @@
-%
-% footnotes functionality for scholarLY; to be continued
+% add preamble
 
-% footnote-props holds temporary footnote information
-#(define temp-props '())
+% duplicate props list and check for footnote
+#(define (with-footnote-props props)
+    (let ((footnote-case (if (assq-ref props 'offset) #t #f)))
+         (set! props (assq-set! props 'footnote-case footnote-case))
+         (if (and footnote-case
+             (not (assq-ref props 'footnote)))
+             (set! props (assq-set! props 'footnote (assq-ref props 'message)))))
+    props)
 
-#(define (send-temp-props pair)
-    (set! temp-props (assoc-set! temp-props (cadr pair) (caddr pair))))
-
-% test props list from annotation procedures
-#(define (set-temp-proplist proplist)
-    (begin
-      (set! temp-props (assoc-set! temp-props 'footnote ""))
-      (set! temp-props (assoc-set! temp-props 'offset '()))
-      (set! temp-props (assoc-set! temp-props 'apply '()))
-      (map send-temp-props (ly:get-context-mods proplist))
-      (if (null? (assq-ref temp-props 'apply))
-          (hash-set! scholarly-edition-bools 'applylocaledit #f)
-          (hash-set! scholarly-edition-bools 'applylocaledit #t))
-      (if (string-null? (assq-ref temp-props 'footnote))
-          (set! temp-props (assoc-set! temp-props 'footnote (assq-ref temp-props 'message))))
-      (if (null? (assq-ref temp-props 'offset))
-          (set! temp-props (assoc-set! temp-props 'footnote-case #f))
-          (set! temp-props (assoc-set! temp-props 'footnote-case #t)))))
-
-% conditionally automated footnote hook
-lyfootnote =
-#(define-music-function (mark item)
-   ((markup?) symbol-list-or-music?)
-     (let* ((xoff (car (assq-ref temp-props 'offset)))
-            (yoff (cdr (assq-ref temp-props 'offset)))
-            (ftex (assq-ref temp-props 'footnote))
+% Implicitly generate a footnote for an annotation
+#(define ann-footnote
+   (define-music-function (mark item props)
+     ((markup?) symbol-list-or-music? list?)
+     (let* ((xoff (car (assq-ref props 'offset)))
+            (yoff (cdr (assq-ref props 'offset)))
+            (ftex (assq-ref props 'footnote))
             (mus (make-music
-                       'FootnoteEvent
-                       'X-offset xoff
-                       'Y-offset yoff
-                       'automatically-numbered (not mark)
-                       'text (or mark (make-null-markup))
-                       'footnote-text ftex)))
-                 (once (propertyTweak 'footnote-music mus item))))
+                  'FootnoteEvent
+                  'X-offset xoff
+                  'Y-offset yoff
+                  'automatically-numbered (not mark)
+                  'text (or mark (make-null-markup))
+                  'footnote-text ftex)))
+       (once (propertyTweak 'footnote-music mus item)))))
