@@ -17,7 +17,7 @@ music = {
     \question
       \with{
         message = "my message, but not footnote"
-        offset = #'(-0.5 . -2)
+        footnote-at = #'(-0.5 . -2)
         footnote = "my footnote, seperate from my message"
       } Hairpin a\p\< b c'\!
 }

@@ -2,7 +2,7 @@
 
 % duplicate props list and check for footnote
 #(define (with-footnote-props props)
-    (let ((footnote-case (if (assq-ref props 'offset) #t #f)))
+    (let ((footnote-case (if (assq-ref props 'footnote-at) #t #f)))
          (set! props (assq-set! props 'footnote-case footnote-case))
          (if (and footnote-case
              (not (assq-ref props 'footnote)))
@@ -13,8 +13,8 @@
 #(define ann-footnote
    (define-music-function (mark item props)
      ((markup?) symbol-list-or-music? list?)
-     (let* ((xoff (car (assq-ref props 'offset)))
-            (yoff (cdr (assq-ref props 'offset)))
+     (let* ((xoff (car (assq-ref props 'footnote-at)))
+            (yoff (cdr (assq-ref props 'footnote-at)))
             (ftex (assq-ref props 'footnote))
             (mus (make-music
                   'FootnoteEvent
