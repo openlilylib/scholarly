@@ -4,9 +4,9 @@
 #(define ann-footnote
    (define-music-function (mark item props)
      ((markup?) symbol-list-or-music? list?)
-     (let* ((xoff (car (assq-ref props 'offset)))
-            (yoff (cdr (assq-ref props 'offset)))
-            (ftex (assq-ref props 'footnote))
+     (let* ((xoff (car (assq-ref props 'footnote-offset)))
+            (yoff (cdr (assq-ref props 'footnote-offset)))
+            (ftex (assq-ref props 'footnote-text))
             (mus (make-music
                   'FootnoteEvent
                   'X-offset xoff

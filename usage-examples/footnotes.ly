@@ -6,7 +6,7 @@ music = {
     \criticalRemark
       \with{
         message = "my message/footnote about the slur"
-        offset = #'(-1 . -2)
+        footnote-offset = #'(-1 . -2)
     } Slur a4( 
   b c') c'
     \musicalIssue
@@ -17,8 +17,8 @@ music = {
     \question
       \with{
         message = "my message, but not footnote"
-        offset = #'(-0.5 . -2)
-        footnote = "my footnote, seperate from my message"
+        footnote-offset = #'(-0.5 . -2)
+        footnote-text = "my footnote, seperate from my message"
       } Hairpin a\p\< b c'\!
 }
 

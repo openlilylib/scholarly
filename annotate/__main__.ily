@@ -116,10 +116,10 @@
          ;; if set, add automatic footnote
          #{
            #tweak-command
-           #(if (assq-ref props 'offset)
+           #(if (assq-ref props 'footnote-offset)
                 (begin
-                  (if (not (assq-ref props 'footnote))
-                      (set! props (assq-set! props 'footnote (assq-ref props 'message))))
+                  (if (not (assq-ref props 'footnote-text))
+                      (set! props (assq-set! props 'footnote-text (assq-ref props 'message))))
                   (ann-footnote item props)))
          #})
 
