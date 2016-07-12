@@ -6,15 +6,15 @@ music = {
     \criticalRemark
     \with{
         message = "my message/footnote about deleting the slur"
-        apply = #'deletion
+        apply = #'addition
         offset = #'(-0.5 . -2)
-    } Slur
+    } NoteHead
     a4( b c')
     \musicalIssue
     \with{
         message = "my message about adding the note"
         apply = #'addition
-    } NoteHead
+    } NoteHead 
     b
 }
 
