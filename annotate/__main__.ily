@@ -120,7 +120,9 @@
                 (begin
                   (if (not (assq-ref props 'footnote-text))
                       (set! props (assq-set! props 'footnote-text (assq-ref props 'message))))
-                  (ann-footnote item props)))
+                  (let ((offset (assq-ref props 'footnote-offset))
+                        (text (assq-ref props 'footnote-text)))
+                  #{ \footnote #offset #text #item #})))
          #})
 
         (begin
