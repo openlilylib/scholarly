@@ -61,7 +61,6 @@
 \include "export-latex.ily"
 \include "export-plaintext.ily"
 \include "engraver.ily"
-\include "footnotes.ily"
 
 #(define annotate
   (define-music-function (name properties type item)
@@ -120,7 +119,9 @@
                 (begin
                   (if (not (assq-ref props 'footnote-text))
                       (set! props (assq-set! props 'footnote-text (assq-ref props 'message))))
-                  (ann-footnote item props)))
+                  (let ((offset (assq-ref props 'footnote-offset))
+                        (text (assq-ref props 'footnote-text)))
+                  #{ \footnote #offset #text #item #})))
          #})
 
         (begin
