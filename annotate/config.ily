@@ -176,3 +176,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \registerOption scholarly.editorial.addition #`()
+\registerOption scholarly.editorial.deletion #`()
+\registerOption scholarly.editorial.emendation #`()

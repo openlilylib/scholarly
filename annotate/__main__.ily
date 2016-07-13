@@ -173,16 +173,16 @@ question =
 #(define-music-function (name properties item mus)
     ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (if (symbol? name)
-        (annotate name properties 'question item)
-        (annotate properties 'question item)))
+        (annotate name properties 'question item mus)
+        (annotate properties 'question item mus)))
 
 todo =
 % Annotate a task that *has* to be finished
 #(define-music-function (name properties item mus)
     ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (if (symbol? name)
-        (annotate name properties 'todo item)
-        (annotate properties 'todo item)))
+        (annotate name properties 'todo item mus)
+        (annotate properties 'todo item mus)))
 
 
 
