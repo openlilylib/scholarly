@@ -61,7 +61,6 @@
 \include "export-latex.ily"
 \include "export-plaintext.ily"
 \include "engraver.ily"
-\include "footnotes.ily"
 
 #(define annotate
   (define-music-function (name properties type item)
