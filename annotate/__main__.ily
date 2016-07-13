@@ -61,7 +61,6 @@
 \include "export-latex.ily"
 \include "export-plaintext.ily"
 \include "engraver.ily"
-\include "footnotes.ily"
 
 #(define annotate
   (define-music-function (name properties type item mus)
@@ -69,7 +68,7 @@
    ;; generic (internal only) function to annotate a score item
    (let*
     ( ;; process context-mod with footnote settings
-      (props (with-footnote-props (context-mod->props properties)))
+      (props (context-mod->props properties))
       ;; retrieve a pair with containing directory and input file
       (input-file (string-split (car (ly:input-file-line-char-column (*location*))) #\/ ))
       (ctx (list-tail input-file (- (length input-file) 2)))
@@ -108,18 +107,24 @@
             (else
              ;; item is symbol list: annotate the next item of the given grob name
              #{ \once \override #item #'input-annotation = #props #}))))
-         ;; If set, add automatic footnote
          #{
-           #tweak-command
-           #(if (assq-ref props 'footnote-case)
-                (ann-footnote item props))
-           #(if (assq-ref props 'apply)
-                (let* ((edition (assoc-ref props 'apply))
-                       (edit (getChildOption `(scholarly editorial ,edition) (car item))))
-                      (if (ly:music-function? edit)
-                          (edit mus)
-                          #{ #edit #mus #}))
-                mus)
+          #tweak-command
+          #(if (assq-ref props 'footnote-offset)
+          ;; If offset present, add automatic footnote
+               (begin
+                 (if (not (assq-ref props 'footnote-text))
+                     (set! props (assq-set! props 'footnote-text (assq-ref props 'message))))
+                 (let ((offset (assq-ref props 'footnote-offset))
+                       (text (assq-ref props 'footnote-text)))
+                 #{ \footnote #offset #text #item #})))
+          #(if (assq-ref props 'apply)
+          ;; If set, add editorial command
+               (let* ((edition (assoc-ref props 'apply))
+                      (edit (getChildOption `(scholarly editorial ,edition) (car item))))
+                     (if (ly:music-function? edit)
+                         (edit mus)
+                         #{ #edit #mus #}))
+               mus)
          #})
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
