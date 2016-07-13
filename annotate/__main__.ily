@@ -113,7 +113,7 @@
           ;; If offset present, add automatic footnote
                (begin
                  (if (not (assq-ref props 'footnote-text))
-                     (set! props (assq-set! props 'footnote-text (assq-ref props 'message))))
+                     (set! props (assoc-set! props 'footnote-text (assq-ref props 'message))))
                  (let ((offset (assq-ref props 'footnote-offset))
                        (text (assq-ref props 'footnote-text)))
                  #{ \footnote #offset #text #item #})))
