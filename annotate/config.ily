@@ -151,6 +151,7 @@
    (source . "Affected Source")
    (voice-name . "Voice")
    (segment-name . "File")
+   (ann-footnote . "Annotation Footnote")
    (grob-type . "Affected Item"))
 
 

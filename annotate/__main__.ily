@@ -1,3 +1,4 @@
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 % This file is part of ScholarLY,                                             %
@@ -29,7 +30,6 @@
   \annotate - main file
   This file contains the "collector" and "processor" engravers for annotations
   and the interface music functions to enter annotations in LilyPond input files.
-
   TODO:
   - generate clickable links when writing to file
   - enable the music function to apply editorial functions
@@ -37,7 +37,6 @@
     This has to be controlled by extra annotation properties
     and be configurable to a high degree (this is a major task).
   - provide an infrastructure for custom annotation types
-
 %}
 
 \version "2.19.22"
@@ -62,15 +61,16 @@
 \include "export-latex.ily"
 \include "export-plaintext.ily"
 \include "engraver.ily"
+\include "footnotes.ily"
 
-annotate =
-#(define-music-function (name properties type item)
+#(define annotate
+  (define-music-function (name properties type item)
    ((symbol?) ly:context-mod? symbol? symbol-list-or-music?)
    ;; generic function to annotate a score item
    ;; not to be called by input documents
-
    (let*
     ( ;; read properties from the \with {} clause
+      ;; and check footnote settings
       (props (context-mod->props properties))
       ;; retrieve a pair with containing directory and input file
       (input-file (string-split (car (ly:input-file-line-char-column (*location*))) #\/ ))
@@ -80,7 +80,6 @@ annotate =
       ;; extract segment name
       ; currently this is still *with* the extension
       (input-file-name (cdr ctx)))
-
     ;; The "type" is passed as an argument from the wrapper functions
     ;; The symbol 'none refers to the generic \annotation function. In this case
     ;; we don't set a type at all to ensure proper predicate checking
@@ -88,47 +87,45 @@ annotate =
     ;; the properties argument)
     (if (not (eq? type 'none))
         (set! props (assq-set! props 'type type)))
-
     ;; pass along the input location to the engraver
     (set! props (assq-set! props 'location (*location*)))
-
     ;; The 'context-id' property is the name of the musical context
     ;; the annotation refers to. As our fallthrough solution we
     ;; initially set this to the name of the enclosing directory
     (set! props (assq-set! props 'context-id input-directory))
-
     ; The input file name is not used so far (as it was a remnant of
     ; the Oskar Fried project). As this may become useful for somebody
     ; one day we'll keep it here.
     (set! props (assq-set! props 'input-file-name input-file-name))
 
-    ;; Check if we do have a valid annotation,
-    ;; then process it.
+    ;; Check if we do have a valid annotation, then process it.
     (if (input-annotation? props)
         ;; Apply the annotation object as an override, depending on the input syntax
-        (cond
-         ((and (ly:music? item) (symbol? name))
-          ;; item is music and name directs to a specific grob
-          ;; annotate the named grob
-          #{
-            \tweak #`(,name input-annotation) #props #item
-          #})
-         ((ly:music? item)
-          ;; item is music
-          ;; -> annotate the music item (usually the NoteHead)
-          #{
-            \tweak #'input-annotation #props #item
-          #})
-         (else
-          ;; item is a symbol list (i.e. grob name)
-          ;; -> annotate the next item of the given grob name
-          #{
-            \once \override #item #'input-annotation = #props
-          #}))
+        (let
+         ((tweak-command
+           (cond
+            ((and (ly:music? item) (symbol? name))
+             ;; item is music, name specifies grob: annotate the grob
+             #{ \tweak #`(,name input-annotation) #props #item #})
+            ((ly:music? item)
+             ;; item is music: annotate the music (usually the NoteHead)
+             #{ \tweak #'input-annotation #props #item #})
+            (else
+             ;; item is symbol list: annotate the next item of the given grob name
+             #{ \once \override #item #'input-annotation = #props #}))))
+         ;; if set, add automatic footnote
+         #{
+           #tweak-command
+           #(if (assq-ref props 'footnote-offset)
+                (begin
+                  (if (not (assq-ref props 'footnote-text))
+                      (set! props (assq-set! props 'footnote-text (assq-ref props 'message))))
+                  (ann-footnote item props)))
+         #})
+
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
-         #{ #}))))
-
+         #{ #})))))
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -144,50 +141,50 @@ annotation =
 % Generic annotation, can be used to "create" custom annotation types
 % Note: a 'type' property is mandatory for this command
 #(define-music-function (name properties item)
-   ((symbol?) ly:context-mod? symbol-list-or-music?)
-   (if (symbol? name)
-       (annotate name properties 'none item)
-       (annotate properties 'none item)))
+    ((symbol?) ly:context-mod? symbol-list-or-music?)
+    (if (symbol? name)
+        (annotate name properties 'none item)
+        (annotate properties 'none item)))
 
 criticalRemark =
 % Final annotation about an editorial decision
 #(define-music-function (name properties item)
-   ((symbol?) ly:context-mod? symbol-list-or-music?)
-   (if (symbol? name)
-       (annotate name properties 'critical-remark item)
-       (annotate properties 'critical-remark item)))
+    ((symbol?) ly:context-mod? symbol-list-or-music?)
+    (if (symbol? name)
+        (annotate name properties 'critical-remark item)
+        (annotate properties 'critical-remark item)))
 
 lilypondIssue =
 % Annotate a LilyPond issue that hasn't been resolved yet
 #(define-music-function (name properties item)
-   ((symbol?) ly:context-mod? symbol-list-or-music?)
-   (if (symbol? name)
-       (annotate name properties 'lilypond-issue item)
-       (annotate properties 'lilypond-issue item)))
+    ((symbol?) ly:context-mod? symbol-list-or-music?)
+    (if (symbol? name)
+        (annotate name properties 'lilypond-issue item)
+        (annotate properties 'lilypond-issue item)))
 
 musicalIssue =
 % Annotate a musical issue that hasn't been resolved yet
 #(define-music-function (name properties item)
-   ((symbol?) ly:context-mod? symbol-list-or-music?)
-   (if (symbol? name)
-       (annotate name properties 'musical-issue item)
-       (annotate properties 'musical-issue item)))
+    ((symbol?) ly:context-mod? symbol-list-or-music?)
+    (if (symbol? name)
+        (annotate name properties 'musical-issue item)
+        (annotate properties 'musical-issue item)))
 
 question =
 % Annotation about a general question
 #(define-music-function (name properties item)
-   ((symbol?) ly:context-mod? symbol-list-or-music?)
-   (if (symbol? name)
-       (annotate name properties 'question item)
-       (annotate properties 'question item)))
+    ((symbol?) ly:context-mod? symbol-list-or-music?)
+    (if (symbol? name)
+        (annotate name properties 'question item)
+        (annotate properties 'question item)))
 
 todo =
 % Annotate a task that *has* to be finished
 #(define-music-function (name properties item)
-   ((symbol?) ly:context-mod? symbol-list-or-music?)
-   (if (symbol? name)
-       (annotate name properties 'todo item)
-       (annotate properties 'todo item)))
+    ((symbol?) ly:context-mod? symbol-list-or-music?)
+    (if (symbol? name)
+        (annotate name properties 'todo item)
+        (annotate properties 'todo item)))
 
 
 
