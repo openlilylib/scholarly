@@ -113,7 +113,12 @@
            #tweak-command
            #(if (assq-ref props 'footnote-case)
                 (ann-footnote item props))
-           #mus
+           #(if (assq-ref props 'apply)
+                (let ((func (getChildOption '(scholarly editorial addition) (car item))))
+                     (if (ly:music-function? func)
+                         (func mus)
+                         #{ #func #mus #}))
+                mus)
          #})
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
