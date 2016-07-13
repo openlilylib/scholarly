@@ -12,21 +12,21 @@
 music = {
     \criticalRemark
     \with{
-        message = "my message/footnote about deleting the slur"
+        message = "A remark about adding the slur."
         apply = #'addition
-    } Slur a4( b c')
+    } Slur a4( b c') d'
+    
     \musicalIssue
     \with{
-        message = "my message about adding the note"
+        message = "This note needs to be added."
         apply = #'addition
-    } NoteHead
-    b
-    \todo
+    } NoteHead a4( b c') d'
+    
+    \question
     \with{
-        message = "remove the slur"
+        message = "Should we remove the slur?"
         apply = #'deletion
-    } Slur
-    c'2( d')
+    } Slur a4( b c') d' 
 }
 
 \score {
