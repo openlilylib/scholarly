@@ -123,7 +123,7 @@
                       (edit (getChildOption `(scholarly editorial ,edition) (car item))))
                      (if (ly:music-function? edit)
                          (edit mus)
-                         #{ #edit #mus #}))
+                         #{ \once #edit #mus #}))
                mus)
          #})
         (begin
