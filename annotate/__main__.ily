@@ -119,7 +119,7 @@
                  #{ \footnote #offset #text #item #})))
           #(if (assq-ref props 'apply)
           ;; If set, add editorial command
-               (let* ((edition (assoc-ref props 'apply))
+               (let* ((edition (string->symbol (assoc-ref props 'apply)))
                       (edit (getChildOption `(scholarly editorial ,edition) (car item))))
                      (if (ly:music-function? edit)
                          (edit mus)

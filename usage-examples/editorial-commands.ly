@@ -13,19 +13,19 @@ music = {
     \criticalRemark
     \with{
         message = "A remark about adding the slur."
-        apply = #'addition
+        apply = addition
     } Slur a4( b c') d'
     
     \musicalIssue
     \with{
         message = "This note needs to be added."
-        apply = #'addition
+        apply = addition
     } NoteHead a4( b c') d'
     
     \question
     \with{
         message = "Should we remove the slur?"
-        apply = #'deletion
+        apply = deletion
     } Slur a4( b c') d' 
 }
 
