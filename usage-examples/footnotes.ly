@@ -7,7 +7,7 @@ music = {
       \with{
         message = "my message/footnote about the slur"
         footnote-offset = #'(-1 . -2)
-    } Slur a4(
+    } Slur a4( 
   b c') c'
     \musicalIssue
       \with{
