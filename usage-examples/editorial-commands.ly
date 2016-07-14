@@ -2,14 +2,44 @@
 
 \include "scholarly/package.ly"
 
+
+% editorial options can be set:
+
 \setOption scholarly.editorial.addition #`(
   (Slur . ,slurDashed)
   (NoteHead . ,parenthesize))
-  
+
+
+
+% options can incorporate longer function if predefined:
+
+longerfunction =
+#(define-music-function (mus) (ly:music?)
+   #{ \once \set fontSize = -4 \parenthesize #mus #})
+
 \setOption scholarly.editorial.deletion #`(
-  (Slur . ,slurDotted))
+  (NoteHead . ,longerfunction))
+
+
+
+% options can also be expressed in lilypond code blocks
+% (if they don't contain music functions):
+
+\setOption scholarly.editorial.emendation #`(
+  (Slur . 
+    ,#{ 
+    \slurDotted \shape #'((0 . -0.5) (0 . -1.5) (0 . -3.5) (0 . -0.5)) Slur
+    #}))
+  
+  
+  
+  
   
 music = {
+
+
+% using editions:
+
     \criticalRemark
     \with{
         message = "A remark about adding the slur."
@@ -21,12 +51,27 @@ music = {
         message = "This note needs to be added."
         apply = addition
     } NoteHead a4( b c') d'
-    
-    \question
+
+
+
+% using editions predefined by user:
+
+    \todo
     \with{
         message = "Should we remove the slur?"
         apply = deletion
-    } Slur a4( b c') d' 
+    } NoteHead a4( b c') d'
+
+
+
+% using editions defined in lilypond code blocks within setOption:
+
+    \question
+    \with{
+        message = "Should we remove the slur?"
+        apply = emendation
+    } Slur a4( b c') d'
+
 }
 
 \score {
