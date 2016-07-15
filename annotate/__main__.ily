@@ -129,7 +129,7 @@
                              (edit mus)
                              #{ \once #edit #mus #})
                          (begin
-                           (oll:warn "Edition command ~a not set for ~a." edition (car item))
+                           (oll:warn "Editorial command ~a not set for ~a." edition (car item))
                            mus)))
                mus)
          #})
