@@ -120,10 +120,17 @@
           #(if (assq-ref props 'apply)
           ;; If set, add editorial command
                (let* ((edition (string->symbol (assoc-ref props 'apply)))
-                      (edit (getChildOption `(scholarly editorial ,edition) (car item))))
-                     (if (ly:music-function? edit)
-                         (edit mus)
-                         #{ \once #edit #mus #}))
+                      (edit (getChildOptionWithFallback
+                                `(scholarly editorial ,edition)
+                                (car item)
+                                #f)))
+                     (if (not (eq? edit #f))
+                         (if (ly:music-function? edit)
+                             (edit mus)
+                             #{ \once #edit #mus #})
+                         (begin
+                           (oll:warn "Edition option not set: ~a (~a)" edition (car item))
+                           mus)))
                mus)
          #})
         (begin
