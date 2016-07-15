@@ -124,12 +124,12 @@
                                 `(scholarly editorial ,edition)
                                 (car item)
                                 #f)))
-                     (if (not (eq? edit #f))
+                     (if edit
                          (if (ly:music-function? edit)
                              (edit mus)
                              #{ \once #edit #mus #})
                          (begin
-                           (oll:warn "Edition option not set: ~a (~a)" edition (car item))
+                           (oll:warn "Edition command ~a not set for ~a." edition (car item))
                            mus)))
                mus)
          #})
