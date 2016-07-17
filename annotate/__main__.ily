@@ -124,7 +124,7 @@
 	  ;; If `apply` property used, apply editorial function
 	       (let ((edition (string->symbol (assoc-ref props 'apply))))
                     (editorialFunction edition item mus))
-           mus)
+               mus)
          #})
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
