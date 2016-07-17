@@ -170,16 +170,3 @@
 
 \registerOption scholarly.annotate.context-names
 #'()
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% Handling of labels for editorial commands
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% If more categories are needed than scholarLY
-% initially provides, it will accept new ones
-% added by end user in this manner:
-% \registerOption scholarly.editorial.<category> #`()
-
-\registerOption scholarly.editorial.addition #`()
-\registerOption scholarly.editorial.deletion #`()
-\registerOption scholarly.editorial.emendation #`()
