@@ -62,6 +62,9 @@
 \include "export-plaintext.ily"
 \include "engraver.ily"
 
+% Include `editorial-functions` module
+\include "../editorial-functions/__main__.ily"
+
 #(define annotate
   (define-music-function (name properties type item mus)
    ((symbol?) ly:context-mod? symbol? symbol-list-or-music? (ly:music?))
@@ -121,7 +124,7 @@
           ;; If set, add editorial command
                (let* ((edition (string->symbol (assoc-ref props 'apply)))
                       (edit (getChildOptionWithFallback
-                                `(scholarly editorial ,edition)
+                                `(scholarly editorial functions ,edition)
                                 (car item)
                                 #f)))
                      (if edit
