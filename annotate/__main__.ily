@@ -119,22 +119,12 @@
                      (set! props (assoc-set! props 'footnote-text (assq-ref props 'message))))
                  (let ((offset (assq-ref props 'footnote-offset))
                        (text (assq-ref props 'footnote-text)))
-                 #{ \footnote #offset #text #item #})))
-          #(if (assq-ref props 'apply)
-          ;; If set, add editorial command
-               (let* ((edition (string->symbol (assoc-ref props 'apply)))
-                      (edit (getChildOptionWithFallback
-                                `(scholarly editorial functions ,edition)
-                                (car item)
-                                #f)))
-                     (if edit
-                         (if (ly:music-function? edit)
-                             (edit mus)
-                             #{ \once #edit #mus #})
-                         (begin
-                           (oll:warn "Editorial command ~a not set for ~a." edition (car item))
-                           mus)))
-               mus)
+		   #{ \footnote #offset #text #item #})))
+	  #(if (assq-ref props 'apply)
+	  ;; If `apply` property used, apply editorial function
+	       (let ((edition (string->symbol (assoc-ref props 'apply))))
+                    (editorialFunction edition item mus))
+           mus)
          #})
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")

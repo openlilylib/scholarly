@@ -3,12 +3,15 @@
 \include "scholarly/package.ly"
 
 
+%{
 % editorial options can be set:
+%   (commented out to verify that options load 
+%   from editorial-functions/config [y])
 
-\setOption scholarly.editorial.addition #`(
+\setOption scholarly.editorial.functions.addition #`(
   (Slur . ,slurDashed)
   (NoteHead . ,parenthesize))
-
+%}
 
 
 % options can incorporate longer function if predefined:
@@ -17,7 +20,7 @@ longerfunction =
 #(define-music-function (mus) (ly:music?)
    #{ \once \set fontSize = -4 \parenthesize #mus #})
 
-\setOption scholarly.editorial.deletion #`(
+\setOption scholarly.editorial.functions.deletion #`(
   (NoteHead . ,longerfunction))
 
 
@@ -25,7 +28,7 @@ longerfunction =
 % options can also be expressed in lilypond code blocks
 % (if they don't contain music functions):
 
-\setOption scholarly.editorial.emendation #`(
+\setOption scholarly.editorial.functions.emendation #`(
   (Slur . 
     ,#{ 
     \slurDotted \shape #'((0 . -0.5) (0 . -1.5) (0 . -3.5) (0 . -0.5)) Slur

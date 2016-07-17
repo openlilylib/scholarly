@@ -7,33 +7,28 @@
 \include "config.ily"
 
 
-% generic function. this is primarily used internally by the annotate module,
+
+%% generic function.
+
+% this is primarily used internally by the annotate module,
 % but is also available as a user command, particularly with custom editorial
 % types in mind.
-
-
-%{ .. patch into annotate ..
-(let ((edition (assq-ref props 'apply)))
-  (if edition
-      (editorialFunction edition item mus)
-      mus))
-%}
 
 editorialFunction =
 #(define-music-function (type item mus)
    (symbol? symbol-list? ly:music?)
-   (let ((edit (getChildOption `(scholarly editorial functions ,type) item)))
+   (let ((edit (getChildOption `(scholarly editorial functions ,type) (car item))))
      (if edit
          (if (ly:music-function? edit)
              (edit mus)
-             #{ #edit #mus #})
+             #{ \once #edit #mus #})
          (begin
            (display "warning message")
            mus))))
 
 
 
-% specific functions
+%% available user commands:
 
 editorialAddition =
 #(define-music-function (item mus)
