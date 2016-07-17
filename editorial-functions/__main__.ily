@@ -8,24 +8,28 @@
 
 
 
-%% generic function.
+%% generic editorial function.
 
 % this is primarily used internally by the annotate module,
 % but is also available as a user command, particularly with custom editorial
-% types in mind.
+% types in mind. e.g. { \editorialFunction #'mytype Slur a( b) }
 
 editorialFunction =
 #(define-music-function (type item mus)
    (symbol? symbol-list? ly:music?)
-   (let ((edit (getChildOption `(scholarly editorial functions ,type) (car item))))
+   (let ((edit (getChildOptionWithFallback
+		`(scholarly editorial functions ,type)
+		(car item)
+		#f)))
      (if (and edit
 	      (getOption `(scholarly editorial functions apply)))
          (if (ly:music-function? edit)
              (edit mus)
              #{ \once #edit #mus #})
          (begin
-           (display "warning message")
+           (oll:warn "Editorial command ~a not set for ~a." edition (car item))
            mus))))
+
 
 
 
