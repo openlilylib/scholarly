@@ -3,6 +3,9 @@
 \include "scholarly/package.ly"
 
 
+% \setOption scholarly.editorial.functions.apply ##f
+
+
 %{
 % editorial options can be set:
 %   (commented out to verify that options load 

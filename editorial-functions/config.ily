@@ -9,10 +9,25 @@
 % (satisfactorily) parenthesize a section doesn't exist yet anyway).
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Global boolean to toggle editorial functions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% By detault, scholarLY applies editorial functions when set.
+\registerOption scholarly.editorial.functions.apply ##t
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Editorial functions, sorted by category
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % If more categories are needed than scholarLY
 % initially provides, it will accept new ones
 % added by end user in this manner:
 % \registerOption scholarly.editorial.functions.<category> #`()
+
+% NOTE. these are *not* real suggestions, but placeholders for now.
 
 \registerOption scholarly.editorial.functions.addition
 #`((NoteHead . ,parenthesize)
