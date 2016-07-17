@@ -48,4 +48,4 @@ editorialDeletion =
 editorialEmendation =
 #(define-music-function (item mus)
    (symbol-list? ly:music?)
-   (editorialFunciton 'emendation item mus))
+   (editorialFunction 'emendation item mus))

@@ -57,6 +57,14 @@ music = {
         message = "This note needs to be added."
         apply = addition
     } NoteHead a4( b c') d'
+    
+    
+% applying edition without an annotation
+%   NOTE: global toggle for editorial functions affects
+%   both annotated editorial functions and independent 
+%   ones just the same.
+
+    \editorialAddition Slur a4( b c') d'
 
 
 
