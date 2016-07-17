@@ -18,7 +18,8 @@ editorialFunction =
 #(define-music-function (type item mus)
    (symbol? symbol-list? ly:music?)
    (let ((edit (getChildOption `(scholarly editorial functions ,type) (car item))))
-     (if edit
+     (if (and edit
+	      (getOption `(scholarly editorial functions apply)))
          (if (ly:music-function? edit)
              (edit mus)
              #{ \once #edit #mus #})

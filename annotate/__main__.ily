@@ -120,8 +120,7 @@
                  (let ((offset (assq-ref props 'footnote-offset))
                        (text (assq-ref props 'footnote-text)))
 		   #{ \footnote #offset #text #item #})))
-	  #(if (and (assq-ref props 'apply)
-		    (getOption `(scholarly editorial functions apply)))
+	  #(if (assq-ref props 'apply)
 	  ;; If `apply` property used, apply editorial function
 	       (let ((edition (string->symbol (assoc-ref props 'apply))))
                     (editorialFunction edition item mus))
