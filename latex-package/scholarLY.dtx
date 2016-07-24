@@ -1,172 +1,563 @@
-\ProvidesPackage{scholarLY}
-
+% \iffalse meta-comment
+%
+% Copyright (C) 2016 by Jeffery Shivers <jefferyshivers@gmail.com>
+% -------------------------------------------------------
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.2
+% of this license or (at your option) any later version.
+% The latest version of this license is in:
+%
+%    http://www.latex-project.org/lppl.txt
+%
+% and version 1.2 or later is part of all distributions of LaTeX
+% version 1999/12/01 or later.
+%
+% \fi
+%
+% \iffalse
+%<*driver>
+\ProvidesFile{scholarLY.dtx}
+%</driver>
+%<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<package>\ProvidesPackage{scholarLY}
+%<*package>
+    [2016/08/01 1.0 Package for typesetting annotations for critical editions
+    compiled by LilyPond with the OpenLilyLib ScholarLY library.]
+%</package>
+%
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage{idxlayout}
+\usepackage{scholarLY}
+\usepackage{hypdoc}
+\usepackage[titletoc]{appendix}
+\usepackage{pbox}
+\usepackage{xcolor}
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+  \DocInput{scholarLY.dtx}
+\end{document}
+%</driver>
+% \fi
+% \CheckSum{1191}
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+% \changes{v1.0}{2016/08/01}{Initial version}
+% \GetFileInfo{scholarLY.dtx}
+% \DoNotIndex{\newcommand,\newenvironment,\def,\gdef,\edef}
+%
+% \def\scholarLY{\textsf{scholarLY} }
+%
+% \title{The \textsf{scholarLY} package\thanks{This document
+%   corresponds to \textsf{scholarLY}~\fileversion, dated \filedate.
+%   The package is available online at
+%   \url{http://www.ctan.org} and
+%   \url{https://github.com/openlilylib/scholarly}.}\\
+%   version \fileversion}
+% \author{Jeffery Shivers \\ \texttt{jefferyshivers@gmail.com}}
+% \date{\filedate}
+% \maketitle
+%
+% \definecolor{blueberry}{rgb}{0.1,0.1,0.3}
+%
+% {\color{red} TODO before publishing this: (1) fix same-location function.. (not working at all suddenly)}
+%
+% {\hypersetup{linkcolor=blueberry}
+% \tableofcontents}
+%
+% \newpage
+% \section{Introduction}
+%
+% The aim of the \textsf{scholarLY} package is to provide the tools
+% for typesetting annotations for critical editions of musical scores
+% engraved with GNU LilyPond.
+% This \LaTeX{} package processes the |<filename>.annotations.inp| file
+% exported from LilyPond by the openLilyLib \scholarLY library. The
+% main features of the package currently include:
+%
+% \medskip
+% \begin{itemize}[nosep]
+% \item{formatting and styling annotation parameters individually}
+% \item{package options for toggling |final| or |draft| and |custom| or |default| modes}
+% \item{simple key-value families for organizing style blocks}
+% \end{itemize}
+% \medskip
+%
+% In this initial release, \scholarLY is a relatively lightweight package. It is foremost concerned with the typsetting
+% of annotations, and as such does not provide a means of directly interacting with musical
+% scores, nor with \LaTeX{} documents outside of the annotations themselves.
+% Future minor releases may introduce extended capabilities, particularly
+% ones to better facilitate the integration of various compilation
+% procedures\footnote{\url{http://lilypond.org/doc/v2.19/Documentation/usage/integrating-music-and-text}}
+% (such as |lilypond-book| and the \textsf{musicexamples} package).
+%
+% Feature requests, bug reports, and other concerns should be directed to the
+% \textsf{scholarLY} issue tracker at \url{https://github.com/openlilylib/scholarly/issues}. That is also
+% the best location to observe the latest state of the project, and to explore the rest of
+% openLilyLib's vast and growing resources.
+%
+% \section{Usage}
+%
+% \newcommand{\exampleAnn}[1]
+%     {\begEnumerate\annStyleMode\annRevisit{#1}\endEnumerate}
+%
+%     It is possible to simply print our annotations with as little one line of code in the document
+%     environment. To add customized styles to the annotations, style blocks provide a cleanly nested
+% infastructure for organizing behaviors of specific details in each mode.
+% And assuming the point is to combine the annotations and the musical score
+% into a single document, this basic functionality gets only a
+% little more complicated. This documentation will not go through the various ways to compile LilyPond
+% scores with \LaTeX{} documents,\footnote{\url{http://lilypond.org/doc/v2.19/Documentation/usage/latex.en.html}} but hopefully it will
+% become clear that \textsf{scholarLY}'s flexibility is suited for a range of approaches.
+%
+% \subsection{The Main Command}
+%
+% At the heart of the \scholarLY package is the |\annotations|
+% command, which wraps all of our presets and annotations with a single
+% argument. It processes the |.inp| file which was exported from the corresponding LilyPond
+% document.\footnote{This documentation doesn't provide instructions for using
+% the LilyPond side of \textsf{scholarLY}; for that, please go to
+% \url{https://github.com/openlilylib/scholarly} and view the README, as well as
+% the |annotate.ly|, |footnotes.ly| and |editorial-commands.ly| example documents.}
+%
+% {\color{blueberry}\begin{verbatim}
+%    \annotations{myscore.annotations.inp}
+% \end{verbatim}}
+%
+% This hook will apply any predefined settings to the list(s). A single document can
+% contain multiple |\annotations| instances as long as the named files are in \LaTeX 's search path.
+% It does not take optional arguments (yet), so all settings must be
+% instructed either in the |\usepackage| message or within \scholarLY style blocks.
+%
+% \subsection{Top-Level Options}
+% In the |\usepackage| statement, we can make use of two global options.
+% {\color{blueberry}\begin{verbatim}
+%    \usepackage[custom, final]{scholarLY}
+% \end{verbatim}}
+% \begin{description}[noitemsep]
+% \item[draft / final:] This options offers 
+% \item[default / custom:] This option toggles between the default styles of
+%   \textsf{scholarLY} and the user-defined options. It offers an easy way to turn on or off
+%   your settings quickly without actually changing anything in the document. The
+%   default setting is |Custom| (\textsf{scholarLY} will still print your annotations
+%   without any settings; they'll just be very bland). 
+% \end{description}
+%
+% As described above, the default setting is |[Custom, Final]|.
+% However, it's best to be verbose about the two options, as in the example, to remove any ambiguity (this will help avoid a lot
+% of meaningless frustration in the end, trust me!).
+%
+% This package makes use of a default stylesheet\footnote{|default-stylesheet.inp|
+% is located in the same directory as the package file.} for its |default| mode, which inherently contains
+% all (TODO this needs to be verified)---or \textit{almost} all---of the
+% available commands. It is a convenient demonstration of how style blocks could be
+% organized. When |default| mode is turned on, \textsf{scholarLY} will revert
+% all styles and formats to whatever is listed in that document, according to either final
+% or draft mode. The biggest differences between |default|'s |final| and |draft| modes
+% are that |draft| will
+% print annotation parameters stacked, show annotation types and enumerate the list.
+% Which would look something like:
+%
+% \bigskip
+% \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
+%
+% \annShowType\annStacked
+% \exampleAnn{
+%   \criticalRemark
+%   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
+%   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
+%   grob-type={Accidental},
+%   type={critical-remark},
+%   context-id={Viola},
+%   message={This note should be sharp.}]
+% }
+%
+% }}
+% \bigskip
+%
+% This is of course not very interesting, typographically speaking.
+% The default stylesheet can be altered, but it is recommended to leave it
+% fairly minimal so that you'll have an easy way to revert settings, which could be
+% occasionally useful.
+%
+% \subsection{Style Blocks}
+%
+% We can contain all of our custom settings in either (or both) of two style blocks. This
+% allows \textsf{scholarLY} to toggle between |draft| and |final| settings easily,
+% and of course provides a clean syntax for organizing the code. 
+%
+% To set custom draft and final behaviors, we use:
+% {\color{blueberry}\begin{verbatim}
+%    \annSetDraft{
+%      [..]
+%    }
+%
+%    \annSetFinal{
+%      [..]
+%    }
+% \end{verbatim}}
+%
+% \textsf{scholarLY} allows for unlimited |\annSet[..]| blocks. This is especially useful
+% for large projects that may need to print annotations in varying formats per different
+% sections of material. Note, however, that creating a new
+% block doesn't automatically override all items set in previous blocks until
+% they are explicitly redefined.\footnote{Hint: the \textsf{verbatim} package provides
+% a convenient environment for commenting out code blocks. This could be one tool
+% for quickly and easily checking the behavior of your custom styles.}
+% It is unlikely that most documents will have a
+% need to use very many |\annotations| instances and style preferences, so that is a more or less
+% arbitrary detail.
+%
+% Inside the style blocks, we can insert any important hooks such as |\annStacked| and |\annShowType|,
+% as well as three key-value groups: |annStyles|, |annPrefixes| and |annExtras|. Here is an example
+% of a custom style block followed by the resulting annotation in |final| mode:
+%
+% {\color{blueberry}\begin{verbatim}
+%    \annSetFinal{
+%      \setkeys{annStyles}{
+%        message = {\color{cyan}},
+%        message-2nd = {\textit},
+%        affected = {\MakeLowercase},
+%        voice = {\textbf},
+%        voice-2nd = {\MakeLowercase}
+%      }
+%      \setkeys{annPrefixes}{
+%        measure = {m.},
+%        beat = {b.}
+%      }
+%      \annHideType
+%      \annInline
+%    }
+% \end{verbatim}}
+%
+% \annEnumerateOff
+% \setkeys{annStyles}{
+%  message={\color{cyan}},
+%  message-2nd={\textit},
+%  affected={\MakeLowercase},
+%  voice={\textbf},
+%  voice-2nd={\MakeLowercase}
+% }
+%   \setkeys{annPrefixes}{
+% measure={M.},
+% beat={b.}
+% }
+% \annHideType
+% \annInline
+%
+% \bigskip
+% \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
+%
+% \exampleAnn{
+% \criticalRemark
+%   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
+%   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
+%   grob-type={Accidental},
+%   type={critical-remark},
+%   context-id={Viola},
+%   message={This note should be sharp.}]
+% }
+% }}\bigskip
+%
+% Annotations also adhere to other style commands that might be lingering in your document.
+% Font faces, spacing, etc. will be adapted if previously set (which you'll probably want). In
+% fact, we can treat |\annotations{..}| as if it were a block of text (well, it
+% really is just that once it expands). The point is, we can wrap it in explicit style commands just the
+% same as with other \TeX{} objects. Keep in mind, however, that any style choices
+% made in |\annSet[..]| blocks will override such styles of the same type since
+% they are being applied on the spot.\footnote{Of course, there are tricks around
+% everything: to cancel your own style blocks and \textit{not} use
+% the default stylesheet, simply follow your custom blocks with the same
+% respective blocks \textit{emptied}. Since there is no convenience command for
+% this, you'll have to manually type each of the options you wish to set to nothing.} It is
+% recommended to keep annotation settings within style blocks in order to keep
+% |draft| and |final| modes as clearly defined as possible.
+%
+% \subsection{More Examples}
+%
+% \subsection{Wishlist}
+%
+% \medskip
+% \begin{itemize}[nosep]
+% \item Be able to refer to / link to (/ label) annotations as with footnotes/sections/etc.
+%
+% \item Annotations should be able to communicate with each other (i.e. refer to each other
+% somehow).
+%
+% \item Be able to decide what parameter of an annotation is printed or not locally (i.e. this
+% would be set in the LilyPond stage, in the individual annotation), with the current
+% settings as default; to also be able to set this globally in the latex document.
+%
+% \item And to determine, if an item is empty, whether to include an error statement in the document
+% (and/or latex log output) or to 
+%
+% \item That should all be possible in the context of the printed annotations as well as
+% out of it, such as in an introductory section.
+% \end{itemize}
+% \medskip
+%
+% \clearpage
+%
+% \StopEventually{}
+%\iffalse
+%<*package>
+%\fi
+%
+% \section{Implementation}
+%
+% The majority of this package corresponds to the default annotation parser.
+% In order to use a custom annotation parser, I suggest looking closely at
+% section 2.6 in particular to get an idea of what functions are already
+% available. Because of the inherent unpredictability of how custom parsers
+% will be constructed and thus behave, \textsf{scholarLY} doesn't force location checks,
+% key resets, and other functionality that users will most likely need. At this
+% point, the use of custom annotation parsing isn't fully
+% supported (i.e. the bare mechanisms are in place (section 2.7), but have
+% not really been tested yet). With that said, here are the current leading TODO's:
+%
+% \medskip
+% \begin{itemize}[nosep]
+% \item{Fully support custom annotation parsers.}
+% \item{Address beat fractions; currently scholarLY only supports whole beat locations.}
+% \item{Rewrite custom footnote parser; it should be a loop that allows for infinite footnotes,
+%   but currently only allows up to five, plus one annotation footnote.}
+% \item{Add automatic labels to annotations for referencing / linking.}
+% \end{itemize}
+% \medskip
+%
+% \subsection{Required Packages}
+%
+%    \begin{macrocode}
 \RequirePackage{ifthen}
 \RequirePackage{enumitem}
 \RequirePackage{xstring}
 \RequirePackage{keyval}
-\RequirePackage{stringstrings}
-% for comments
-\RequirePackage{verbatim}
-% for custom names
 \RequirePackage{titlecaps}
-
-% styles:
+%    \end{macrocode}
+%
+% \subsection{Style Annotations}
+%
+% basic styles:
+%    \begin{macrocode}
+\def\annName{}
 \def\annType{}
 \def\annMeasure{}
 \def\annBeat{}
 \def\annVoice{}
+\def\annVoiceO{}
 \def\annAffected{}
+\def\annAffectedO{}
 \def\annMessage{}
 \def\annMessageO{}
 \def\annMessageOO{}
-% `annStyles` keys to update styles:
 \define@key{annStyles}{type}{\def\annType{#1}}
 \define@key{annStyles}{measure}{\def\annMeasure{#1}}
 \define@key{annStyles}{beat}{\def\annBeat{#1}}
 \define@key{annStyles}{voice}{\def\annVoice{#1}}
+\define@key{annStyles}{voice-2nd}{\def\annVoiceO{#1}}
 \define@key{annStyles}{affected}{\def\annAffected{#1}}
+\define@key{annStyles}{affected-2nd}{\def\annAffectedO{#1}}
 \define@key{annStyles}{message}{\def\annMessage{#1}}
 \define@key{annStyles}{message-2nd}{\def\annMessageO{#1}}
 \define@key{annStyles}{message-3rd}{\def\annMessageOO{#1}}
-
-% DRAFT and FINAL MODE
-
+%    \end{macrocode}
+% draft and final mode
+%    \begin{macrocode}
 \def\customdraft{}
-% create custom settings for `draft` mode:
 \newcommand\annSetDraft[1]{
-  \def\customdraft{#1}
-}
+  \def\customdraft{#1}}
 \def\customfinal{}
-% create custom settings for `final` mode:
 \newcommand\annSetFinal[1]{
-  \def\customfinal{#1}
-}
-% let custom final settings carry over to draft mode:
+  \def\customfinal{#1}}
+%    \end{macrocode}
+% Let custom final settings carry over to draft mode.\footnote{footnote}
+%    \begin{macrocode}
 \newcommand{\finalfordraft}{\def\customdraft{\customfinal}}
-
-% break annotations or not:
+%    \end{macrocode}
+%    \begin{macrocode}
 \newcommand{\letAnnBreakornot}{\par\nobreak}
-% let break
-\newcommand{\annBreakAllow}{\renewcommand{\letAnnBreakornot}{\par}}
-% avoid break
-\newcommand{\annBreakAvoid}{\renewcommand{\letAnnBreakornot}{\par\nobreak}}
-%
-% NOTE If \enumoptions (see below) specifies vertical spacing within items, \letAnnBreak
-%      is more likely to result in breaks. Otherwise, LaTeX will try to avoid breaking
-%      even with \annBreakAllow employed.
-%
-% apply any of the usual enumerate arguments to the list:
+%    \end{macrocode}
+% \begin{macro}{\annBreakAllow}
+% Let annotations break over pages/columns.
+%    \begin{macrocode}
+\newcommand{\annBreakAllow}
+  {\renewcommand{\letAnnBreakornot}{\par}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\annBreakAvoid}
+% Avoid breaks over pages/columns.
+%    \begin{macrocode}
+\newcommand{\annBreakAvoid}
+  {\renewcommand{\letAnnBreakornot}{\par\nobreak}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\setEnumOptions}
+% Apply any of the usual |enumerate| options to the list; takes one argument, which may itself contain multiple commands.
+%    \begin{macrocode}
 \newcommand{\enumOptions}{}
 \newcommand{\setEnumOptions}[1]{\renewcommand{\enumOptions}{#1}}
-%
-% inline or stacked annotations:
-  \newcommand{\skipornot}{}
-  \newcommand{\typeSkipornot}{}
+%    \end{macrocode}
+%    \begin{macrocode}
+\newcommand{\skipornot}{}
+\newcommand{\typeSkipornot}{}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\annInline}
+% Print annotations with inline parameters.
+%    \begin{macrocode}
 \newcommand{\annInline}{%
   \renewcommand{\skipornot}{, }
   \renewcommand{\typeSkipornot}{}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\annStacked}
+% Print annotations with stacked parameters.
+%    \begin{macrocode}
 \newcommand{\annStacked}{%
   \renewcommand{\skipornot}{\letAnnBreakornot}
   \renewcommand{\typeSkipornot}{\letAnnBreakornot}}
-
+%    \end{macrocode}
+% \end{macro}
 % custom type name
-\define@key{scholarLYannotations}{type}{\def\lytype{#1}}
-
+%    \begin{macrocode}
+\define@key{scholarLYann}{type}{\def\lytype{#1}}
 \def\prependType{}
 \def\appendType{}
 \def\annType{}
-
+%    \end{macrocode}
 % hide or show annotation types:
+%    \begin{macrocode}
 \newcommand{\annHideType}{%
   \def\annName{}
-  \renewcommand{\typeSkipornot}{}
-}
+  \renewcommand{\typeSkipornot}{}}
 \newcommand{\annShowType}{%
   \def\annName{{\annType\annTypeName }}
   \ifthenelse{\equal{\skipornot}{\letAnnBreakornot}}
     {\renewcommand{\typeSkipornot}{\letAnnBreakornot}}
-    {\renewcommand{\typeSkipornot}{}}
-}
-
+    {\renewcommand{\typeSkipornot}{}}}
 \input{default-stylesheet.inp}
 \def\annStyleMode{}
 \def\annRevisit{}
-
-% PROCESS OPTIONS:
-\newif\ifDraft
-  \DeclareOption{draft}{\Drafttrue}
-  \DeclareOption{final}{\Draftfalse}
-\newif\ifDefault
-  \DeclareOption{default}{\Defaulttrue}
-  \DeclareOption{custom}{\Defaultfalse}
+%    \end{macrocode}
+%
+% \subsection{Package Options}
+%
+%    \begin{macrocode}
+\newif\ifdraft
+  \DeclareOption{draft}{\drafttrue}
+  \DeclareOption{final}{\draftfalse}
+\newif\ifdefault
+  \DeclareOption{default}{\defaulttrue}
+  \DeclareOption{custom}{\defaultfalse}
 \ProcessOptions*
+%    \end{macrocode}
 % use final (implicit) or draft:
-\ifDraft
-  \def\annStyleMode{\customdraft}
-  \def\annRevisit{\revisitDraftorNot}
+%    \begin{macrocode}
+\ifdraft
+  {\def\annStyleMode{\customdraft}
+  \def\annRevisit{\revisitDraftorNot}}
 \else
-  \def\annStyleMode{\customfinal}
-  \def\annRevisit{\revisitFinalorNot}
+  {\def\annStyleMode{\customfinal}
+  \def\annRevisit{\revisitFinalorNot}}
 \fi
+%    \end{macrocode}
 % use custom (implicit) or default
-\ifDefault
-  \def\revisitFinalorNot{\defaultFinal}
-  \def\revisitDraftorNot{\defaultDraft}
+%    \begin{macrocode}
+\ifdefault
+  {\def\revisitFinalorNot{\defaultFinal}
+  \def\revisitDraftorNot{\defaultDraft}}
 \else
-  \def\revisitFinalorNot{}
-  \def\revisitDraforNot{}
+  {\def\revisitFinalorNot{}
+  \def\revisitDraftorNot{}}
 \fi
-
-% ADDITIONAL CUSTOMIZATIONS:
+%    \end{macrocode}
+%
+% \subsection{Additional Customizations}
+%
 % do something immediately after the type (only effective if type present)
+%    \begin{macrocode}
 \def\annPostType{}
 \define@key{annPrefixes}{post-type}{\def\annPostType{#1}}
+%    \end{macrocode}
 % do something immediately before each type or arg (arg presently affects all):
+%    \begin{macrocode}
 \def\annTypePrePrefix{}
 \define@key{annPrefixes}{pre-type}{\def\annTypePrePrefix{#1}}
 \def\annArgsPrePrefix{}
 \define@key{annPrefixes}{pre-args}{\def\annArgsPrePrefix{#1}}
+%    \end{macrocode}
 % first message wrapper (goes inside ann-footnote)
+%    \begin{macrocode}
 \def\prependMessage{}
 \def\appendMessage{}
-% default seperator for message wrapper
 \def\aMWSep{/}
+%    \end{macrocode}
 % macro to redefine the seperator
+%    \begin{macrocode}
 \newcommand\annMessageWrapSep[1]{\def\aMWSep{#1}}
+%    \end{macrocode}
 % macro to define message wrap
+%    \begin{macrocode}
 \newcommand\annMessageWrap[1]{
   \expandarg\IfSubStr{#1}{\aMWSep}
     {\StrCut{#1}{\aMWSep}\prependMessage\appendMessage}
     {\def\prependMessage{#1}
     \def\appendMessage{#1}}}
+%    \end{macrocode}
 % outer message wrap
+%    \begin{macrocode}
 \def\prependMessageFirst{}
 \def\appendMessageLast{}
-% default seperator for message outer wrapper
 \def\aMWOSep{/}
+%    \end{macrocode}
 % macro to redefine the seperator
+%    \begin{macrocode}
 \newcommand\annMessageWrapOuterSep[1]{\def\aMWOSep{#1}}
+%    \end{macrocode}
 % macro to define outer message wrap
+%    \begin{macrocode}
 \newcommand\annMessageWrapOuter[1]{
   \expandarg\IfSubStr{#1}{\aMWOSep}
     {\StrCut{#1}{\aMWOSep}\prependMessageFirst\appendMessageLast}
     {\def\prependMessageFirst{#1}
     \def\appendMessageLast{#1}}}
+%    \end{macrocode}
 % ann type wrapper
+%    \begin{macrocode}
 \def\prependType{}
 \def\appendType{}
-% default seperator for type wrapper
 \def\aTWSep{/}
+%    \end{macrocode}
 % macro to redefine the seperator
+%    \begin{macrocode}
 \newcommand\annTypeWrapSep[1]{\def\aTWSep{#1}}
+%    \end{macrocode}
 % macro to define type wrap
+%    \begin{macrocode}
 \newcommand\annTypeWrap[1]{
   \expandarg\IfSubStr{#1}{\aTWSep}
     {\StrCut{#1}{\aTWSep}\prependType\appendType}
     {\def\prependType{#1}
     \def\appendType{#1}}}
-
-% \annotations = the main command
+%    \end{macrocode}
+% enumerate or not, using enumitem package
+%    \begin{macrocode}
 \def\annEnumerateOn{
   \def\itemornot{\item}
   \def\begEnumerate{\begin{enumerate}[mode=boxed]\enumOptions}
@@ -175,25 +566,27 @@
   \def\itemornot{}
   \def\begEnumerate{}
   \def\endEnumerate{}}
-% default = enumerate ON
 \annEnumerateOn
-
+%    \end{macrocode}
+% main annotation command
+%    \begin{macrocode}
 \newcommand{\annotations}[1]
 {\begEnumerate\annStyleMode\annRevisit\input{#1}\endEnumerate}
-
+%    \end{macrocode}
 % keys originally set in arg 1, exported from lilypond
-\define@key{scholarLYannotations}{grob}{\def\lygrob{#1}}
-\define@key{scholarLYannotations}{grob-location}{\def\lygroblocation{#1}}
-\define@key{scholarLYannotations}{grob-type}{\def\lygrobtype{#1}}
-\define@key{scholarLYannotations}{input-file-name}{\def\lyinputfilename{#1}}
-\define@key{scholarLYannotations}{context-id}{\def\lycontextid{#1}}
-\define@key{scholarLYannotations}{location}{\def\lylocation{#1}}
-\define@key{scholarLYannotations}{message}{\def\lymessage{#1}}
-\define@key{scholarLYannotations}{type}{\def\lyanntype{#1}}
-\define@key{scholarLYannotations}{context}{\def\lycontext{#1}}
-\define@key{scholarLYannotations}{ann-footnote}{\def\lyannfootnote{#1}}
+%    \begin{macrocode}
+\define@key{scholarLYann}{grob}{\def\lygrob{#1}}
+\define@key{scholarLYann}{grob-location}{\def\lygroblocation{#1}}
+\define@key{scholarLYann}{grob-type}{\def\lygrobtype{#1}}
+\define@key{scholarLYann}{input-file-name}{\def\lyinputfilename{#1}}
+\define@key{scholarLYann}{context-id}{\def\lycontextid{#1}}
+\define@key{scholarLYann}{location}{\def\lylocation{#1}}
+\define@key{scholarLYann}{message}{\def\lymessage{#1}}
+\define@key{scholarLYann}{type}{\def\lyanntype{#1}}
+\define@key{scholarLYann}{context}{\def\lycontext{#1}}
+\define@key{scholarLYann}{ann-footnote}{\def\lyannfootnote{#1}}
 \def\resetkeys{
-  \setkeys{scholarLYannotations}{%
+  \setkeys{scholarLYann}{%
     grob = no value given,
     grob-location = no value given,
     grob-type = no value given,
@@ -206,9 +599,11 @@
     ann-footnote = {no value given}
   }
 }
-\def\noMessError{\color{red} Oops! No message has been entered for this annotation.}
-
+\def\noMessError{\color{red}
+    Oops! No message has been entered for this annotation.}
+%    \end{macrocode}
 % default Prefixes
+%    \begin{macrocode}
 \def\annGrobPrx{}
 \def\annGrobLocationPfx{}
 \def\annGrobTypePfx{}
@@ -231,39 +626,50 @@
 \define@key{annPrefixes}{context}{\def\annContextPfx{#1}}
 \define@key{annPrefixes}{measure}{\def\annMeasurePfx{#1}}
 \define@key{annPrefixes}{beat}{\def\annBeatPfx{#1}}
-
+%    \end{macrocode}
 % retrieve measure and beat from grob-location
 % (TODO: figure out how to address beat fractions)
+%    \begin{macrocode}
 \def\processGrobLocation{
-  \StrBetween[1,1]{\lygroblocation}{(beat-string .}{)}[\lybeatstring]
+  \StrBetween[1,1]{\lygroblocation}
+    {(beat-string .}{)}[\lybeatstring]
     \StrDel{\lybeatstring}{ }[\lybeatstring]
-  \StrBetween[1,2]{\lygroblocation}{(beat-fraction .}{)}[\lybeatfraction]
+  \StrBetween[1,2]{\lygroblocation}
+    {(beat-fraction .}{)}[\lybeatfraction]
     \StrDel{\lybeatfraction}{ }[\lybeatfraction]
-  \StrBetween[1,3]{\lygroblocation}{(beat-part .}{)}[\lybeatpart]
+  \StrBetween[1,3]{\lygroblocation}
+    {(beat-part .}{)}[\lybeatpart]
     \StrDel{\lybeatpart}{ }[\lybeatpart]
-  \StrBetween[1,4]{\lygroblocation}{(our-beat .}{)}[\lyourbeat]
+  \StrBetween[1,4]{\lygroblocation}
+    {(our-beat .}{)}[\lyourbeat]
     \StrDel{\lyourbeat}{ }[\lyourbeat]
     \StrDel{\lyourbeat}{ }[\lyourbeatPrev]
-  \StrBetween[1,5]{\lygroblocation}{(measure-pos .}{)}[\lymeasurepos]
+  \StrBetween[1,5]{\lygroblocation}
+    {(measure-pos .}{)}[\lymeasurepos]
     \StrDel{\lymeasurepos}{ }[\lymeasurepos]
-  \StrBetween[1,6]{\lygroblocation}{(measure-no .}{)}[\lymeasureno]
+  \StrBetween[1,6]{\lygroblocation}
+    {(measure-no .}{)}[\lymeasureno]
     \StrDel{\lymeasureno}{ }[\lymeasureno]
-  \StrBetween[1,7]{\lygroblocation}{(rhythmic-location }{)}[\lyrhythmiclocation]
-}
-
+  \StrBetween[1,7]{\lygroblocation}
+    {(rhythmic-location }{)}[\lyrhythmiclocation]}
+%    \end{macrocode}
 % if same measure, optionally substitute:
+%    \begin{macrocode}
 \def\previousMeasure{0}
 \def\currentMeasure{0}
-% default.. is redefined by key:
 \def\sameMeasureStub{---}
 \define@key{annExtras}{same-measure}{\def\sameMeasureStub{#1}}
-% optionally substitute same beat (if *also* same measure)
+%    \end{macrocode}
+% optionally substitute same beat (if *also* same measure):
+%    \begin{macrocode}
 \def\previousBeat{0}
 \def\currentBeat{0}
-% default.. is redefined by key:
 \def\sameBeatStub{{---}\unskip}
 \define@key{annExtras}{same-beat}{\def\sameBeatStub{#1}}
+%    \end{macrocode}
+% \begin{macro}{\annSameLocationLoose}
 % to sub same (measure, or measure+beat (never just beat)) when same:
+%    \begin{macrocode}
 \def\sameLocationLoose{
   \ifthenelse{\equal{\currentBeat}{\previousBeat}}
     {\ifthenelse{\equal{\currentMeasure}{\previousMeasure}}
@@ -276,7 +682,11 @@
         \def\thisBeat{\annBeatPfx\currentBeat}}
         {\def\thisMeasure{\annMeasurePfx\currentMeasure,}
         \def\thisBeat{\annBeatPfx\currentBeat}}}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\annSameLocationStrict}
 % to sub same ONLY when both same:
+%    \begin{macrocode}
 \def\sameLocationStrict{
   \ifthenelse{\equal{\currentMeasure}{\previousMeasure}}
     {\ifthenelse{\equal{\currentBeat}{\previousBeat}}
@@ -286,172 +696,229 @@
       \def\thisBeat{\annBeatPfx\currentBeat}}}
     {\def\thisMeasure{\annMeasurePfx\currentMeasure,}
     \def\thisBeat{\annBeatPfx\currentBeat}}}
+\def\annSameLocationStrict{\def\testLocation{\sameLocationStrict}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\annSameLocationShow}
 % to always show both
+%    \begin{macrocode}
 \def\sameLocationShow{
   \def\thisMeasure{\annMeasurePfx\currentMeasure,}
   \def\thisBeat{\annBeatPfx\currentBeat}}
+%    \end{macrocode}
+% \end{macro}
 % macros for show / strict-hide / loose-hide
+%    \begin{macrocode}
 \def\annSameLocationShow{\def\testLocation{\sameLocationShow}}
-\def\annSameLocationStrict{\def\testLocation{\sameLocationStrict}}
 \def\annSameLocationLoose{\def\testLocation{\sameLocationLoose}}
-% default:
-\annSameLocationShow
-
-% The PARSERS:
-
-% determine if there are custom footnotes, by searching arg #1
-% (\bigmessage is defined by arg #1 for each annotation)
+\annSameLocationLoose
+%    \end{macrocode}
+%
+% \subsection{Footnote Parsers}
+%
+% This is a work-in-progress, or rather, a temporary solution.
+%
+% Look for Custom Footnotes:
+%    \begin{macrocode}
 \def\customFootsParse{
-  \StrCount{\bigmessage}{-text=}[\howmanytext]
+  \StrCount{\bigmessage}{-txt=}[\howmanytxt]
   \StrCount{\bigmessage}{ann-footnote=}[\howmanyannfn]
   \ifthenelse{\equal{\howmanyannfn}{0}}{
-    \ifthenelse{\equal{\howmanytext}{0}}
-      {\def\resultOne{}\def\resultTwo{}\def\resultThree{}\def\resultFour{}\def\resultFive{}}
-      {\ifthenelse{\equal{\howmanytext}{1}}
-        {\StrBehind[1]{\bigmessage}{-text=}[\resultOne]
-        \def\resultTwo{}\def\resultThree{}\def\resultFour{}\def\resultFive{}}
-        {\ifthenelse{\equal{\howmanytext}{2}}
-          {\StrBetween[1,2]{\bigmessage}{-text=}{fn-}[\resultOne]
+    \ifthenelse{\equal{\howmanytxt}{0}}
+      {}
+      {\ifthenelse{\equal{\howmanytxt}{1}}
+        {\StrBehind[1]{\bigmessage}
+          {-txt=}[\resultOne]}
+        {\ifthenelse{\equal{\howmanytxt}{2}}
+          {\StrBetween[1,2]{\bigmessage}
+            {-txt=}{fn-}[\resultOne]
             \StrGobbleRight{\resultOne}{2}[\resultOne]
-          \StrBehind[2]{\bigmessage}{-text=}[\resultTwo]
-          \def\resultThree{}\def\resultFour{}\def\resultFive{}}
-          {\ifthenelse{\equal{\howmanytext}{3}}
-            {\StrBetween[1,2]{\bigmessage}{-text=}{fn-}[\resultOne]
+          \StrBehind[2]{\bigmessage}
+            {-txt=}[\resultTwo]}
+          {\ifthenelse{\equal{\howmanytxt}{3}}
+            {\StrBetween[1,2]{\bigmessage}
+              {-txt=}{fn-}[\resultOne]
               \StrGobbleRight{\resultOne}{2}[\resultOne]
-            \StrBetween[2,3]{\bigmessage}{-text=}{fn-}[\resultTwo]
+            \StrBetween[2,3]{\bigmessage}
+              {-txt=}{fn-}[\resultTwo]
               \StrGobbleRight{\resultTwo}{2}[\resultTwo]
-            \StrBehind[3]{\bigmessage}{-text=}[\resultThree]
-            \def\resultFour{}\def\resultFive{}}
-            {\ifthenelse{\equal{\howmanytext}{4}}
-              {\StrBetween[1,2]{\bigmessage}{-text=}{fn-}[\resultOne]
+            \StrBehind[3]{\bigmessage}
+              {-txt=}[\resultThree]}
+            {\ifthenelse{\equal{\howmanytxt}{4}}
+              {\StrBetween[1,2]{\bigmessage}
+                {-txt=}{fn-}[\resultOne]
                 \StrGobbleRight{\resultOne}{2}[\resultOne]
-              \StrBetween[2,3]{\bigmessage}{-text=}{fn-}[\resultTwo]
+              \StrBetween[2,3]{\bigmessage}
+                {-txt=}{fn-}[\resultTwo]
                 \StrGobbleRight{\resultTwo}{2}[\resultTwo]
-              \StrBetween[3,4]{\bigmessage}{-text=}{fn-}[\resultThree]
+              \StrBetween[3,4]{\bigmessage}
+                {-txt=}{fn-}[\resultThree]
                 \StrGobbleRight{\resultThree}{2}[\resultThree]
-              \StrBehind[4]{\bigmessage}{-text=}[\resultFour]
-              \def\resultFive{}}
-              {\ifthenelse{\equal{\howmanytext}{5}}
-                {\StrBetween[1,2]{\bigmessage}{-text=}{fn-}[\resultOne]
+              \StrBehind[4]{\bigmessage}
+                {-txt=}[\resultFour]}
+              {\ifthenelse{\equal{\howmanytxt}{5}}
+                {\StrBetween[1,2]{\bigmessage}
+                  {-txt=}{fn-}[\resultOne]
                   \StrGobbleRight{\resultOne}{2}[\resultOne]
-                \StrBetween[2,3]{\bigmessage}{-text=}{fn-}[\resultTwo]
+                \StrBetween[2,3]{\bigmessage}
+                  {-txt=}{fn-}[\resultTwo]
                   \StrGobbleRight{\resultTwo}{2}[\resultTwo]
-                \StrBetween[3,4]{\bigmessage}{-text=}{fn-}[\resultThree]
+                \StrBetween[3,4]{\bigmessage}
+                  {-txt=}{fn-}[\resultThree]
                   \StrGobbleRight{\resultThree}{2}[\resultThree]
-                \StrBetween[4,5]{\bigmessage}{-text=}{fn-}[\resultFour]
+                \StrBetween[4,5]{\bigmessage}
+                  {-txt=}{fn-}[\resultFour]
                   \StrGobbleRight{\resultFour}{2}[\resultFour]
-                \StrBehind[5]{\bigmessage}{-text=}[\resultFive]}
+                \StrBehind[5]{\bigmessage}
+                  {-txt=}[\resultFive]}
                 {}}}}}}}
-    {\ifthenelse{\equal{\howmanytext}{0}}
-      {\def\resultOne{}\def\resultTwo{}\def\resultThree{}\def\resultFour{}\def\resultFive{}}
-      {\ifthenelse{\equal{\howmanytext}{1}}
-        {\StrBetween[1,1]{\bigmessage}{-text=}{, ann-footnote}[\resultOne]
-        \def\resultTwo{}\def\resultThree{}\def\resultFour{}\def\resultFive{}}
-        {\ifthenelse{\equal{\howmanytext}{2}}
-          {\StrBetween[1,2]{\bigmessage}{-text=}{fn-}[\resultOne]
-          \StrBetween[2,1]{\bigmessage}{-text=}{ann-footnote}[\resultTwo]
-          \def\resultThree{}\def\resultFour{}\def\resultFive{}
-          {\ifthenelse{\equal{\howmanytext}{3}}
-            {\StrBetween[1,2]{\bigmessage}{-text=}{fn-}[\resultOne]
-            \StrBetween[2,3]{\bigmessage}{-text=}{fn-}[\resultTwo]
-            \StrBetween[3,1]{\bigmessage}{-text=}{ ann-footnote}[\resultThree]
-            \def\resultFour{}\def\resultFive{}}
-            {\ifthenelse{\equal{\howmanytext}{4}}
-              {\StrBetween[1,2]{\bigmessage}{-text=}{, fn-}[\resultOne]
-              \StrBetween[2,3]{\bigmessage}{-text=}{, fn-}[\resultTwo]
-              \StrBetween[3,4]{\bigmessage}{-text=}{, fn-}[\resultThree]
-              \StrBetween[4,1]{\bigmessage}{-text=}{, ann-footnote}[\resultFour]
-              \def\resultFive{}}
-              {\ifthenelse{\equal{\howmanytext}{5}}
-                {\StrBetween[1,2]{\bigmessage}{-text=}{, fn-}[\resultOne]
-                \StrBetween[2,3]{\bigmessage}{-text=}{, fn-}[\resultTwo]
-                \StrBetween[3,4]{\bigmessage}{-text=}{, fn-}[\resultThree]
-                \StrBetween[4,5]{\bigmessage}{-text=}{, fn-}[\resultFour]
-                \StrBetween[5,1]{\bigmessage}{-text=}{, ann-footnote}[\resultFive]}
-                {}}}}}}}}}
+    {\ifthenelse{\equal{\howmanytxt}{0}}
+      {}
+      {\ifthenelse{\equal{\howmanytxt}{1}}
+        {\StrBetween[1,1]{\bigmessage}
+          {-txt=}{, ann-footnote}[\resultOne]}
+        {\ifthenelse{\equal{\howmanytxt}{2}}
+          {\StrBetween[1,2]{\bigmessage}
+            {-txt=}{fn-}[\resultOne]
+          \StrBetween[2,1]{\bigmessage}
+            {-txt=}{ann-footnote}[\resultTwo]}
+          {\ifthenelse{\equal{\howmanytxt}{3}}
+            {\StrBetween[1,2]{\bigmessage}
+              {-txt=}{fn-}[\resultOne]
+            \StrBetween[2,3]{\bigmessage}
+              {-txt=}{fn-}[\resultTwo]
+            \StrBetween[3,1]{\bigmessage}
+              {-txt=}{ ann-footnote}[\resultThree]}
+            {\ifthenelse{\equal{\howmanytxt}{4}}
+              {\StrBetween[1,2]{\bigmessage}
+                {-txt=}{, fn-}[\resultOne]
+              \StrBetween[2,3]{\bigmessage}
+                {-txt=}{, fn-}[\resultTwo]
+              \StrBetween[3,4]{\bigmessage}
+                {-txt=}{, fn-}[\resultThree]
+              \StrBetween[4,1]{\bigmessage}
+                {-txt=}{, ann-footnote}[\resultFour]}
+              {\ifthenelse{\equal{\howmanytxt}{5}}
+                {\StrBetween[1,2]{\bigmessage}
+                  {-txt=}{, fn-}[\resultOne]
+                \StrBetween[2,3]{\bigmessage}
+                  {-txt=}{, fn-}[\resultTwo]
+                \StrBetween[3,4]{\bigmessage}
+                  {-txt=}{, fn-}[\resultThree]
+                \StrBetween[4,5]{\bigmessage}
+                  {-txt=}{, fn-}[\resultFour]
+                \StrBetween[5,1]{\bigmessage}
+                  {-txt=}{, ann-footnote}[\resultFive]}
+                {}}}}}}}}
+%    \end{macrocode}
 % define the macro names for custom footnotes:
+%    \begin{macrocode}
 \def\extractFNnames{%
   \expandarg\StrCount{\bigmessage}{fn-}[\theFNnum]
   \ifthenelse{\equal{\theFNnum}{0}}
-    {\def\resultOneMacro{}
-    \def\resultTwoMacro{}
-    \def\resultThreeMacro{}
-    \def\resultFourMacro{}
-    \def\resultFiveMacro{}}
+    {}
     {\ifthenelse{\equal{\theFNnum}{1}}
-      {\StrBetween{\bigmessage}{fn-}{-text=}[\resultOneMacro]
-        \StrDel{\resultOneMacro}{-}[\resultOneMacro]
-      \def\resultTwoMacro{}
-      \def\resultThreeMacro{}
-      \def\resultFourMacro{}
-      \def\resultFiveMacro{}}
+      {\StrBetween{\bigmessage}
+        {fn-}{-txt=}[\resultOneMacro]
+        \StrDel{\resultOneMacro}{-}[\resultOneMacro]}
       {\ifthenelse{\equal{\theFNnum}{2}}
-        {\StrBetween{\bigmessage}{fn-}{-text=}[\resultOneMacro]
+        {\StrBetween{\bigmessage}
+          {fn-}{-txt=}[\resultOneMacro]
           \StrDel{\resultOneMacro}{-}[\resultOneMacro]
-        \StrBetween[2,2]{\bigmessage}{fn-}{-text=}[\resultTwoMacro]
-          \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]
-        \def\resultThreeMacro{}
-        \def\resultFourMacro{}
-        \def\resultFiveMacro{}}
+        \StrBetween[2,2]{\bigmessage}
+          {fn-}{-txt=}[\resultTwoMacro]
+          \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]}
         {\ifthenelse{\equal{\theFNnum}{3}}
-          {\StrBetween{\bigmessage}{fn-}{-text=}[\resultOneMacro]
+          {\StrBetween{\bigmessage}
+            {fn-}{-txt=}[\resultOneMacro]
             \StrDel{\resultOneMacro}{-}[\resultOneMacro]
-          \StrBetween[2,2]{\bigmessage}{fn-}{-text=}[\resultTwoMacro]
+          \StrBetween[2,2]{\bigmessage}
+            {fn-}{-txt=}[\resultTwoMacro]
             \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]
-          \StrBetween[3,3]{\bigmessage}{fn-}{-text=}[\resultThreeMacro]
-            \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]
-          \def\resultFourMacro{}
-          \def\resultFiveMacro{}}
+          \StrBetween[3,3]{\bigmessage}
+            {fn-}{-txt=}[\resultThreeMacro]
+            \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]}
           {\ifthenelse{\equal{\theFNnum}{4}}
-            {\StrBetween{\bigmessage}{fn-}{-text=}[\resultOneMacro]
+            {\StrBetween{\bigmessage}
+              {fn-}{-txt=}[\resultOneMacro]
               \StrDel{\resultOneMacro}{-}[\resultOneMacro]
-            \StrBetween[2,2]{\bigmessage}{fn-}{-text=}[\resultTwoMacro]
+            \StrBetween[2,2]{\bigmessage}
+              {fn-}{-txt=}[\resultTwoMacro]
               \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]
-            \StrBetween[3,3]{\bigmessage}{fn-}{-text=}[\resultThreeMacro]
+            \StrBetween[3,3]{\bigmessage}
+              {fn-}{-txt=}[\resultThreeMacro]
               \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]
-            \StrBetween[4,4]{\bigmessage}{fn-}{-text=}[\resultFourMacro]
-              \StrDel{\resultFourMacro}{-}[\resultFourMacro]
-            \def\resultFiveMacro{}}
+            \StrBetween[4,4]{\bigmessage}
+              {fn-}{-txt=}[\resultFourMacro]
+              \StrDel{\resultFourMacro}{-}[\resultFourMacro]}
             {\ifthenelse{\equal{\theFNnum}{5}}
-              {\StrBetween{\bigmessage}{fn-}{-text=}[\resultOneMacro]
+              {\StrBetween{\bigmessage}
+                {fn-}{-txt=}[\resultOneMacro]
                 \StrDel{\resultOneMacro}{-}[\resultOneMacro]
-              \StrBetween[2,2]{\bigmessage}{fn-}{-text=}[\resultTwoMacro]
+              \StrBetween[2,2]{\bigmessage}
+                {fn-}{-txt=}[\resultTwoMacro]
                 \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]
-              \StrBetween[3,3]{\bigmessage}{fn-}{-text=}[\resultThreeMacro]
+              \StrBetween[3,3]{\bigmessage}
+                {fn-}{-txt=}[\resultThreeMacro]
                 \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]
-              \StrBetween[4,4]{\bigmessage}{fn-}{-text=}[\resultFourMacro]
+              \StrBetween[4,4]{\bigmessage}
+                {fn-}{-txt=}[\resultFourMacro]
                 \StrDel{\resultFourMacro}{-}[\resultFourMacro]
-              \StrBetween[5,5]{\bigmessage}{fn-}{-text=}[\resultFiveMacro]
+              \StrBetween[5,5]{\bigmessage}
+                {fn-}{-txt=}[\resultFiveMacro]
                 \StrDel{\resultFiveMacro}{-}[\resultFiveMacro]}
               {}}}}}}}
+%    \end{macrocode}
 % create the macros that are used in the messages:
+%    \begin{macrocode}
 \def\makeFNmacros{
   \ifthenelse{\equal{\theFNnum}{0}}
     {}
     {\ifthenelse{\equal{\theFNnum}{1}}
-      {\expandafter\def\csname fn\resultOneMacro\endcsname{\footnote{\resultOne} }}
+      {\expandafter\def\csname fn\resultOneMacro\endcsname{%
+        \footnote{\resultOne} }}
       {\ifthenelse{\equal{\theFNnum}{2}}
-        {\expandafter\def\csname fn\resultOneMacro\endcsname{\footnote{\resultOne} }
-        \expandafter\def\csname fn\resultTwoMacro\endcsname{\footnote{\resultTwo} }}
+        {\expandafter\def\csname fn\resultOneMacro\endcsname{%
+          \footnote{\resultOne} }
+        \expandafter\def\csname fn\resultTwoMacro\endcsname{%
+          \footnote{\resultTwo} }}
         {\ifthenelse{\equal{\theFNnum}{3}}
-          {\expandafter\def\csname fn\resultOneMacro\endcsname{\footnote{\resultOne} }
-          \expandafter\def\csname fn\resultTwoMacro\endcsname{\footnote{\resultTwo} }
-          \expandafter\def\csname fn\resultThreeMacro\endcsname{\footnote{\resultThree} }}
+          {\expandafter\def\csname fn\resultOneMacro\endcsname{%
+            \footnote{\resultOne} }
+          \expandafter\def\csname fn\resultTwoMacro\endcsname{%
+            \footnote{\resultTwo} }
+          \expandafter\def\csname fn\resultThreeMacro\endcsname{%
+            \footnote{\resultThree} }}
           {\ifthenelse{\equal{\theFNnum}{4}}
-            {\expandafter\def\csname fn\resultOneMacro\endcsname{\footnote{\resultOne} }
-            \expandafter\def\csname fn\resultTwoMacro\endcsname{\footnote{\resultTwo} }
-            \expandafter\def\csname fn\resultThreeMacro\endcsname{\footnote{\resultThree} }
-            \expandafter\def\csname fn\resultFourMacro\endcsname{\footnote{\resultFour} }}
+            {\expandafter\def\csname fn\resultOneMacro\endcsname{%
+              \footnote{\resultOne} }
+            \expandafter\def\csname fn\resultTwoMacro\endcsname{%
+              \footnote{\resultTwo} }
+            \expandafter\def\csname fn\resultThreeMacro\endcsname{%
+              \footnote{\resultThree} }
+            \expandafter\def\csname fn\resultFourMacro\endcsname{%
+              \footnote{\resultFour} }}
             {\ifthenelse{\equal{\theFNnum}{5}}
-              {\expandafter\def\csname fn\resultOneMacro\endcsname{\footnote{\resultOne} }
-              \expandafter\def\csname fn\resultTwoMacro\endcsname{\footnote{\resultTwo} }
-              \expandafter\def\csname fn\resultThreeMacro\endcsname{\footnote{\resultThree} }
-              \expandafter\def\csname fn\resultFourMacro\endcsname{\footnote{\resultFour} }
-              \expandafter\def\csname fn\resultFiveMacro\endcsname{\footnote{\resultFive} }}
+              {\expandafter\def\csname fn\resultOneMacro\endcsname{%
+                \footnote{\resultOne} }
+              \expandafter\def\csname fn\resultTwoMacro\endcsname{%
+                \footnote{\resultTwo} }
+              \expandafter\def\csname fn\resultThreeMacro\endcsname{%
+                \footnote{\resultThree} }
+              \expandafter\def\csname fn\resultFourMacro\endcsname{%
+                \footnote{\resultFour} }
+              \expandafter\def\csname fn\resultFiveMacro\endcsname{%
+                \footnote{\resultFive} }}
               {}}}}}}}
-
+%    \end{macrocode}
+%
+% \subsection{Message Parsers}
+%
+%    \begin{macrocode}
 \def\annMessagePunct{}
-% observe the punctuation, if any:
+%    \end{macrocode}
+% observe the punctuation:
+%    \begin{macrocode}
 \newcommand{\testMessagePunct}{%
   \IfEndWith{\lymessage}{.}
     {\def\annMessagePunct{.}}
@@ -460,93 +927,155 @@
       {\IfEndWith{\lymessage}{!}
         {\def\annMessagePunct{!}}
         {\def\annMessagePunct{\unskip}}}}}
+%    \end{macrocode}
 % parse messages:
+%    \begin{macrocode}
 \newcommand{\annMessageParse}{%
   \IfEndWith{\lymessage}{.}
     {\StrGobbleRight{\lymessage}{1}[\lymessage]
-      \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak}
+      \annMessageOO{\annMessageO{%
+        \annMessage{\prependMessage\lymessage}}}\nobreak}
     {\IfEndWith{\lymessage}{?}
       {\StrGobbleRight{\lymessage}{1}[\lymessage]
-        \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak}
+        \annMessageOO{\annMessageO{%
+          \annMessage{\prependMessage\lymessage}}}\nobreak}
       {\IfEndWith{\lymessage}{!}
         {\StrGobbleRight{\lymessage}{1}[\lymessage]
-          \annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak}
-        {\ifthenelse{\equal{\lymessage}{no value given}}{\unskip\noMessError}
+          \annMessageOO{\annMessageO{%
+            \annMessage{\prependMessage\lymessage}}}\nobreak}
+        {\ifthenelse{\equal{\lymessage}
+          {no value given}}{\unskip\noMessError}
           {\ifthenelse{\equal{\lymessage}{}}{\unskip\noMessError}
-            {\annMessageOO{\annMessageO{\annMessage\prependMessage\lymessage}}\nobreak}}}}}}
+            {\annMessageOO{\annMessageO{%
+              \annMessage{\prependMessage\lymessage}}}\nobreak}}}}}}
+%    \end{macrocode}
 % set the append/punct vs. punct/append orientations:
-\newcommand{\annMessTail}{\annMessageOO{\annMessageO{\annMessage\annMessagePunct\appendMessage}}}
+%    \begin{macrocode}
+\newcommand{\annMessTail}{%
+  \annMessageOO{\annMessageO{%
+    \annMessage{\annMessagePunct\appendMessage}}}}
+%    \end{macrocode}
 % macro to set order: punct, append
+%    \begin{macrocode}
 \newcommand{\annMessPunctAppend}{%
-  \renewcommand{\annMessTail}{
-    \annMessageOO{\annMessageO{\annMessage\annMessagePunct\unskip\appendMessage}}}}
+  \renewcommand{\annMessTail}{%
+    \annMessageOO{\annMessageO{%
+      \annMessage{\annMessagePunct\unskip\appendMessage}}}}}
+%    \end{macrocode}
 % macro to set order: append, punct
+%    \begin{macrocode}
 \newcommand{\annMessAppendPunct}{%
   \renewcommand{\annMessTail}{%
-    \annMessageOO{\annMessageO{\annMessage\appendMessage\unskip\annMessagePunct}}}}
-
+    \annMessageOO{\annMessageO{%
+      \annMessage{\appendMessage\unskip\annMessagePunct}}}}}
+%    \end{macrocode}
 % get type from key
+%    \begin{macrocode}
 \def\annTypeName{%
   \StrSubstitute{\lyanntype}{-}{ }[\annTypeCleaned]
   \prependType\titlecap{\annTypeCleaned}\appendType}
-
+%    \end{macrocode}
 % store original error handling for unknown keys
+%    \begin{macrocode}
 \let\KV@errx@ORI\KV@errx
-
-% default annotation parser
+%    \end{macrocode}
+%
+% \subsection{Default Annotation Parser}
+%
+%    \begin{macrocode}
 \newcommand\annotationParse[1]{
-% set KEYS, defaults, then new from #1
   \resetkeys
-% ignore unknown keys
     \let\KV@errx\@gobble
-    \setkeys{scholarLYannotations}{#1}
-% Restore original error handling
+    \setkeys{scholarLYann}{#1}
     \let\KV@errx\KV@errx@ORI
 \saveexpandmode\expandarg
-% PARSE FOOTNOTES
   \def\bigmessage{#1}
     \customFootsParse
     \extractFNnames
     \makeFNmacros
-% TEST MESSAGE PUNCTUATION, MEASURE and BEAT
   \testMessagePunct
   \processGrobLocation
   \def\currentMeasure{\lymeasureno}
   \def\currentBeat{\lyourbeat}
   \testLocation
-% APPLY to ITEM
   \itemornot
-    \annTypePrePrefix\annTypePfx\annName\annPostType\typeSkipornot
-    {\annArgsPrePrefix\annLocationPfx{\annMeasure{\thisMeasure}}}
+    \annTypePrePrefix\annTypePfx
+      \annName\annPostType\typeSkipornot
+    {\annArgsPrePrefix\annLocationPfx
+      {\annMeasure{\thisMeasure}}}
     {\annBeat{\thisBeat}\skipornot}
     \ifthenelse{\equal{\lycontextid}{}}
       {\unskip{}}
-      {\annArgsPrePrefix\annContextPfx\annVoice{\lycontextid}\skipornot}
+      {\annArgsPrePrefix\annContextPfx
+        \annVoiceO{\annVoice{\lycontextid}}\skipornot}
     \ifthenelse{\equal{\lygrobtype}{}}
       {\unskip{}}
-      {\annArgsPrePrefix\annGrobTypePfx\annAffected{\lygrobtype}\skipornot}
+      {\annArgsPrePrefix\annGrobTypePfx
+        \annAffectedO{\annAffected{\lygrobtype}}\skipornot}
     \annArgsPrePrefix\annMessagePfx{{{%
-      \prependMessageFirst\annMessageParse\unskip\annMessTail}\unskip}
+      \prependMessageFirst\annMessageParse
+        \unskip\annMessTail}\unskip}
       \ifthenelse{\equal{\lyannfootnote}{no value given}}
         {}
         {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}
-% set "previous" mm/beats for use in next annotation;
-% arbitrary string parse, to return new value
   \StrDel{\lymeasureno}{ }[\previousMeasure]
   \StrDel{\lyourbeat}{ }[\previousBeat]}
-
+%    \end{macrocode}
 % annotation macros:
+%    \begin{macrocode}
 \newcommand{\criticalRemark}[1][]{\annotationParse{#1}}
 \newcommand{\musicalIssue}[1][]{\annotationParse{#1}}
 \newcommand{\lilypondIssue}[1][]{\annotationParse{#1}}
 \newcommand{\annotateQuestion}[1][]{\annotationParse{#1}}
 \newcommand{\annotateTodo}[1][]{\annotationParse{#1}}
 \newcommand{\annotation}[1][]{\annotationParse{#1}}
-
-% custom annotations
+%    \end{macrocode}
+%
+% \subsection{Custom Annotations (TODO)}
+%
 % macro to set
+%    \begin{macrocode}
 \newcommand{\setCustomAnn}[1]{\def\customAnnParse{#1}}
+%    \end{macrocode}
 % macro to use
-\newcommand\useCustomAnn{\renewcommand\criticalRemark[1][]{\customAnnParse}}
-
+%    \begin{macrocode}
+\newcommand\useCustomAnn{%
+  \renewcommand\criticalRemark[1][]{\customAnnParse}
+  \renewcommand\musicalIssue[1][]{\customAnnParse}
+  \renewcommand\lilypondIssue[1][]{\customAnnParse}
+  \renewcommand\annotateQuestion[1][]{\customAnnParse}
+  \renewcommand\annotateTODO[1][]{\customAnnParse}
+  \renewcommand\annotation[1][]{\customAnnParse}}
+%    \end{macrocode}
+%
+% \begin{appendices}
+% \newpage
+% \section{The \texttt{.inp} File}
+%
+% It could be possible to adapt \textsf{scholarLY} to accept annotations from
+% sources other than LilyPond. In that case, it would be useful to know what
+% exactly goes into the |.inp| file. Note that the particular file extensions isn't
+% mandatory; this happens to be the type that is produced from the LilyPond |scholarLY|
+% module.
+%
+% The input file is almost generic enough to be reproduced by any other capable
+% software. At this time, the biggest exception to that is the |grob-location| parameter,
+% which is still in Scheme syntax when it is exported from LilyPond. A sensible way around
+% that would be to simply adapt the location parser (lines here) to whatever accept
+% whatever format is given from a particular output. It is possible that in a future
+% version, \textsf{scholarLY}'s |\annotation| command will be extended to accept an
+% optional |[<origin-software>]| argument to easily change parsing behavior (and thus
+% share the wonderful annotation typesetting possibilities with multiple
+%
+% \textsf{scholarLY} begins with a list of annotations that begin with a macro call of
+% either |\criticalRemark|, |\musicalIssue|, |\lilypondIssue|, |\annotateQuestion| or
+% |\annotateTodo|. In order to do something with those, we created the so-named
+% macros near the end of the package.\footnote{the line number}
+%
+% \end{appendices}
+%
+%\iffalse
+%</package>
+%\fi
+% \Finale
 \endinput
