@@ -1,6 +1,6 @@
 \documentclass{article}
 \makeatletter \def\input@path{{../}} \makeatother
-\usepackage[final, default]{scholarLY}
+\usepackage[final, custom]{scholarLY}
 \usepackage[margin=1in]{geometry}
 \usepackage{multicol}
 \usepackage{xcolor}
@@ -16,6 +16,7 @@
     beat={beat}
   }
   \annMessageWrap{$\cdot$ /}
+  \annShowType
 }
 
 \annSetFinal{
@@ -55,22 +56,13 @@
     same-beat={...},
     same-measure={...}
   }
-  \annSameLocationStrict
+  \annSameLocationLoose
   \annStacked
   \annShowType
   \annMessageWrap{/}
   \annMessageWrapOuter{/}
   \annTypeWrapSep{.}
   \annTypeWrap{/./}
-}
-
-\annotations{annotate.annotations.inp}
-
-\pagebreak
-
-\annSetFinal{
-  \annEnumerateOff% this is a poor use case; it will be most useful for custom
-                  % annotation parsing.
 }
 
 \annotations{annotate.annotations.inp}
