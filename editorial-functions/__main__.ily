@@ -19,7 +19,7 @@ editorialFunction =
    (symbol? symbol-list? ly:music?)
    (let ((edit (getChildOptionWithFallback
 		`(scholarly editorial functions ,type)
-		(car item)
+		(last item)
 		#f)))
      (if (and edit
 	      (getOption `(scholarly editorial functions apply)))
