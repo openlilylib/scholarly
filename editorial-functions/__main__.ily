@@ -27,7 +27,7 @@ editorialFunction =
              (edit mus)
              #{ \once #edit #mus #})
          (begin
-           (oll:warn "Editorial command ~a not set for ~a." edition (car item))
+           (oll:warn "Editorial command ~a not set for ~a." edit (car item))
            mus))))
 
 
