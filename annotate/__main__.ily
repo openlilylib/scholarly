@@ -67,7 +67,7 @@
 
 #(define annotate
   (define-music-function (name properties type item mus)
-   ((symbol?) ly:context-mod? symbol? symbol-list-or-music? (ly:music?))
+   ((symbol-list?) ly:context-mod? symbol? symbol-list-or-music? (ly:music?))
    ;; generic (internal only) function to annotate a score item
    (let*
     ( ;; process context-mod with footnote settings
@@ -101,7 +101,7 @@
         (let
          ((tweak-command
            (cond
-            ((and (ly:music? item) (symbol? name))
+            ((and (ly:music? item) (symbol-list? name))
              ;; item is music, name specifies grob: annotate the grob
              #{ \tweak #`(,name input-annotation) #props #item #})
             ((ly:music? item)
@@ -144,7 +144,7 @@ annotation =
 % Generic annotation, can be used to "create" custom annotation types
 % Note: a 'type' property is mandatory for this command
 #(define-music-function (name properties item mus)
-    ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
+    ((symbol-list?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (if (symbol? name)
         (annotate name properties 'none item mus)
         (annotate properties 'none item mus)))
@@ -152,7 +152,7 @@ annotation =
 criticalRemark =
 % Final annotation about an editorial decision
 #(define-music-function (name properties item mus)
-    ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
+    ((symbol-list?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (if (symbol? name)
         (annotate name properties 'critical-remark item mus)
         (annotate properties 'critical-remark item mus)))
@@ -160,7 +160,7 @@ criticalRemark =
 lilypondIssue =
 % Annotate a LilyPond issue that hasn't been resolved yet
 #(define-music-function (name properties item mus)
-    ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
+    ((symbol-list?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (if (symbol? name)
         (annotate name properties 'lilypond-issue item mus)
         (annotate properties 'lilypond-issue item mus)))
@@ -168,7 +168,7 @@ lilypondIssue =
 musicalIssue =
 % Annotate a musical issue that hasn't been resolved yet
 #(define-music-function (name properties item mus)
-    ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
+    ((symbol-list?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (if (symbol? name)
         (annotate name properties 'musical-issue item mus)
         (annotate properties 'musical-issue item mus)))
@@ -176,7 +176,7 @@ musicalIssue =
 question =
 % Annotation about a general question
 #(define-music-function (name properties item mus)
-    ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
+    ((symbol-list?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (if (symbol? name)
         (annotate name properties 'question item mus)
         (annotate properties 'question item mus)))
@@ -184,7 +184,7 @@ question =
 todo =
 % Annotate a task that *has* to be finished
 #(define-music-function (name properties item mus)
-    ((symbol?) ly:context-mod? symbol-list-or-music? (ly:music?))
+    ((symbol-list?) ly:context-mod? symbol-list-or-music? (ly:music?))
     (if (symbol? name)
         (annotate name properties 'todo item mus)
         (annotate properties 'todo item mus)))
