@@ -76,7 +76,9 @@
 %
 % \definecolor{blueberry}{rgb}{0.1,0.1,0.3}
 %
-% {\color{red} TODO before publishing this: (1) fix same-location function.. (not working at all suddenly)}
+% {\color{red} TODO before publishing this:\\
+% (1) fix same-location function (not working at all suddenly).\\
+% (2) fix footnotes feature to loop}
 %
 % {\hypersetup{linkcolor=blueberry}
 % \tableofcontents}
@@ -88,7 +90,7 @@
 % for typesetting annotations for critical editions of musical scores
 % engraved with GNU LilyPond.
 % This \LaTeX{} package processes the |<filename>.annotations.inp| file
-% exported from LilyPond by the openLilyLib \scholarLY library. The
+% exported from LilyPond using the openLilyLib \scholarLY library. The
 % main features of the package currently include:
 %
 % \medskip
@@ -96,6 +98,7 @@
 % \item{formatting and styling annotation parameters individually}
 % \item{package options for toggling |final| or |draft| and |custom| or |default| modes}
 % \item{simple key-value families for organizing style blocks}
+% \item{processing of custom footnote names(link to that line)}
 % \end{itemize}
 % \medskip
 %
@@ -105,7 +108,7 @@
 % Future minor releases may introduce extended capabilities, particularly
 % ones to better facilitate the integration of various compilation
 % procedures\footnote{\url{http://lilypond.org/doc/v2.19/Documentation/usage/integrating-music-and-text}}
-% (such as |lilypond-book| and the \textsf{musicexamples} package).
+% (such as with |lilypond-book| and the \textsf{musicexamples} package).
 %
 % Feature requests, bug reports, and other concerns should be directed to the
 % \textsf{scholarLY} issue tracker at \url{https://github.com/openlilylib/scholarly/issues}. That is also
@@ -120,7 +123,7 @@
 %     It is possible to simply print our annotations with as little one line of code in the document
 %     environment. To add customized styles to the annotations, style blocks provide a cleanly nested
 % infastructure for organizing behaviors of specific details in each mode.
-% And assuming the point is to combine the annotations and the musical score
+% Assuming the aim is to combine the annotations and the musical score
 % into a single document, this basic functionality gets only a
 % little more complicated. This documentation will not go through the various ways to compile LilyPond
 % scores with \LaTeX{} documents,\footnote{\url{http://lilypond.org/doc/v2.19/Documentation/usage/latex.en.html}} but hopefully it will
@@ -151,22 +154,24 @@
 %    \usepackage[custom, final]{scholarLY}
 % \end{verbatim}}
 % \begin{description}[noitemsep]
-% \item[draft / final:] This options offers 
+% \item[draft / final:] This option offers the possibility of two concurrent modes. The names
+%   \textit{final} and \textit{draft} are more or less arbitrary, but they are hard-coded into
+%   the package, so \textsf{scholarLY} expects one of the two. |final| is the implicit option if
+% neither is specified.
 % \item[default / custom:] This option toggles between the default styles of
 %   \textsf{scholarLY} and the user-defined options. It offers an easy way to turn on or off
 %   your settings quickly without actually changing anything in the document. The
-%   default setting is |Custom| (\textsf{scholarLY} will still print your annotations
+%   default setting is |custom| (if no styles are specified, \textsf{scholarLY} will still print your annotations
 %   without any settings; they'll just be very bland). 
 % \end{description}
 %
-% As described above, the default setting is |[Custom, Final]|.
-% However, it's best to be verbose about the two options, as in the example, to remove any ambiguity (this will help avoid a lot
-% of meaningless frustration in the end, trust me!).
+% As described above, the default setting is |[custom, final]|.
+% However, it's best to be verbose about the two options, as in the example, to remove any ambiguity.
 %
 % This package makes use of a default stylesheet\footnote{|default-stylesheet.inp|
 % is located in the same directory as the package file.} for its |default| mode, which inherently contains
 % all (TODO this needs to be verified)---or \textit{almost} all---of the
-% available commands. It is a convenient demonstration of how style blocks could be
+% available commands, and so it doubles as a convenient example of how style blocks could be
 % organized. When |default| mode is turned on, \textsf{scholarLY} will revert
 % all styles and formats to whatever is listed in that document, according to either final
 % or draft mode. The biggest differences between |default|'s |final| and |draft| modes
@@ -191,14 +196,16 @@
 % }}
 % \bigskip
 %
-% This is of course not very interesting, typographically speaking.
+% This is of course not very interesting, typographically speaking. That is intentional, as
+% |default| mode was created to be a stylistically simple interface for overviewing annotations
+% and potential errors, etc. therein.
 % The default stylesheet can be altered, but it is recommended to leave it
 % fairly minimal so that you'll have an easy way to revert settings, which could be
-% occasionally useful.
+% occasionally useful for proof-reading purposes.
 %
 % \subsection{Style Blocks}
 %
-% We can contain all of our custom settings in either (or both) of two style blocks. This
+% We can contain all of our custom settings in two style blocks. This
 % allows \textsf{scholarLY} to toggle between |draft| and |final| settings easily,
 % and of course provides a clean syntax for organizing the code. 
 %
@@ -213,7 +220,7 @@
 %    }
 % \end{verbatim}}
 %
-% \textsf{scholarLY} allows for unlimited |\annSet[..]| blocks. This is especially useful
+% \textsf{scholarLY} allows for unlimited |\annSet| blocks. This is especially useful
 % for large projects that may need to print annotations in varying formats per different
 % sections of material. Note, however, that creating a new
 % block doesn't automatically override all items set in previous blocks until
@@ -225,7 +232,7 @@
 % arbitrary detail.
 %
 % Inside the style blocks, we can insert any important hooks such as |\annStacked| and |\annShowType|,
-% as well as three key-value groups: |annStyles|, |annPrefixes| and |annExtras|. Here is an example
+% as well as three key-value groups, using \textsf{keyval} package's |\setkeys| macro: |annStyles|, |annPrefixes| and |annExtras|. Here is an example
 % of a custom style block followed by the resulting annotation in |final| mode:
 %
 % {\color{blueberry}\begin{verbatim}
@@ -275,13 +282,22 @@
 % }
 % }}\bigskip
 %
-% Annotations also adhere to other style commands that might be lingering in your document.
+%   Note the usage of |message| and |message-2nd|, and |voice| and |voice-2nd| in the |annStyles|
+%   settings. Since some macros that will likely be used to affect parameters will need to enclose
+%   the affected text, it is sometimes necessary for each macro after the first to
+%   also wrap the preceding \textit{inner} arguments (well, syntactically, these inner arguments will actually
+%   appear for follow each other in the source code). In effect, that looks something like:
+%
+% \bigskip { \color{blueberry} \{ macro-3rd \{ macro-2nd \{ macro \{ item \} \} \} \} } \bigskip
+%
+% Annotations also adhere to other style commands that might be established in your document.
 % Font faces, spacing, etc. will be adapted if previously set (which you'll probably want). In
 % fact, we can treat |\annotations{..}| as if it were a block of text (well, it
-% really is just that once it expands). The point is, we can wrap it in explicit style commands just the
-% same as with other \TeX{} objects. Keep in mind, however, that any style choices
-% made in |\annSet[..]| blocks will override such styles of the same type since
-% they are being applied on the spot.\footnote{Of course, there are tricks around
+% almost is just that once it expands). In that case, we can wrap it in explicit \LaTeX{} style commands just the
+% same as with other parts of the document. Keep in mind, however, that any style choices
+% made in |\annSet| blocks will override such styles of the same type since
+% they are being applied by the |\annotations| hook, which normally expands \textit{after} any
+% macros or environments in which it might be wrapped.\footnote{Of course, there are tricks around
 % everything: to cancel your own style blocks and \textit{not} use
 % the default stylesheet, simply follow your custom blocks with the same
 % respective blocks \textit{emptied}. Since there is no convenience command for
@@ -291,14 +307,20 @@
 %
 % \subsection{More Examples}
 %
+% Here are some additional examples to show how annotations can be formatted.
+%
 % \subsection{Wishlist}
 %
 % \medskip
 % \begin{itemize}[nosep]
 % \item Be able to refer to / link to (/ label) annotations as with footnotes/sections/etc.
 %
+% \item Ability to create new package modes beyond |final| and |draft|. This may only be possible
+%   with a new option like |[mode=my-mode,final]|, etc. (Final/Draft may actually not be possible, but
+% this will all need to be investigated anyway).
+%
 % \item Annotations should be able to communicate with each other (i.e. refer to each other
-% somehow).
+% somehow) This is sort of a rewording/extension of the first item.
 %
 % \item Be able to decide what parameter of an annotation is printed or not locally (i.e. this
 % would be set in the LilyPond stage, in the individual annotation), with the current
