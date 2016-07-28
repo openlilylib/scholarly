@@ -121,7 +121,9 @@
 %     {\begEnumerate\annStyleMode\annRevisit{#1}\endEnumerate}
 %
 %     It is possible to simply print our annotations with as little one line of code in the document
-%     environment. To add customized styles to the annotations, style blocks provide a cleanly nested
+%     environment. In fact, it is useful to do so without applying any customization yet in order to
+%     ensure all annotations are being correctly received. To add customized styles to the
+% annotations, style blocks provide a cleanly nested
 % infastructure for organizing behaviors of specific details in each mode.
 % Assuming the aim is to combine the annotations and the musical score
 % into a single document, this basic functionality gets only a
@@ -151,10 +153,10 @@
 % \subsection{Top-Level Options}
 % In the |\usepackage| statement, we can make use of two global options.
 % {\color{blueberry}\begin{verbatim}
-%    \usepackage[custom, final]{scholarLY}
+%    \usepackage[custom,final]{scholarLY}
 % \end{verbatim}}
 % \begin{description}[noitemsep]
-% \item[draft / final:] This option offers the possibility of two concurrent modes. The names
+% \item[draft / final:] This option offers two concurrent modes for storing and applying styles. The names
 %   \textit{final} and \textit{draft} are more or less arbitrary, but they are hard-coded into
 %   the package, so \textsf{scholarLY} expects one of the two. |final| is the implicit option if
 % neither is specified.
@@ -165,19 +167,18 @@
 %   without any settings; they'll just be very bland). 
 % \end{description}
 %
-% As described above, the default setting is |[custom, final]|.
+% As described above, the default setting is |[custom,final]|.
 % However, it's best to be verbose about the two options, as in the example, to remove any ambiguity.
 %
 % This package makes use of a default stylesheet\footnote{|default-stylesheet.inp|
 % is located in the same directory as the package file.} for its |default| mode, which inherently contains
-% all (TODO this needs to be verified)---or \textit{almost} all---of the
-% available commands, and so it doubles as a convenient example of how style blocks could be
+% almost all of the available commands, and so it doubles as a convenient example of how style blocks could be
 % organized. When |default| mode is turned on, \textsf{scholarLY} will revert
 % all styles and formats to whatever is listed in that document, according to either final
 % or draft mode. The biggest differences between |default|'s |final| and |draft| modes
 % are that |draft| will
 % print annotation parameters stacked, show annotation types and enumerate the list.
-% Which would look something like:
+% An annotation in |[default,draft]| mode will appear as:
 %
 % \bigskip
 % \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
@@ -201,7 +202,7 @@
 % and potential errors, etc. therein.
 % The default stylesheet can be altered, but it is recommended to leave it
 % fairly minimal so that you'll have an easy way to revert settings, which could be
-% occasionally useful for proof-reading purposes.
+% occasionally useful for proof-reading or debugging purposes.
 %
 % \subsection{Style Blocks}
 %
@@ -209,7 +210,7 @@
 % allows \textsf{scholarLY} to toggle between |draft| and |final| settings easily,
 % and of course provides a clean syntax for organizing the code. 
 %
-% To set custom draft and final behaviors, we use:
+% To set custom |draft| and |final| behaviors, we use:
 % {\color{blueberry}\begin{verbatim}
 %    \annSetDraft{
 %      [..]
@@ -220,9 +221,7 @@
 %    }
 % \end{verbatim}}
 %
-% \textsf{scholarLY} allows for unlimited |\annSet| blocks. This is especially useful
-% for large projects that may need to print annotations in varying formats per different
-% sections of material. Note, however, that creating a new
+% \textsf{scholarLY} allows for unlimited |\annSet| blocks. Note, however, that creating a new
 % block doesn't automatically override all items set in previous blocks until
 % they are explicitly redefined.\footnote{Hint: the \textsf{verbatim} package provides
 % a convenient environment for commenting out code blocks. This could be one tool
@@ -233,7 +232,7 @@
 %
 % Inside the style blocks, we can insert any important hooks such as |\annStacked| and |\annShowType|,
 % as well as three key-value groups, using \textsf{keyval} package's |\setkeys| macro: |annStyles|, |annPrefixes| and |annExtras|. Here is an example
-% of a custom style block followed by the resulting annotation in |final| mode:
+% of a custom style block followed by an example of a resulting annotation in |final| mode:
 %
 % {\color{blueberry}\begin{verbatim}
 %    \annSetFinal{
@@ -283,26 +282,25 @@
 % }}\bigskip
 %
 %   Note the usage of |message| and |message-2nd|, and |voice| and |voice-2nd| in the |annStyles|
-%   settings. Since some macros that will likely be used to affect parameters will need to enclose
-%   the affected text, it is sometimes necessary for each macro after the first to
-%   also wrap the preceding \textit{inner} arguments (well, syntactically, these inner arguments will actually
-%   appear for follow each other in the source code). In effect, that looks something like:
+%   settings. Since some macros will likely need to enclose the affected expressions,
+% it is sometimes necessary for each macro after the first to
+%   also wrap the preceding \textit{inner} arguments. In effect, they are applied as:
 %
-% \bigskip { \color{blueberry} \{ macro-3rd \{ macro-2nd \{ macro \{ item \} \} \} \} } \bigskip
+% \bigskip { \begin{center} \color{blueberry} \{ macro-3rd \{ macro-2nd \{ macro \{ item \} \} \} \} \end{center} } \bigskip
 %
 % Annotations also adhere to other style commands that might be established in your document.
 % Font faces, spacing, etc. will be adapted if previously set (which you'll probably want). In
 % fact, we can treat |\annotations{..}| as if it were a block of text (well, it
 % almost is just that once it expands). In that case, we can wrap it in explicit \LaTeX{} style commands just the
 % same as with other parts of the document. Keep in mind, however, that any style choices
-% made in |\annSet| blocks will override such styles of the same type since
+% made in |\annSet| blocks will override any previous styles of the same type since
 % they are being applied by the |\annotations| hook, which normally expands \textit{after} any
 % macros or environments in which it might be wrapped.\footnote{Of course, there are tricks around
 % everything: to cancel your own style blocks and \textit{not} use
 % the default stylesheet, simply follow your custom blocks with the same
 % respective blocks \textit{emptied}. Since there is no convenience command for
 % this, you'll have to manually type each of the options you wish to set to nothing.} It is
-% recommended to keep annotation settings within style blocks in order to keep
+% recommended to maintain annotation settings within style blocks in order to keep
 % |draft| and |final| modes as clearly defined as possible.
 %
 % \subsection{More Examples}
