@@ -62,8 +62,6 @@
 % \GetFileInfo{scholarLY.dtx}
 % \DoNotIndex{\newcommand,\newenvironment,\def,\gdef,\edef}
 %
-% \def\scholarLY{\textsf{scholarLY} }
-%
 % \title{The \textsf{scholarLY} package\thanks{This document
 %   corresponds to \textsf{scholarLY}~\fileversion, dated \filedate.
 %   The package is available online at
@@ -90,7 +88,7 @@
 % for typesetting annotations for critical editions of musical scores
 % engraved with GNU LilyPond.
 % This \LaTeX{} package processes the |<filename>.annotations.inp| file
-% exported from LilyPond using the openLilyLib \scholarLY library. The
+% exported from LilyPond using the openLilyLib \textsf{scholarLY} library. The
 % main features of the package currently include:
 %
 % \medskip
@@ -102,7 +100,7 @@
 % \end{itemize}
 % \medskip
 %
-% In this initial release, \scholarLY is a relatively lightweight package. It is foremost concerned with the typsetting
+% In this initial release, \textsf{scholarLY} is a relatively lightweight package. It is foremost concerned with the typsetting
 % of annotations, and as such does not provide a means of directly interacting with musical
 % scores, nor with \LaTeX{} documents outside of the annotations themselves.
 % Future minor releases may introduce extended capabilities, particularly
@@ -133,7 +131,7 @@
 %
 % \subsection{The Main Command}
 %
-% At the heart of the \scholarLY package is the |\annotations|
+% At the heart of the \textsf{scholarLY} package is the |\annotations|
 % command, which wraps all of our presets and annotations with a single
 % argument. It processes the |.inp| file which was exported from the corresponding LilyPond
 % document.\footnote{This documentation doesn't provide instructions for using
@@ -148,7 +146,7 @@
 % This hook will apply any predefined settings to the list(s). A single document can
 % contain multiple |\annotations| instances as long as the named files are in \LaTeX 's search path.
 % It does not take optional arguments (yet), so all settings must be
-% instructed either in the |\usepackage| message or within \scholarLY style blocks.
+% instructed either in the |\usepackage| message or within \textsf{scholarLY} style blocks.
 %
 % \subsection{Top-Level Options}
 % In the |\usepackage| statement, we can make use of two global options.
@@ -307,30 +305,37 @@
 %
 % Here are some additional examples to show how annotations can be formatted.
 %
-% \subsection{Wishlist}
+% |code|
 %
-% \medskip
-% \begin{itemize}[nosep]
-% \item Be able to refer to / link to (/ label) annotations as with footnotes/sections/etc.
+% \bigskip
+% \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
 %
-% \item Ability to create new package modes beyond |final| and |draft|. This may only be possible
-%   with a new option like |[mode=my-mode,final]|, etc. (Final/Draft may actually not be possible, but
-% this will all need to be investigated anyway).
+% \exampleAnn{
+% \criticalRemark
+%   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
+%   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
+%   grob-type={Accidental},
+%   type={critical-remark},
+%   context-id={Viola},
+%   message={This note should be sharp.}]
+% }
+% }}\bigskip
 %
-% \item Annotations should be able to communicate with each other (i.e. refer to each other
-% somehow) This is sort of a rewording/extension of the first item.
+% |code|
 %
-% \item Be able to decide what parameter of an annotation is printed or not locally (i.e. this
-% would be set in the LilyPond stage, in the individual annotation), with the current
-% settings as default; to also be able to set this globally in the latex document.
+% \bigskip
+% \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
 %
-% \item And to determine, if an item is empty, whether to include an error statement in the document
-% (and/or latex log output) or to 
-%
-% \item That should all be possible in the context of the printed annotations as well as
-% out of it, such as in an introductory section.
-% \end{itemize}
-% \medskip
+% \exampleAnn{
+% \criticalRemark
+%   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
+%   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
+%   grob-type={Accidental},
+%   type={critical-remark},
+%   context-id={Viola},
+%   message={This note should be sharp.}]
+% }
+% }}\bigskip
 %
 % \clearpage
 %
