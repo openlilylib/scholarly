@@ -46,9 +46,9 @@
 % (see https://github.com/openlilylib/oll-core/issues/9)
 % change the following includes accordingly
 % From oll-core
-\include "util/consist-to-contexts.ily"
-\include "util/context-mod->props.ily"
-\include "util/grob-location.ily"
+\include "oll-core/util/consist-to-contexts.ily"
+\include "oll-core/util/context-mod->props.ily"
+\include "oll-core/util/grob-location.ily"
 
 % Global object storing all annotations
 #(define annotations '())
