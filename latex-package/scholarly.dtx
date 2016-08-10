@@ -75,8 +75,8 @@
 % \definecolor{blueberry}{rgb}{0.1,0.1,0.3}
 %
 % {\color{red} TODO before publishing this:\\
-% (1) fix same-location function (not working at all suddenly).\\
-% (2) fix footnotes feature to loop}
+% (1) fix footnotes feature to loop\\
+% (2) test custom annotations}
 %
 % {\hypersetup{linkcolor=blueberry}
 % \tableofcontents}
@@ -329,13 +329,102 @@
 % \exampleAnn{
 % \criticalRemark
 %   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
+%   (our-beat . 3) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
+%   grob-type={Accidental},
+%   type={critical-remark},
+%   context-id={Viola},
+%   message={This note should be sharp.}]
+%
+% \criticalRemark
+%   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
+%   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
+%   grob-type={Accidental},
+%   type={critical-remark},
+%   context-id={Viola},
+%   message={This note should be sharp.}]
+%
+% \criticalRemark
+%   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
 %   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
 %   grob-type={Accidental},
 %   type={critical-remark},
 %   context-id={Viola},
 %   message={This note should be sharp.}]
 % }
+%
 % }}\bigskip
+%
+%   |code|
+%
+% \annSameLocationStrict
+%
+% \bigskip
+% \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
+%
+% \exampleAnn{
+% \criticalRemark
+%   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
+%   (our-beat . 3) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
+%   grob-type={Accidental},
+%   type={critical-remark},
+%   context-id={Viola},
+%   message={This note should be sharp.}]
+%
+% \criticalRemark
+%   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
+%   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
+%   grob-type={Accidental},
+%   type={critical-remark},
+%   context-id={Viola},
+%   message={This note should be sharp.}]
+%
+% \criticalRemark
+%   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
+%   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
+%   grob-type={Accidental},
+%   type={critical-remark},
+%   context-id={Viola},
+%   message={This note should be sharp.}]
+% }
+%
+% }}\bigskip
+%
+%
+% |code|
+%
+% \bigskip
+% \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
+%
+% \setkeys{annPrefixes}{
+%   post-type = {\vspace{-0.5em}\\{\color{red}\hrule}\vspace{0.5em}}
+% }
+%   \annShowType
+%   \annTypeWrap{(/)}
+%   \annEnumerateOn
+% \annStacked
+%
+% \exampleAnn{
+% \criticalRemark
+%   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
+%   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
+%   grob-type={Accidental},
+%   type={critical-remark},
+%   context-id={Viola},
+%   message={This note should be sharp.}]
+%
+% \criticalRemark
+%   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
+%   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 3) (rhythmic-location 1 . Mom 3/4))},
+%   grob-type={Accidental},
+%   type={critical-remark},
+%   context-id={Viola},
+%   message={This note should be sharp.}]
+% }
+% }}\bigskip
+%
+%
+%
+%
 %
 % \clearpage
 %
@@ -1056,7 +1145,9 @@
 \newcommand{\annotation}[1][]{\annotationParse{#1}}
 %    \end{macrocode}
 %
-% \subsection{Custom Annotations (TODO)}
+% \subsection{Custom Annotations}
+%
+% This has not been tested yet, so more of a stub than a complete section.
 %
 % macro to set
 %    \begin{macrocode}
