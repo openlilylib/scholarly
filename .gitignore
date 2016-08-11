@@ -21,3 +21,9 @@
 *.fdb_latexmk
 *.fls
 *.synctex.gz
+*.glo
+*.hd
+*.idx
+*.out
+*.toc
+

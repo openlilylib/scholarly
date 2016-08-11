@@ -12,7 +12,7 @@ music = {
     \musicalIssue
       \with{
         message = "my message without a footnote"
-    } NoteHead a 
+    } NoteHead a
   b b
     \question
       \with{
@@ -23,5 +23,5 @@ music = {
 }
 
 \score {
-  \new Staff = "my staff" \music 
+  \new Staff = "my staff" \music
 }
