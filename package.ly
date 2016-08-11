@@ -33,4 +33,6 @@
 
 \include "../oll-core/package.ily"
 
+\include "__init__.ily"
+
 \include "annotate/__main__.ily"

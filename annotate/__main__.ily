@@ -47,7 +47,6 @@
 % change the following includes accordingly
 % From oll-core
 \include "oll-core/util/consist-to-contexts.ily"
-\include "oll-core/util/context-mod->props.ily"
 \include "oll-core/util/grob-location.ily"
 
 % Global object storing all annotations

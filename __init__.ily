@@ -26,18 +26,18 @@
   Initialization of the ScholarLY library
 %}
 
-\declareLibrary ScholarLY \with {
-  maintainers = "Urs Liska <ul@openlilylib.org>"
-  version = "0.1.0"
-  short-description = "Toolkit for scholarly editing."
-  description = "
-ScholarLY is intended to become a comprehensive toolkit for scholarly work with
-GNU LilyPond. Currently its main content is the \annotate module, providing
-commands to add annotations in the LilyPond sources. These annotations can be
-printed or exported and post-processed, e.g. with critical reports in LaTeX
-documents."
+\registerPackage scholarLY \with {
+  maintainers = #'( "Urs Liska <ul@openlilylib.org>"
+                    "Jeffery Shivers <jefferyshivers@gmail.com>")
+  version = "0.5.0"
+  short-description = "Toolkit for scholarly editing with GNU LilyPond"
+  description = "TODO!"
+
+  lilypond-min-version = "2.19.22" % To be tested!
 }
+
+%}
 
 \registerOption scholarly.colors.editorial-addition #darkred
 
-#(oll:log "Initialized ScholarLY~a" "")
+#(oll:log "Initialized ScholarLY")
