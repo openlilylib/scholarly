@@ -1,14 +1,16 @@
 \version "2.19.42"
 
-\include "scholarly/package.ly"
-
+\include "oll-core/package.ily"
+\loadPackage \with {
+  modules = annotate
+} scholarly
 
 % \setOption scholarly.editorial.functions.apply ##f
 
 
 %{
 % editorial options can be set:
-%   (commented out to verify that options load 
+%   (commented out to verify that options load
 %   from editorial-functions/config [y])
 
 \setOption scholarly.editorial.functions.addition #`(
@@ -32,15 +34,15 @@ longerfunction =
 % (if they don't contain music functions):
 
 \setOption scholarly.editorial.functions.emendation #`(
-  (Slur . 
-    ,#{ 
+  (Slur .
+    ,#{
     \slurDotted \shape #'((0 . -0.5) (0 . -1.5) (0 . -3.5) (0 . -0.5)) Slur
     #}))
-  
-  
-  
-  
-  
+
+
+
+
+
 music = {
 
 
@@ -51,17 +53,17 @@ music = {
         message = "A remark about adding the slur."
         apply = addition
     } Slur a4( b c') d'
-    
+
     \musicalIssue
     \with{
         message = "This note needs to be added."
         apply = addition
     } NoteHead a4( b c') d'
-    
-    
+
+
 % applying edition without an annotation
 %   NOTE: global toggle for editorial functions affects
-%   both annotated editorial functions and independent 
+%   both annotated editorial functions and independent
 %   ones just the same.
 
     \editorialAddition Slur a4( b c') d'
@@ -89,5 +91,5 @@ music = {
 }
 
 \score {
-  \new Staff = "my staff" \music 
+  \new Staff = "my staff" \music
 }

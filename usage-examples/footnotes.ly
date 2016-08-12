@@ -1,6 +1,9 @@
 \version "2.19.42"
 
-\include "scholarly/package.ly"
+\include "oll-core/package.ily"
+\loadPackage \with {
+  modules = annotate
+} scholarly
 
 music = {
     \criticalRemark

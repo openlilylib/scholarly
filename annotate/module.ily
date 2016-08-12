@@ -47,7 +47,6 @@
 % change the following includes accordingly
 % From oll-core
 \include "oll-core/util/consist-to-contexts.ily"
-\include "oll-core/util/context-mod->props.ily"
 \include "oll-core/util/grob-location.ily"
 
 % Global object storing all annotations
@@ -63,7 +62,8 @@
 \include "engraver.ily"
 
 % Include `editorial-functions` module
-\include "../editorial-functions/__main__.ily"
+%\include "../editorial-functions/__main__.ily"
+\loadModule scholarly.editorial-functions
 
 #(define annotate
   (define-music-function (name properties type item mus)
