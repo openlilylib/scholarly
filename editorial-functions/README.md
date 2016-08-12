@@ -11,8 +11,7 @@ off, affect all editorial functions the same (even if, for example,
 
 ### With Annotations
 
-In the context of annotations, functiosns are called with the `apply =
-type` key-value property.
+In the context of annotations, functions are called implicitly by calling the `apply` property in the annotation interface.
 
 ```
 \criticalRemark {
