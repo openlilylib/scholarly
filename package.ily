@@ -43,5 +43,6 @@
   lilypond-min-version = "2.19.22" % To be tested!
 }
 
+
 \registerModule scholarly.annotate
 \registerModule scholarly.editorial-functions
