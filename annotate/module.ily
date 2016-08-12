@@ -62,7 +62,8 @@
 \include "engraver.ily"
 
 % Include `editorial-functions` module
-\include "../editorial-functions/__main__.ily"
+%\include "../editorial-functions/__main__.ily"
+\loadModule scholarly.editorial-functions
 
 #(define annotate
   (define-music-function (name properties type item mus)

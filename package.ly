@@ -33,6 +33,15 @@
 
 \include "../oll-core/package.ily"
 
-\include "__init__.ily"
+\registerPackage scholarly \with {
+  maintainers = #'( "Urs Liska <ul@openlilylib.org>"
+                    "Jeffery Shivers <jefferyshivers@gmail.com>")
+  version = "0.5.0"
+  short-description = "Toolkit for scholarly editing with GNU LilyPond"
+  description = "TODO!"
 
-\include "annotate/__main__.ily"
+  lilypond-min-version = "2.19.22" % To be tested!
+}
+
+\registerModule scholarly.annotate
+\registerModule scholarly.editorial-functions

@@ -1,12 +1,10 @@
 % preamble
 
 % this module is implicitly loaded by `annotate`.
-% 
+%
 
 
 \include "config.ily"
-
-
 
 %% generic editorial function.
 

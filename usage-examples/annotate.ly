@@ -1,6 +1,8 @@
 \version "2.19.42"
 
 \include "scholarly/package.ly"
+\loadModule scholarly.annotate
+
 
 \markup \vspace #1
 
