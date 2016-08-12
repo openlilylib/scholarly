@@ -1,7 +1,9 @@
 \version "2.19.42"
 
-\include "scholarly/package.ly"
-\loadModule scholarly.annotate
+\include "oll-core/package.ily"
+\loadPackage \with {
+  modules = annotate
+} scholarly
 
 
 \markup \vspace #1
