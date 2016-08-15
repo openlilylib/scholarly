@@ -1,29 +1,26 @@
 # scholarLY latex package
 
-The scholarLY LaTeX package provides the functionality to process the `.inp` file exported from LilyPond using the LaTeX typesetting system. It offers the possibility to impliment a (growing) range of custom styles and formats, and simple tools for organizing multiple concurrent modes of customization.
-
-## Obtaining the Package
-
-- The package directory can be obtained directly from CTAN (once published), or through your TeX distribution.
-- It can also be cloned with git from the GitHub repository at https://github.com/openlilylib/scholarly/latex-package.
+The primary aim of the scholarLY LaTeX package is to produce beautifully typeset annotations for critical editions musical scores engraved with the GNU LilyPond notation software. This package provides the functionality to process the `.inp` file exported from LilyPond using the `scholarLY` library, a project of the openLilyLib organization. It offers the possibility to impliment a (growing) range of custom styles and formats, and simple tools for organizing multiple concurrent modes of customization.
 
 ## Installation
 
-- **from TeXlive**
-TODO (describe options to either update entire distro, or say to otherwise find it specifically using respective distro procedure).
+**Using TeXlive** :
+The ideal way to obtain the package is through your TeX distribution. Updating your entire distro will add `scholarLY` if it isn't already there, and of course it can be individually retrieved through the procedure relevant to your distro.
 
-- **otherwise**
-If you have obtained the package directly from CTAN or the github repository, you can build the package file by running LaTeX on the `.ins` file:
+**Otherwise** :
+You can download the package directly from CTAN or `git clone` (https://github.com/openlilylib/scholarly/latex-package). If you already have a copy of the `scholarLY` repository on your system, the latest package version will be contained there in the `latex-package` subdirectory.
+
+Build the package file by running LaTeX on the installer file:
 ```
-> latex scholarly.ins
+latex scholarly.ins
 ```
-This should produce a file called `scholarLY.sty`. Be sure to point LaTeX to wherever this directory is located, if that isn't already in the search path.
+This should produce a file called `scholarly.sty` in that same directory. Be sure to point LaTeX to wherever this directory is located, if that isn't already in the search path (which is likely the case if you obtained it any means other than through TeXlive).
 
 ## Documentation
 
-To create the package documentation, which includes specific usage instructions and (inline) description of the code, run pdflatex on `scholarly.dtx`:
+To create the package documentation, which includes specific usage instructions and (inline) explanation of the code, run pdflatex on `scholarly.dtx`:
 ```
-> pdflatex scholarly.dtx
+pdflatex scholarly.dtx
 ```
 The first pass should generate a message prompting you to run pdflatex on the same file again. This is in order to fully process the table of contents at the beginning of the file.
 
