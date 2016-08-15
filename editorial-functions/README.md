@@ -2,10 +2,8 @@
 
 Editorial functions can be used to indicate certain critical changes
 made to musical scores. They can be applied concurrently with
-annotations, or *standalone* through hooks provided by the `scholarLY`
-library. Global changes, such as toggling all editorial changes on and
-off, affect all editorial functions the same (even if, for example,
-..).
+annotations, or standalone through hooks provided by the `scholarLY`
+library. Global changes, such as the toggling of all editorial changes, will affect all editorial functions the same.
 
 ## Using Editorial Functions
 
@@ -13,7 +11,7 @@ off, affect all editorial functions the same (even if, for example,
 
 In the context of annotations, functions are called implicitly by calling the `apply` property in the annotation interface.
 
-```
+```lilypond
 \criticalRemark {
   message = {My annotation.}
   apply = addition
@@ -30,21 +28,20 @@ track of what has been previously set once it is redefined).
 
 ### Standalone
 
-Standalone hooks can be used as well, with the syntax `hook <item>
-<music>`.
+Standalone hooks can be used as well, with the syntax `<hook> <item> <music>`.
 
-```
-\editorialAddition Slur a4( bc)
+```lilypond
+\editorialAddition Slur a4( b)
 ```
 
 Another syntax can be used with a generic hook, which thus allows the
 use of types predefined by users: `hook <type> <item> <music>`.
 
-```
+```lilypond
 \editorialFunction #'my-type Slur a4( b)
 ```
 
 ## Global Options
 
 TODO
-toggling, prioritizing, and changing the configurations
+toggling, prioritizing, and changing the configurations, etc.
