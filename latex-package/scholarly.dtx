@@ -59,10 +59,15 @@
 %   Grave accent  \`     Left brace    \{     Vertical bar  \|
 %   Right brace   \}     Tilde         \~}
 % \changes{v1.0}{2016/08/01}{Initial version}
-% \GetFileInfo{scholarLY.dtx}
+% \GetFileInfo{scholarly.dtx}
 % \DoNotIndex{\newcommand,\newenvironment,\def,\gdef,\edef}
 %
-% \title{The \textsf{scholarLY} package\thanks{This document
+% \def\scholarLY{\textsf{scholarLY} }
+% \def\scholarLYs{\textsf{scholarLY}'s }
+%
+%
+%
+% \title{The \scholarLY package\thanks{This document
 %   corresponds to \textsf{scholarLY}~\fileversion, dated \filedate.
 %   The package is available online at
 %   \url{http://www.ctan.org} and
@@ -76,7 +81,9 @@
 %
 % {\color{red} TODO before publishing this:\\
 % (1) fix footnotes feature to loop\\
-% (2) test custom annotations}
+% (2) test custom annotations\\
+% (3) ``more examples'' section\\
+% (4) complete or remove appendix}
 %
 % {\hypersetup{linkcolor=blueberry}
 % \tableofcontents}
@@ -84,69 +91,86 @@
 % \newpage
 % \section{Introduction}
 %
-% The aim of the \textsf{scholarLY} package is to provide the tools
+% The aim of the \scholarLY package is to provide the tools
 % for typesetting annotations for critical editions of musical scores
 % engraved with GNU LilyPond.
 % This \LaTeX{} package processes the |<filename>.annotations.inp| file
-% exported from LilyPond using the openLilyLib \textsf{scholarLY} library. The
+% exported from LilyPond using the openLilyLib \scholarLY library. The
 % main features of the package currently include:
 %
 % \medskip
 % \begin{itemize}[nosep]
 % \item{formatting and styling annotation parameters individually}
 % \item{package options for toggling |final| or |draft| and |custom| or |default| modes}
-% \item{simple key-value families for organizing style blocks}
+% \item{simple key-value infrastructure for organizing style blocks}
 % \item{processing of custom footnote names(link to that line)}
 % \end{itemize}
 % \medskip
 %
-% In this initial release, \textsf{scholarLY} is a relatively lightweight package. It is foremost concerned with the typsetting
-% of annotations, and as such does not provide a means of directly interacting with musical
-% scores, nor with \LaTeX{} documents outside of the annotations themselves.
-% Future minor releases may introduce extended capabilities, particularly
-% ones to better facilitate the integration of various compilation
+% In this initial release, \scholarLY is a relatively
+% lightweight package. It is foremost concerned with the typsetting of
+% annotations, and as such does not provide a means of directly
+% interacting with musical scores, nor with \LaTeX{} documents outside
+% of the annotations themselves.  Future minor releases may introduce
+% extended capabilities, particularly ones to better facilitate the
+% integration of various compilation
 % procedures\footnote{\url{http://lilypond.org/doc/v2.19/Documentation/usage/integrating-music-and-text}}
-% (such as with |lilypond-book| and the \textsf{musicexamples} package).
+% (such as with |lilypond-book| and the \textsf{musicexamples}
+% package).
 %
-% Feature requests, bug reports, and other concerns should be directed to the
-% \textsf{scholarLY} issue tracker at \url{https://github.com/openlilylib/scholarly/issues}. That is also
-% the best location to observe the latest state of the project, and to explore the rest of
-% openLilyLib's vast and growing resources.
+% \bigskip
+% \hrule
+% \bigskip
+%
+% Feature requests, bug reports, and other concerns should be directed
+% to the \scholarLY issue tracker at
+% \url{https://github.com/openlilylib/scholarly/issues}. That is also
+% the best location to observe the latest state of the project, and to
+% explore the rest of the scholarLY project and openLilyLib's vast and
+% growing resources.
 %
 % \section{Usage}
 %
 % \newcommand{\exampleAnn}[1]
 %     {\begEnumerate\annStyleMode\annRevisit{#1}\endEnumerate}
 %
-%     It is possible to simply print our annotations with as little one line of code in the document
-%     environment. In fact, it is useful to do so without applying any customization yet in order to
-%     ensure all annotations are being correctly received. To add customized styles to the
-% annotations, style blocks provide a cleanly nested
-% infastructure for organizing behaviors of specific details in each mode.
-% Assuming the aim is to combine the annotations and the musical score
-% into a single document, this basic functionality gets only a
-% little more complicated. This documentation will not go through the various ways to compile LilyPond
-% scores with \LaTeX{} documents,\footnote{\url{http://lilypond.org/doc/v2.19/Documentation/usage/latex.en.html}} but hopefully it will
-% become clear that \textsf{scholarLY}'s flexibility is suited for a range of approaches.
+%     It is possible to simply print our annotations with as little
+%     one line of code in the document environment. In fact, it is
+%     useful to do so without applying any customization yet in order
+%     to ensure all annotations are being correctly received. To add
+%     customized styles to the annotations, style blocks provide a
+%     cleanly nested infastructure for organizing behaviors of
+%     specific details in each mode.  Assuming the aim is to combine
+%     the annotations and the musical score into a single document,
+%     this basic functionality gets only a little more
+%     complicated. This documentation will not go through the various
+%     ways to compile LilyPond scores with \LaTeX{}
+%     documents,\footnote{\url{http://lilypond.org/doc/v2.19/Documentation/usage/latex.en.html}}
+%     but hopefully it will become clear that \scholarLYs
+%     flexibility is suited for a range of approaches.
 %
 % \subsection{The Main Command}
 %
-% At the heart of the \textsf{scholarLY} package is the |\annotations|
-% command, which wraps all of our presets and annotations with a single
-% argument. It processes the |.inp| file which was exported from the corresponding LilyPond
-% document.\footnote{This documentation doesn't provide instructions for using
-% the LilyPond side of \textsf{scholarLY}; for that, please go to
-% \url{https://github.com/openlilylib/scholarly} and view the README, as well as
-% the |annotate.ly|, |footnotes.ly| and |editorial-commands.ly| example documents.}
+% At the center of the \scholarLY package is the |\annotations|
+% command, which wraps all of our presets and annotations with a
+% single argument. It processes the |.inp| file which was exported
+% from the corresponding LilyPond document.\footnote{This
+% documentation doesn't provide instructions for using the LilyPond
+% side of \textsf{scholarLY}; for that, please go to
+% \url{https://github.com/openlilylib/scholarly} and view the README,
+% as well as the |annotate.ly|, |footnotes.ly| and
+% |editorial-commands.ly| example documents.}
 %
-% {\color{blueberry}\begin{verbatim}
+% \color{blueberry}\begin{verbatim}
 %    \annotations{myscore.annotations.inp}
-% \end{verbatim}}
+% \end{verbatim}
 %
-% This hook will apply any predefined settings to the list(s). A single document can
-% contain multiple |\annotations| instances as long as the named files are in \LaTeX 's search path.
-% It does not take optional arguments (yet), so all settings must be
-% instructed either in the |\usepackage| message or within \textsf{scholarLY} style blocks.
+% This hook will apply any predefined settings to the list(s). A
+% single document can contain multiple |\annotations| instances as
+% long as the named files are in \LaTeX 's search path.  It does not
+% take optional arguments (yet), so all settings must be instructed
+% either in the |\usepackage| message or within \scholarLY
+% style blocks.
 %
 % \subsection{Top-Level Options}
 % In the |\usepackage| statement, we can make use of two global options.
@@ -154,29 +178,36 @@
 %    \usepackage[custom,final]{scholarLY}
 % \end{verbatim}}
 % \begin{description}[noitemsep]
-% \item[draft / final:] This option offers two concurrent modes for storing and applying styles. The names
-%   \textit{final} and \textit{draft} are more or less arbitrary, but they are hard-coded into
-%   the package, so \textsf{scholarLY} expects one of the two. |final| is the implicit option if
-% neither is specified.
-% \item[default / custom:] This option toggles between the default styles of
-%   \textsf{scholarLY} and the user-defined options. It offers an easy way to turn on or off
-%   your settings quickly without actually changing anything in the document. The
-%   default setting is |custom| (if no styles are specified, \textsf{scholarLY} will still print your annotations
-%   without any settings; they'll just be very bland). 
+% \item[draft / final:] This option offers two concurrent modes for
+%   storing and applying styles. The names \textit{final} and
+%   \textit{draft} are more or less arbitrary, but they are hard-coded
+%   into the package, so \scholarLY expects one of the
+%   two. |final| is the implicit option if neither is specified.
+% \item[default / custom:] This option toggles between the default
+%   styles of \scholarLY and the user-defined options. It
+%   offers an easy way to turn on or off your settings quickly without
+%   actually changing anything in the document. The default setting is
+%   |custom| (if no styles are specified, \scholarLY will
+%   still print your annotations without any settings; they'll just be
+%   very bland).
 % \end{description}
 %
 % As described above, the default setting is |[custom,final]|.
-% However, it's best to be verbose about the two options, as in the example, to remove any ambiguity.
+% However, it's best to be verbose about the two options, as in the
+% example, to remove any ambiguity.
 %
-% This package makes use of a default stylesheet\footnote{|default-stylesheet.inp|
-% is located in the same directory as the package file.} for its |default| mode, which inherently contains
-% almost all of the available commands, and so it doubles as a convenient example of how style blocks could be
-% organized. When |default| mode is turned on, \textsf{scholarLY} will revert
-% all styles and formats to whatever is listed in that document, according to either final
-% or draft mode. The biggest differences between |default|'s |final| and |draft| modes
-% are that |draft| will
-% print annotation parameters stacked, show annotation types and enumerate the list.
-% An annotation in |[default,draft]| mode will appear as:
+% This package makes use of a default
+% stylesheet\footnote{|default-stylesheet.inp| is located in the same
+% directory as the package file.} for its |default| mode, which
+% inherently contains almost all of the available commands, and so it
+% doubles as a convenient example of how style blocks could be
+% organized. When |default| mode is turned on, \scholarLY will
+% revert all styles and formats to whatever is listed in that
+% document, according to either final or draft mode. The biggest
+% differences between |default|'s |final| and |draft| modes are that
+% |draft| will print annotation parameters stacked, show annotation
+% types and enumerate the list.  An annotation in |[default,draft]|
+% mode will appear as:
 %
 % \bigskip
 % \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
@@ -195,18 +226,20 @@
 % }}
 % \bigskip
 %
-% This is of course not very interesting, typographically speaking. That is intentional, as
-% |default| mode was created to be a stylistically simple interface for overviewing annotations
-% and potential errors, etc. therein.
-% The default stylesheet can be altered, but it is recommended to leave it
-% fairly minimal so that you'll have an easy way to revert settings, which could be
+% This is of course not very interesting, typographically
+% speaking. That is intentional, as |default| mode was created to be a
+% stylistically simple interface for overviewing annotations and
+% potential errors, etc. therein.  The default stylesheet can be
+% altered, but it is recommended to leave it fairly minimal so that
+% you'll have an easy way to revert settings, which could be
 % occasionally useful for proof-reading or debugging purposes.
 %
 % \subsection{Style Blocks}
 %
 % We can contain all of our custom settings in two style blocks. This
-% allows \textsf{scholarLY} to toggle between |draft| and |final| settings easily,
-% and of course provides a clean syntax for organizing the code. 
+% allows \scholarLY to toggle between |draft| and |final|
+% settings easily, and of course provides a clean syntax for
+% organizing the code.
 %
 % To set custom |draft| and |final| behaviors, we use:
 % {\color{blueberry}\begin{verbatim}
@@ -219,18 +252,22 @@
 %    }
 % \end{verbatim}}
 %
-% \textsf{scholarLY} allows for unlimited |\annSet| blocks. Note, however, that creating a new
-% block doesn't automatically override all items set in previous blocks until
-% they are explicitly redefined.\footnote{Hint: the \textsf{verbatim} package provides
-% a convenient environment for commenting out code blocks. This could be one tool
-% for quickly and easily checking the behavior of your custom styles.}
-% It is unlikely that most documents will have a
-% need to use very many |\annotations| instances and style preferences, so that is a more or less
-% arbitrary detail.
+% \scholarLY allows for unlimited |\annSet| blocks. Note,
+% however, that creating a new block doesn't automatically override
+% all items set in previous blocks until they are explicitly
+% redefined.\footnote{Hint: the \textsf{verbatim} package provides a
+% convenient environment for commenting out code blocks. This could be
+% one tool for quickly and easily checking the behavior of your custom
+% styles.}  It is unlikely that most documents will have a need to use
+% very many |\annotations| instances and style preferences, so that is
+% a more or less arbitrary detail.
 %
-% Inside the style blocks, we can insert any important hooks such as |\annStacked| and |\annShowType|,
-% as well as three key-value groups, using \textsf{keyval} package's |\setkeys| macro: |annStyles|, |annPrefixes| and |annExtras|. Here is an example
-% of a custom style block followed by an example of a resulting annotation in |final| mode:
+% Inside the style blocks, we can insert any important hooks such as
+% |\annStacked| and |\annShowType|, as well as three key-value groups,
+% using \textsf{keyval} package's |\setkeys| macro: |annStyles|,
+% |annPrefixes| and |annExtras|. Here is an example of a custom style
+% block followed by an example of a resulting annotation in |final|
+% mode:
 %
 % {\color{blueberry}\begin{verbatim}
 %    \annSetFinal{
@@ -279,32 +316,41 @@
 % }
 % }}\bigskip
 %
-%   Note the usage of |message| and |message-2nd|, and |voice| and |voice-2nd| in the |annStyles|
-%   settings. Since some macros will likely need to enclose the affected expressions,
-% it is sometimes necessary for each macro after the first to
-%   also wrap the preceding \textit{inner} arguments. In effect, they are applied as:
+%   Note the usage of |message| and |message-2nd|, and |voice| and
+%   |voice-2nd| in the |annStyles| settings. Since some macros will
+%   likely need to enclose the affected expressions, it is sometimes
+%   necessary for each macro after the first to also wrap the
+%   preceding \textit{inner} arguments. In effect, they are applied
+%   as:
 %
-% \bigskip { \begin{center} \color{blueberry} \{ macro-3rd \{ macro-2nd \{ macro \{ item \} \} \} \} \end{center} } \bigskip
+%   \bigskip { \begin{center} \color{blueberry} \{ macro-3rd \{
+%     macro-2nd \{ macro \{ item \} \} \} \} \end{center} } \bigskip
 %
-% Annotations also adhere to other style commands that might be established in your document.
-% Font faces, spacing, etc. will be adapted if previously set (which you'll probably want). In
-% fact, we can treat |\annotations{..}| as if it were a block of text (well, it
-% almost is just that once it expands). In that case, we can wrap it in explicit \LaTeX{} style commands just the
-% same as with other parts of the document. Keep in mind, however, that any style choices
-% made in |\annSet| blocks will override any previous styles of the same type since
-% they are being applied by the |\annotations| hook, which normally expands \textit{after} any
-% macros or environments in which it might be wrapped.\footnote{Of course, there are tricks around
-% everything: to cancel your own style blocks and \textit{not} use
-% the default stylesheet, simply follow your custom blocks with the same
-% respective blocks \textit{emptied}. Since there is no convenience command for
-% this, you'll have to manually type each of the options you wish to set to nothing.} It is
-% recommended to maintain annotation settings within style blocks in order to keep
-% |draft| and |final| modes as clearly defined as possible.
+%   Annotations also adhere to other style commands that might be
+%   established in the \LaTeX{} document.  Font faces, spacing,
+%   etc. will be adapted if previously set (which you'll presumably
+%   want). We can wrap |\annotations| in explicit \LaTeX{}
+%   style commands just the same as with other parts of the
+%   document. Keep in mind, however, that choices made in
+%   |\annSet| blocks will override any other conflicting styles
+%   since they are being applied at the instance of the |\annotations| hook,
+%   which means it will normally expand \textit{after} any macros or environments
+%   in which it might be wrapped.\footnote{Of course, there are tricks
+%   around everything: to cancel your own style blocks and
+%   \textit{not} use the default stylesheet, simply follow your custom
+%   blocks with the same respective blocks \textit{emptied}. Since
+%   there is no convenience command for this, you'll have to manually
+%   type each of the options you wish to set to nothing.} It is
+%   recommended to maintain annotation settings within style blocks in
+%   order to keep |draft| and |final| modes as clearly defined as
+%   possible.
 %
 % \subsection{More Examples}
 %
-% Here are some additional examples to show how annotations can be formatted.
+% Here are some additional examples to demonstrate how annotations might be
+% formatted.
 %
+% \subsubsection{ex.1}
 % |code|
 %
 % \bigskip
@@ -319,11 +365,30 @@
 %   context-id={Viola},
 %   message={This note should be sharp.}]
 % }
-% }}\bigskip
+% }}
 %
-% |code|
 %
-% \bigskip
+% \subsubsection{ex.2}
+%
+% % code example
+%
+% \begin{verbatim}
+% \annSetFinal{
+% 
+%
+% \annSameLocationLoose
+% }
+% \end{verbatim}
+%
+% % implementation
+% \annSameLocationLoose
+% \setkeys{annStyles}{
+%    message = {},
+%    message-2nd = {}
+% }
+%
+% \subsubsection{ex.3}
+%
 % \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
 %
 % \exampleAnn{
@@ -338,23 +403,33 @@
 % \criticalRemark
 %   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
 %   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
-%   grob-type={Accidental},
-%   type={critical-remark},
-%   context-id={Viola},
-%   message={This note should be sharp.}]
+%   grob-type={NoteHead},
+%   type={todo},
+%   context-id={Violoncello},
+%   message={I should reconsider this note.}]
 %
 % \criticalRemark
 %   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
 %   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
-%   grob-type={Accidental},
-%   type={critical-remark},
-%   context-id={Viola},
-%   message={This note should be sharp.}]
+%   grob-type={Slur},
+%   type={lilypond-issue},
+%   context-id={Double Bass},
+%   message={This slur looks bad.}]
 % }
 %
-% }}\bigskip
+% }}
 %
-%   |code|
+% 
+%
+%
+%
+% \begin{verbatim}
+% \annSetFinal{
+% 
+%
+% \annSameLocationStrict
+% }
+% \end{verbatim}
 %
 % \annSameLocationStrict
 %
@@ -387,8 +462,9 @@
 %   message={This note should be sharp.}]
 % }
 %
-% }}\bigskip
+% }}
 %
+%   \bigskip
 %
 % |code|
 %
@@ -420,7 +496,7 @@
 %   context-id={Viola},
 %   message={This note should be sharp.}]
 % }
-% }}\bigskip
+% }}
 %
 %
 %
@@ -435,15 +511,17 @@
 %
 % \section{Implementation}
 %
-% The majority of this package corresponds to the default annotation parser.
-% In order to use a custom annotation parser, I suggest looking closely at
-% section 2.6 in particular to get an idea of what functions are already
-% available. Because of the inherent unpredictability of how custom parsers
-% will be constructed and thus behave, \textsf{scholarLY} doesn't force location checks,
-% key resets, and other functionality that users will most likely need. At this
-% point, the use of custom annotation parsing isn't fully
-% supported (i.e. the bare mechanisms are in place (section 2.7), but have
-% not really been tested yet). With that said, here are the current leading TODO's:
+% The majority of this package corresponds to the default annotation
+% parser.  In order to use a custom annotation parser, I suggest
+% looking closely at section 2.6 in particular to get an idea of what
+% functions are already available. Because of the inherent
+% unpredictability of how custom parsers will be constructed and thus
+% behave, \textsf{scholarLY} doesn't force location checks, key
+% resets, and other functionality that users will most likely need. At
+% this point, the use of custom annotation parsing isn't fully
+% supported (i.e. the bare mechanisms are in place (section 2.7), but
+% have not really been tested yet). With that said, here are the
+% current leading TODO's:
 %
 % \medskip
 % \begin{itemize}[nosep]
@@ -467,7 +545,7 @@
 %
 % \subsection{Style Annotations}
 %
-% basic styles:
+% Set basic styles with |\setkeys{annStyles}{ .. }|
 %    \begin{macrocode}
 \def\annName{}
 \def\annType{}
@@ -491,7 +569,9 @@
 \define@key{annStyles}{message-2nd}{\def\annMessageO{#1}}
 \define@key{annStyles}{message-3rd}{\def\annMessageOO{#1}}
 %    \end{macrocode}
-% draft and final mode
+%
+% 
+% draft and final mode (used internally only)
 %    \begin{macrocode}
 \def\customdraft{}
 \newcommand\annSetDraft[1]{
@@ -500,10 +580,14 @@
 \newcommand\annSetFinal[1]{
   \def\customfinal{#1}}
 %    \end{macrocode}
-% Let custom final settings carry over to draft mode.\footnote{footnote}
+%
+% \begin{macro}{\finalfordraft}
+%   Let custom final settings carry over to draft mode.\footnote{footnote}
+% This feature might be removed if it proves to be excessive.
 %    \begin{macrocode}
 \newcommand{\finalfordraft}{\def\customdraft{\customfinal}}
 %    \end{macrocode}
+% \end{macro}
 %    \begin{macrocode}
 \newcommand{\letAnnBreakornot}{\par\nobreak}
 %    \end{macrocode}
@@ -555,16 +639,26 @@
 \def\appendType{}
 \def\annType{}
 %    \end{macrocode}
-% hide or show annotation types:
+% \begin{macro}{\annHideType}
+% hide annotation type:
 %    \begin{macrocode}
 \newcommand{\annHideType}{%
   \def\annName{}
   \renewcommand{\typeSkipornot}{}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\annHideType}
+% hide annotation type:
+%    \begin{macrocode}
 \newcommand{\annShowType}{%
   \def\annName{{\annType\annTypeName }}
   \ifthenelse{\equal{\skipornot}{\letAnnBreakornot}}
     {\renewcommand{\typeSkipornot}{\letAnnBreakornot}}
     {\renewcommand{\typeSkipornot}{}}}
+%    \end{macrocode}
+% \end{macro}
+% insert the default stylesheet used by `default` mode
+%    \begin{macrocode}
 \input{default-stylesheet.inp}
 \def\annStyleMode{}
 \def\annRevisit{}
@@ -1168,25 +1262,38 @@
 % \newpage
 % \section{The \texttt{.inp} File}
 %
-% It could be possible to adapt \textsf{scholarLY} to accept annotations from
-% sources other than LilyPond. In that case, it would be useful to know what
-% exactly goes into the |.inp| file. Note that the particular file extensions isn't
-% mandatory; this happens to be the type that is produced from the LilyPond |scholarLY|
-% module.
+% It could be possible to adapt \textsf{scholarLY} to accept
+% annotations from sources other than LilyPond. In any case, it would
+% be useful to have an explanation of what goes into the |.inp|
+% file. Note that the particular file extensions isn't mandatory; this
+% happens to be what is produced from the LilyPond |scholarLY| module.
 %
-% The input file is almost generic enough to be reproduced by any other capable
-% software. At this time, the biggest exception to that is the |grob-location| parameter,
-% which is still in Scheme syntax when it is exported from LilyPond. A sensible way around
-% that would be to simply adapt the location parser (lines here) to whatever accept
-% whatever format is given from a particular output. It is possible that in a future
-% version, \textsf{scholarLY}'s |\annotation| command will be extended to accept an
-% optional |[<origin-software>]| argument to easily change parsing behavior (and thus
-% share the wonderful annotation typesetting possibilities with multiple
+% The input file is almost generic enough to be reproduced by any
+% other capable software. At this time, the biggest exception to that
+% is the |grob-location| parameter, which is still in Scheme syntax
+% when it is exported from LilyPond. A sensible way around that would
+% be to simply adapt the location parser (lines here) to whatever
+% accept whatever format is given from a particular output. It is
+% possible that in a future version, \textsf{scholarLY}'s
+% |\annotation| command will be extended to accept an optional
+% |[<origin-software>]| argument to easily change parsing behavior
+% (and thus share the wonderful annotation typesetting possibilities
+% with multiple
 %
-% \textsf{scholarLY} begins with a list of annotations that begin with a macro call of
-% either |\criticalRemark|, |\musicalIssue|, |\lilypondIssue|, |\annotateQuestion| or
-% |\annotateTodo|. In order to do something with those, we created the so-named
-% macros near the end of the package.\footnote{the line number}
+% \textsf{scholarLY} begins with a list of annotations that are each
+% called with one of the macros offered by \textsf{scholarLY}:
+% |\criticalRemark|, |\musicalIssue|, |\lilypondIssue|,
+% |\annotateQuestion| or |\annotateTodo|. In order to do something
+% with those, we created the so-named macros near the end of the
+% package.\footnote{the line number}
+%
+% Each macro takes a single argument which itself contains all of
+% the details of the annotation. Parameters such as grob location
+% and input file name are automatically rendered by lilypond. Others,
+% such as the message (which actually is mandatory) and footnotes are
+% set explicitly by the user.
+%
+%
 %
 % \end{appendices}
 %
