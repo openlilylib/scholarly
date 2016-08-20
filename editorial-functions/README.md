@@ -1,9 +1,12 @@
 # scholarLY: Editorial Functions
 
-Editorial functions can be used to indicate certain critical changes
-made to musical scores. They can be applied concurrently with
-annotations, or standalone through hooks provided by the *scholarLY*
-library. Global changes, such as the toggling of all editorial changes, will affect all editorial functions the same.
+Editorial functions can be used to apply and organize certain critical changes
+made to musical scores. They can be implemented concurrently with
+annotations or through their own standalone hooks. Global changes, such as the 
+toggling of all editorial changes, will affect all editorial functions (with 
+annotation or standalone) the same. *scholarLY* provides a set of built-in options
+and uses *openLilyLib*'s `\registerOption`/`\setOption`/etc. infrastructure to
+handle all options and to potentially create new ones.
 
 ## Using Editorial Functions
 
@@ -40,8 +43,6 @@ is redefined). `\registerOption` should not be used to alter the built-in type.
 ```
 
 **Note** the use of quasi/un-quotes in these syntaxes. This allows lilypond to accept music functions and non-music functions (such as `\slurDashed`) in the same context, and then decide how to parse them automatically.
-
-***
 
 ### Standalone
 
