@@ -1,6 +1,7 @@
 # ScholarLY
 
-*ScholarLY* is a toolbox for scholarly editions with (mainly) GNU LilyPond.
+*ScholarLY* is a toolbox for creating scholarly editions of musical scores
+with (mainly) GNU LilyPond.
 It belongs to *openLilyLib*, LilyPond's community library system.
 Therefore getting and installing *ScholarLY* is automatically handled by
 preparing *openLilyLib*.
