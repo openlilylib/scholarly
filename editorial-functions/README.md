@@ -2,9 +2,8 @@
 
 Editorial functions can be used to apply and organize certain critical changes
 made to musical scores. They can be implemented concurrently with
-annotations or through their own standalone hooks. Global changes, such as the 
-toggling of all editorial changes, will affect all editorial functions (with 
-annotation or standalone) the same. *scholarLY* provides a set of built-in options
+annotations or through their own standalone hooks. *scholarLY* provides a set 
+of built-in options
 and uses *openLilyLib*'s `\registerOption`/`\setOption`/etc. infrastructure to
 handle all options and to potentially create new ones.
 
