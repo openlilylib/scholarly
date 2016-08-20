@@ -2,26 +2,26 @@
 
 Editorial functions can be used to indicate certain critical changes
 made to musical scores. They can be applied concurrently with
-annotations, or standalone through hooks provided by the `scholarLY`
+annotations, or standalone through hooks provided by the *scholarLY*
 library. Global changes, such as the toggling of all editorial changes, will affect all editorial functions the same.
 
 ## Using Editorial Functions
 
 ### With Annotations
 
-In the context of annotations, functions are called implicitly by calling the `apply` property in the annotation interface.
+In the context of annotations, functions are called implicitly by including the `apply` property in the annotation `with` block.
 
 ```lilypond
-\criticalRemark {
-  message = {My annotation.}
+\criticalRemark \with {
+  message = "My annotation."
   apply = addition
 }
 NoteHead c4
 ```
 
-`scholarLY` provideds three predefined types: `addition`, `deletion` and
+*scholarLY* provides three predefined types: `addition`, `deletion` and
 `emendation`. The user can supply new types by using the `\registerOption`
-utility provided by `openLilyLib`.
+utility provided by *openLilyLib*.
 
 ```lilypond
 \registerOption scholarly.editorial.functions.my-type
@@ -31,7 +31,7 @@ utility provided by `openLilyLib`.
 
 To alter the effects of different types, use `\setOption` followed by *all* options for that type (even those not changed -
 because this utility does not keep track of what has been previously for the option set once it
-is redefined). `\registerOption` should not be used to alter the built-in typ
+is redefined). `\registerOption` should not be used to alter the built-in type.
 
 ```lilypond
 \setOption scholarly.editorial.functions.addition
@@ -39,8 +39,7 @@ is redefined). `\registerOption` should not be used to alter the built-in typ
    (Slur . ,slurDotted))
 ```
 
-* * *
-**Note** the use of quasi/un-quotes in these syntaxes. This allows lilypond to accept music functions and non-music functions (such as `\slurDashed` which is a .. change) in the same context, and then decide how to parse them
+**Note** the use of quasi/un-quotes in these syntaxes. This allows lilypond to accept music functions and non-music functions (such as `\slurDashed`) in the same context, and then decide how to parse them automatically.
 
 ***
 
@@ -79,5 +78,19 @@ longerfunction =
 
 ## Global Options
 
-TODO
-toggling, prioritizing, and changing the configurations, etc.
+### Toggle
+Editorial functions are, by default, applied to the music in every instance.
+Turn all functions *off* with the global toggle at the beginning of the document:
+
+```lilypond
+\setOption scholarly.editorial.functions.apply ##f
+```
+
+Set to true (`##t`) to explicitly turn editorial functions back on.
+
+This can be applied at specific points within the document as well. 
+If a project contains multiple scores,
+for example, the editorial functions could be quickly toggled *on* and *off* inline.
+
+### Prioritize / Filter / Sort
+*Not yet implemented, these features are TODO's.*
