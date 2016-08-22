@@ -65,17 +65,76 @@ LaTeX if/when the annotations are typeset later in that manner.
 
 ## LaTeX-Specific Code
 
+This section is only relevant to projects which will later incorporate the *scholarLY* LaTeX package for
+typesetting the exported annotations.
+
+### General Usage
+
 Messages may include LaTeX code for annotations intended to be typeset later using the *scholarLY* LaTeX
 package. In the meantime, this means nothing for the LilyPond side except that Guile, LilyPond's 
-Scheme interpreter, will still interpret escape characters and will thus alter the code during compilation. 
+Scheme interpreter, will still interpret escape characters and thus may alter the code during compilation. 
 Therefore, in some cases, double backslashes 
 are necessary for certain LaTeX hooks to make it to the exported document.
+
+```lilypond
+\musicalIssue \with {
+  message = "This is a \\textit{message} with {\color{red} some LaTeX code}."
+} NoteHead b
+```
 
 In a similar vein, it is prudent to be conscious of symbols that may cause trouble for LaTeX such as
 `#`, `_`, and so on. Even if such a character is not present in the `message` property, *everything* 
 contained by any property will be parsed by LaTeX at least once.
 
-Please refer to the relevant subdirectory for more information on the *scholarLY* LaTeX package.
+### Footnotes
+
+We can organize LaTeX footnotes using similar protocol to the `footnote-text` property. As mentioned
+previously, `footnote-..` properties are only applied in LilyPond. They are purposed as *in-score*
+footnotes as traditionally used in LilyPond. LaTeX-specific footnotes can be implemented within a 
+message just as in a typical LaTeX document.
+
+```lilypond
+\criticalRemark \with {
+  message = "This is an annotation\footnote{some footnote text} with a footnote for LaTeX."
+}
+```
+
+*scholarLY* also provides a more comprehensive infrastructure for using such footnotes. Use the 
+built-in `ann-footnote` property to write a footnote for the entire annotation. *scholarLY* will
+automatically place the superscript at the end of the message (meaning after punctuation and any 
+particular message wrappers specified later by the user).
+
+```lilypond
+\annotateTodo \with {
+  message = "This is my annotation."
+  ann-footnote = "This is a footnote for the entire annotation."
+}
+```
+
+Footnotes nested within the message can be organized as such:
+
+```lilypond
+\lilypondIssue \with {
+  message = "This is an annotation\fnSomething with some\fnBlueNote custom footnote\fnRandom hooks."
+  fn-Something-txt = "This is the footnote text."
+  fn-Blue-Note-txt = "This is another footnote."
+  fn-R-a-n-d-o-m-txt = "This footnote, like the other two, will be expanded into the respective hook."
+}
+```
+
+Custom footnote hooks are generated with the syntax `fn-<custom name>-txt`. The *custom name* can include
+any number of hyphens; they will be removed by the parser and recreated as `\fn<custom name (without hyphens)>`.
+Therefore, as in the example above, we can use these unique macros and count on *scholarLY* to take care
+of automatically defining them.
+
+There are several improvements to be made to this functionality. Currently, the number of custom footnote
+hooks is limited to five. Also, the custom names are entirely case-sensitive; it may ultimately not be
+possible to overcome that, but that is a future issue yet to be completely looked into.
+
+### The LaTeX Package
+
+Please refer to the documentation in `scholarly/annotate/latex-package` for more information on the 
+*scholarLY* LaTeX package.
 
 ## Coloring Annotated Grobs, and Other Options
 
@@ -87,8 +146,8 @@ we can use a global boolean to turn this colorization on or off.
 \setOption scholarly.colorize ##t
 ```
 
-Other options are made available in `scholarly/annotate/config.ily`. That code includes further comments to 
-explain the handling of the various options.
+Other options are made available in `scholarly/annotate/config.ily`. That code includes further comments that 
+explain the abilities and handling of the various options.
 
 ## Sorting, Filtering
 
@@ -99,4 +158,8 @@ by using `\setOption`. As above, more details about this utility are written in 
 can indicate the importance of some annotations over others. We will be able to *annotate* (which means printing
 to console *and* to export) only the priorities that are specified and/or in the order that is specified.
 
-## Etc?
+## Further 
+
+`annotate` is currently *scholarLY*'s most rubost module. The possibilities are constantly shifting / growing; the
+best way to stay up-to-date with the project is by pulling the latest state of the repositories (both `oll-core` and
+`scholarly`) and viewing the issue trackers, where new feature requests are frequently being added to the list.
