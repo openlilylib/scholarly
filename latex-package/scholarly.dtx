@@ -29,7 +29,7 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{idxlayout}
-\usepackage{scholarly}
+\usepackage[custom, final]{scholarLY}
 \usepackage{hypdoc}
 \usepackage[titletoc]{appendix}
 \usepackage{pbox}
@@ -42,7 +42,7 @@
 \end{document}
 %</driver>
 % \fi
-% \CheckSum{1191}
+% \CheckSum{1182}
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -662,39 +662,42 @@
 \input{default-stylesheet.inp}
 \def\annStyleMode{}
 \def\annRevisit{}
+\def\revisitFinalorNot{}
+\def\revisitDraftorNot{}
 %    \end{macrocode}
 %
 % \subsection{Package Options}
 %
+% implicitly |[custom, final]|
+% \begin{macro}{draft}
 %    \begin{macrocode}
-\newif\ifdraft
-  \DeclareOption{draft}{\drafttrue}
-  \DeclareOption{final}{\draftfalse}
-\newif\ifdefault
-  \DeclareOption{default}{\defaulttrue}
-  \DeclareOption{custom}{\defaultfalse}
-\ProcessOptions*
-%    \end{macrocode}
-% use final (implicit) or draft:
-%    \begin{macrocode}
-\ifdraft
-  {\def\annStyleMode{\customdraft}
+\DeclareOption{draft}{
+  \def\annStyleMode{\customdraft}
   \def\annRevisit{\revisitDraftorNot}}
-\else
-  {\def\annStyleMode{\customfinal}
-  \def\annRevisit{\revisitFinalorNot}}
-\fi
 %    \end{macrocode}
-% use custom (implicit) or default
+% \end{macro}
+% \begin{macro}{final}
 %    \begin{macrocode}
-\ifdefault
-  {\def\revisitFinalorNot{\defaultFinal}
-  \def\revisitDraftorNot{\defaultDraft}}
-\else
-  {\def\revisitFinalorNot{}
-  \def\revisitDraftorNot{}}
-\fi
+\DeclareOption{final}{
+  \def\annStyleMode{\customfinal}
+  \def\annRevisit{\revisitFinalorNot}}
 %    \end{macrocode}
+% \end{macro}
+% \begin{macro}{default}
+%    \begin{macrocode}
+\DeclareOption{default}{
+  \def\revisitFinalorNot{\defaultFinal}
+  \def\revisitDraftorNot{\defaultDraft}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{custom}
+%    \begin{macrocode}
+\DeclareOption{custom}{
+  \def\revisitFinalorNot{}
+  \def\revisitDraftorNot{}}
+\ProcessOptions\relax
+%    \end{macrocode}
+% \end{macro}
 %
 % \subsection{Additional Customizations}
 %
