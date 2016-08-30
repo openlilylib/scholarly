@@ -1,11 +1,10 @@
 \version "2.19.42"
 
-\include "scholarly/package.ly"
+\include "oll-core/package.ily"
+\loadPackage \with {
+  modules = annotate
+} scholarly
 
-#(display "loaded\n")
-
-%\registerOption documentation.include-file "scholarly/annotate"
-%\loadModule "_internal/doc-include/usage-example.ily"
 
 \markup \vspace #1
 
@@ -61,17 +60,6 @@ music = \relative c'{
     }
     Slur
   gis8( a) b4
-    \todo \with {
-      message = "A todo for the flag."
-    }
-    Flag
-  \appoggiatura a8
-    \lilypondIssue \with {
-      message = "Message about this note."
-    }
-    NoteHead
-  gis4
-
 }
 
 \score { \music }

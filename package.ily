@@ -2,10 +2,12 @@
 %                                                                             %
 % This file is part of ScholarLY,                                             %
 %                      =========                                              %
-% a toolkit library for scholarly work with GNU LilyPond and LaTeX.           %
+% a toolkit library for scholarly work with GNU LilyPond and LaTeX,           %
+% belonging to openLilyLib (https://github.com/openlilylib/openlilylib        %
+%              -----------                                                    %
 %                                                                             %
 % ScholarLY is free software: you can redistribute it and/or modify           %
-% it under the terms of the GNU Lesser General Public License as published by %
+% it under the terms of the GNU General Public License as published by        %
 % the Free Software Foundation, either version 3 of the License, or           %
 % (at your option) any later version.                                         %
 %                                                                             %
@@ -14,7 +16,7 @@
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the               %
 % GNU Lesser General Public License for more details.                         %
 %                                                                             %
-% You should have received a copy of the GNU Lesser General Public License    %
+% You should have received a copy of the GNU General Public License           %
 % along with ScholarLY.  If not, see <http://www.gnu.org/licenses/>.          %
 %                                                                             %
 % ScholarLY is maintained by Urs Liska, ul@openlilylib.org                    %
@@ -23,21 +25,24 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %{
-  Initialization of the ScholarLY library
+  This file loads the whole ScholarLY library,
+  currently only the annotate module is implemented
 %}
 
-\declareLibrary ScholarLY \with {
-  maintainers = "Urs Liska <ul@openlilylib.org>"
-  version = "0.1.0"
-  short-description = "Toolkit for scholarly editing."
-  description = "
-ScholarLY is intended to become a comprehensive toolkit for scholarly work with
-GNU LilyPond. Currently its main content is the \annotate module, providing
-commands to add annotations in the LilyPond sources. These annotations can be
-printed or exported and post-processed, e.g. with critical reports in LaTeX
-documents."
+#(ly:set-option 'relative-includes #t)
+
+\include "../oll-core/package.ily"
+
+\registerPackage scholarly \with {
+  maintainers = #'( "Urs Liska <ul@openlilylib.org>"
+                    "Jeffery Shivers <jefferyshivers@gmail.com>")
+  version = "0.5.0"
+  short-description = "Toolkit for scholarly editing with GNU LilyPond"
+  description = "TODO!"
+
+  lilypond-min-version = "2.19.22" % To be tested!
 }
 
-\registerOption scholarly.colors.editorial-addition #darkred
 
-#(oll:log "Initialized ScholarLY~a" "")
+\registerModule scholarly.annotate
+\registerModule scholarly.editorial-functions

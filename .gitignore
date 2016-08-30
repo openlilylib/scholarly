@@ -16,7 +16,7 @@
 # log files by ScholarLY
 *.inp
 
-# tex
+# LaTeX stuff
 *.aux
 *.fdb_latexmk
 *.fls
@@ -26,3 +26,5 @@
 *.idx
 *.out
 *.toc
+
+>>>>>>> origin/master
