@@ -24,10 +24,14 @@
     measure={Meas.},
     beat={bea.}
   }
+  \setkeys{annStyles}{
+    type={\textit}
+  }
   \annMessageWrap{ . . / . . }
   \annInline
   \annShowType
   \annTypeWrap{/ ) }
+  \annSameLocationStrict
 }
 
 \annotations{annotate.annotations.inp}
@@ -49,8 +53,9 @@
   \setkeys{annStyles}{
     measure={\color{gray}},
     type={\textit},
-    message={},% resets to nothing
-    message-2nd={}% ""
+    message={\textbf},
+    message-2nd={},% % resets to nothing
+    voice={\color{cyan}}
   }
   \setkeys{annExtras}{
     same-beat={...},
