@@ -23,13 +23,13 @@
 %<package>\ProvidesPackage{scholarly}
 %<*package>
     [2016/08/01 1.0 Package for typesetting annotations for critical editions
-    compiled by LilyPond with the OpenLilyLib ScholarLY library.]
+    compiled by LilyPond with the OpenLilyLib scholarLY library.]
 %</package>
 %
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{idxlayout}
-\usepackage[custom, final]{scholarLY}
+\usepackage[custom, final]{scholarly}
 \usepackage{hypdoc}
 \usepackage[titletoc]{appendix}
 \usepackage{pbox}
@@ -42,7 +42,7 @@
 \end{document}
 %</driver>
 % \fi
-% \CheckSum{1182}
+% \CheckSum{1183}
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -78,12 +78,6 @@
 % \maketitle
 %
 % \definecolor{blueberry}{rgb}{0.1,0.1,0.3}
-%
-% {\color{red} TODO before publishing this:\\
-% (1) fix footnotes feature to loop\\
-% (2) test custom annotations\\
-% (3) ``more examples'' section\\
-% (4) complete or remove appendix}
 %
 % {\hypersetup{linkcolor=blueberry}
 % \tableofcontents}
@@ -134,11 +128,11 @@
 % \newcommand{\exampleAnn}[1]
 %     {\begEnumerate\annStyleMode\annRevisit{#1}\endEnumerate}
 %
-%     It is possible to simply print our annotations with as little
-%     one line of code in the document environment. In fact, it is
-%     useful to do so without applying any customization yet in order
+%     It is possible to simply print our annotations with a single
+%     command in the document. In fact, it is
+%     useful to do so before applying any customizations in order
 %     to ensure all annotations are being correctly received. To add
-%     customized styles to the annotations, style blocks provide a
+%     customized styles to the annotations, \scholarLY style blocks provide a
 %     cleanly nested infastructure for organizing behaviors of
 %     specific details in each mode.  Assuming the aim is to combine
 %     the annotations and the musical score into a single document,
@@ -151,7 +145,7 @@
 %
 % \subsection{The Main Command}
 %
-% At the center of the \scholarLY package is the |\annotations|
+% At the center of the \scholarLY package is the main |\annotations|
 % command, which wraps all of our presets and annotations with a
 % single argument. It processes the |.inp| file which was exported
 % from the corresponding LilyPond document.\footnote{This
@@ -161,9 +155,9 @@
 % as well as the |annotate.ly|, |footnotes.ly| and
 % |editorial-commands.ly| example documents.}
 %
-% \color{blueberry}\begin{verbatim}
+% {\color{blueberry}\begin{verbatim}
 %    \annotations{myscore.annotations.inp}
-% \end{verbatim}
+% \end{verbatim}}
 %
 % This hook will apply any predefined settings to the list(s). A
 % single document can contain multiple |\annotations| instances as
@@ -179,22 +173,24 @@
 % \end{verbatim}}
 % \begin{description}[noitemsep]
 % \item[draft / final:] This option offers two concurrent modes for
-%   storing and applying styles. The names \textit{final} and
+%   storing custom styles. Selecting either one will tell
+%   \scholarLY to apply the respective settings to the document. The
+%   names \textit{final} and
 %   \textit{draft} are more or less arbitrary, but they are hard-coded
 %   into the package, so \scholarLY expects one of the
 %   two. |final| is the implicit option if neither is specified.
 % \item[default / custom:] This option toggles between the default
 %   styles of \scholarLY and the user-defined options. It
-%   offers an easy way to turn on or off your settings quickly without
+%   offers an easy way to turn on or off your custom settings quickly without
 %   actually changing anything in the document. The default setting is
 %   |custom| (if no styles are specified, \scholarLY will
 %   still print your annotations without any settings; they'll just be
 %   very bland).
 % \end{description}
 %
-% As described above, the default setting is |[custom,final]|.
-% However, it's best to be verbose about the two options, as in the
-% example, to remove any ambiguity.
+% As described above, the implicit setting is |[custom,final]|.
+% However, it's best to be verbose about the intended options, as in the
+% example, in order to remove any ambiguity or confusion later on.
 %
 % This package makes use of a default
 % stylesheet\footnote{|default-stylesheet.inp| is located in the same
@@ -210,6 +206,7 @@
 % mode will appear as:
 %
 % \bigskip
+%
 % \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
 %
 % \annShowType\annStacked
@@ -222,7 +219,6 @@
 %   context-id={Viola},
 %   message={This note should be sharp.}]
 % }
-%
 % }}
 % \bigskip
 %
@@ -232,7 +228,7 @@
 % potential errors, etc. therein.  The default stylesheet can be
 % altered, but it is recommended to leave it fairly minimal so that
 % you'll have an easy way to revert settings, which could be
-% occasionally useful for proof-reading or debugging purposes.
+% occasionally useful for proof-reading or debugging the document.
 %
 % \subsection{Style Blocks}
 %
@@ -246,7 +242,6 @@
 %    \annSetDraft{
 %      [..]
 %    }
-%
 %    \annSetFinal{
 %      [..]
 %    }
@@ -260,7 +255,7 @@
 % one tool for quickly and easily checking the behavior of your custom
 % styles.}  It is unlikely that most documents will have a need to use
 % very many |\annotations| instances and style preferences, so that is
-% a more or less arbitrary detail.
+% a more or less trivial detail.
 %
 % Inside the style blocks, we can insert any important hooks such as
 % |\annStacked| and |\annShowType|, as well as three key-value groups,
@@ -269,7 +264,7 @@
 % block followed by an example of a resulting annotation in |final|
 % mode:
 %
-% {\color{blueberry}\begin{verbatim}
+% \begin{verbatim}
 %    \annSetFinal{
 %      \setkeys{annStyles}{
 %        message = {\color{cyan}},
@@ -284,25 +279,23 @@
 %      }
 %      \annHideType
 %      \annInline
+%      \annEnumerateOff
 %    }
-% \end{verbatim}}
+% \end{verbatim}
 %
-% \annEnumerateOff
-% \setkeys{annStyles}{
-%  message={\color{cyan}},
-%  message-2nd={\textit},
-%  affected={\MakeLowercase},
-%  voice={\textbf},
-%  voice-2nd={\MakeLowercase}
+% \annSetFinal{
+%    \setkeys{annStyles}{
+%      message = {\color{cyan}},
+%      message-2nd = {\textit},
+%      affected = {\MakeLowercase},
+%      voice = {\textbf},
+%      voice-2nd = {\MakeLowercase}
+%    }
+%  \annInline
 % }
-%   \setkeys{annPrefixes}{
-% measure={M.},
-% beat={b.}
-% }
-% \annHideType
-% \annInline
+%  \annHideType
+%  \annEnumerateOff
 %
-% \bigskip
 % \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
 %
 % \exampleAnn{
@@ -314,7 +307,9 @@
 %   context-id={Viola},
 %   message={This note should be sharp.}]
 % }
-% }}\bigskip
+% }}
+%
+% \bigskip
 %
 %   Note the usage of |message| and |message-2nd|, and |voice| and
 %   |voice-2nd| in the |annStyles| settings. Since some macros will
@@ -350,12 +345,93 @@
 % Here are some additional examples to demonstrate how annotations might be
 % formatted.
 %
-% \subsubsection{ex.1}
-% |code|
 %
-% \bigskip
+%
+%
+%
+%
+% \subsubsection{Colors, Emphasis}
+%
+% \begin{verbatim}
+% \annSetFinal{
+%   \setkeys{annStyles}{
+%     message={\textbf},
+%     type={\small\textit\color{red}}
+%   }
+% }
+% \end{verbatim}
+%
 % \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
 %
+% \annSetFinal{
+%   \setkeys{annStyles}{
+%     message={\textbf},
+%     type={\color{red}\textit}
+%   }
+%   \setkeys{annPrefixes}{
+%     beat={b.}
+%   }
+%   \annMessageWrap{``/''}
+%   \annEnumerateOff
+%   \annShowType
+%   \annInline
+%   \annTypeWrap{(/) }
+% }
+%
+% \exampleAnn{
+% \criticalRemark
+%   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
+%   (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
+%   grob-type={Accidental},
+%   type={todo},
+%   context-id={Viola},
+%   message={Verify this pitch.}]
+% }
+% }}
+%
+%
+%
+%
+%
+%
+% \subsubsection{Showing and Changing Prefixes}
+%
+% \begin{verbatim}
+% \annSetFinal{
+%   \setkeys{annStyles}{
+%     message={\large}
+%   }
+%   \setkeys{annPrefixes}{
+%     beat={b.},
+%     location={\textit{\color{darkgray}location: }},
+%     context={\textit{\color{darkgray}context: }},
+%     grob-type={\textit{\color{darkgray}affects: }}
+%   }
+%   \annMessageWrap{/}
+%   \annStacked
+% }
+% \annHideType
+% \annEnumerateOn
+% \end{verbatim}
+%
+% \annSetFinal{
+%   \setkeys{annStyles}{
+%     message={\large}
+%   }
+%   \setkeys{annPrefixes}{
+%     beat={b.},
+%     location={\textit{\color{darkgray}location: }},
+%     context={\textit{\color{darkgray}part: }},
+%     grob-type={\textit{\color{darkgray}affects: }}
+%   }
+%   \annMessageWrap{/}
+%   \annStacked
+%   \renewcommand\labelenumi{(\theenumi)}
+% }
+%   \annHideType
+%   \annEnumerateOn
+%
+% \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
 % \exampleAnn{
 % \criticalRemark
 %   [grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0)
@@ -367,27 +443,7 @@
 % }
 % }}
 %
-%
-% \subsubsection{ex.2}
-%
-% % code example
-%
-% \begin{verbatim}
-% \annSetFinal{
-% 
-%
-% \annSameLocationLoose
-% }
-% \end{verbatim}
-%
-% % implementation
-% \annSameLocationLoose
-% \setkeys{annStyles}{
-%    message = {},
-%    message-2nd = {}
-% }
-%
-% \subsubsection{ex.3}
+% \subsubsection{ex. 3}
 %
 % \noindent\fcolorbox{gray}{white}{\parbox{\linewidth}{
 %
@@ -419,15 +475,9 @@
 %
 % }}
 %
-% 
-%
-%
-%
 % \begin{verbatim}
 % \annSetFinal{
-% 
-%
-% \annSameLocationStrict
+%   \annSameLocationStrict
 % }
 % \end{verbatim}
 %
@@ -570,7 +620,7 @@
 \define@key{annStyles}{message-3rd}{\def\annMessageOO{#1}}
 %    \end{macrocode}
 %
-% 
+%
 % draft and final mode (used internally only)
 %    \begin{macrocode}
 \def\customdraft{}
@@ -839,8 +889,7 @@
 \define@key{annPrefixes}{measure}{\def\annMeasurePfx{#1}}
 \define@key{annPrefixes}{beat}{\def\annBeatPfx{#1}}
 %    \end{macrocode}
-% retrieve measure and beat from grob-location
-% (TODO: figure out how to address beat fractions)
+% retrieve measure and beat from grob-location (doesn't support complex fractions yet)
 %    \begin{macrocode}
 \def\processGrobLocation{
   \StrBetween[1,1]{\lygroblocation}
@@ -1261,45 +1310,6 @@
   \renewcommand\annotateTODO[1][]{\customAnnParse}
   \renewcommand\annotation[1][]{\customAnnParse}}
 %    \end{macrocode}
-%
-% \begin{appendices}
-% \newpage
-% \section{The \texttt{.inp} File}
-%
-% It could be possible to adapt \textsf{scholarLY} to accept
-% annotations from sources other than LilyPond. In any case, it would
-% be useful to have an explanation of what goes into the |.inp|
-% file. Note that the particular file extensions isn't mandatory; this
-% happens to be what is produced from the LilyPond |scholarLY| module.
-%
-% The input file is almost generic enough to be reproduced by any
-% other capable software. At this time, the biggest exception to that
-% is the |grob-location| parameter, which is still in Scheme syntax
-% when it is exported from LilyPond. A sensible way around that would
-% be to simply adapt the location parser (lines here) to whatever
-% accept whatever format is given from a particular output. It is
-% possible that in a future version, \textsf{scholarLY}'s
-% |\annotation| command will be extended to accept an optional
-% |[<origin-software>]| argument to easily change parsing behavior
-% (and thus share the wonderful annotation typesetting possibilities
-% with multiple
-%
-% \textsf{scholarLY} begins with a list of annotations that are each
-% called with one of the macros offered by \textsf{scholarLY}:
-% |\criticalRemark|, |\musicalIssue|, |\lilypondIssue|,
-% |\annotateQuestion| or |\annotateTodo|. In order to do something
-% with those, we created the so-named macros near the end of the
-% package.\footnote{the line number}
-%
-% Each macro takes a single argument which itself contains all of
-% the details of the annotation. Parameters such as grob location
-% and input file name are automatically rendered by lilypond. Others,
-% such as the message (which actually is mandatory) and footnotes are
-% set explicitly by the user.
-%
-%
-%
-% \end{appendices}
 %
 %\iffalse
 %</package>
