@@ -11,7 +11,7 @@
 \setOption scholarly.annotate.export-targets #'(plaintext latex)
 
 music = \relative c'{
-  c4 d
+  c4 d e
     \criticalRemark \with {
       message = "Go to \\textit{school} and \\textcolor{red}{sit back}! This
         is a second sentence, which\fnblue has a footnote."
@@ -20,17 +20,12 @@ music = \relative c'{
       ann-footnote = "This is a footnote for the entire annotation."
     }
     NoteHead
-  e ( f )
-  
-  |
-  
+  f ( |
+  g a ) b c
     \musicalIssue \with {
       message = "This is a musical issue with not footnotes."
     }
     Staff.KeySignature
-  
-  |
-  
   \key a \major
   a d
   <<
@@ -51,9 +46,6 @@ music = \relative c'{
     }
   >>
   \oneVoice
-  
-  |
-  
   e
     \lilypondIssue \with {
       message = "A message about the trill."
@@ -61,27 +53,13 @@ music = \relative c'{
     TrillSpanner
   cis2\startTrillSpan
   d4\stopTrillSpan
-  
-  |
-  
-    \todo \with {
-      message = "Print this tuplet number."
+  b
+    \question \with {
+      message = "A question with a footnote\fnRandom about the slur."
+      fn-R-a-n-d-o-m-txt = "A random footnote for the question."
     }
-    TupletNumber
-  
-  \tuplet 3/2 {
-    b8
-    % the following annotation is at 2/3 of beat one. mathematically it
-    % spans 1/3 to 2/3 through beat 1, but we need it to say 2/3 to denote
-    % that it is the second of three tuplet subdivisions in that beat.
-      \question \with {
-        message = "A question with a footnote\fnRandom about the slur."
-        fn-R-a-n-d-o-m-txt = "A random footnote for the question."
-      }
-      Slur
-    gis( a)
-  }
-  b4
+    Slur
+  gis8( a) b4
 }
 
 \score { \music }
