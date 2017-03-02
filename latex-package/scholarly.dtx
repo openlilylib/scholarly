@@ -42,7 +42,7 @@
 \end{document}
 %</driver>
 % \fi
-% \CheckSum{1183}
+% \CheckSum{748}
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
 %   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
@@ -94,10 +94,9 @@
 %
 % \medskip
 % \begin{itemize}[nosep]
-% \item{formatting and styling annotation parameters individually}
+% \item{formatting and styling annotation parameters individually and dynamically / inline}
 % \item{package options for toggling |final| or |draft| and |custom| or |default| modes}
 % \item{simple key-value infrastructure for organizing style blocks}
-% \item{processing of custom footnote names(link to that line)}
 % \end{itemize}
 % \medskip
 %
@@ -155,9 +154,9 @@
 % as well as the |annotate.ly|, |footnotes.ly| and
 % |editorial-commands.ly| example documents.}
 %
-% {\color{blueberry}\begin{verbatim}
+% \begin{verbatim}
 %    \annotations{myscore.annotations.inp}
-% \end{verbatim}}
+% \end{verbatim}
 %
 % This hook will apply any predefined settings to the list(s). A
 % single document can contain multiple |\annotations| instances as
@@ -168,9 +167,9 @@
 %
 % \subsection{Top-Level Options}
 % In the |\usepackage| statement, we can make use of two global options.
-% {\color{blueberry}\begin{verbatim}
+% \begin{verbatim}
 %    \usepackage[custom,final]{scholarLY}
-% \end{verbatim}}
+% \end{verbatim}
 % \begin{description}[noitemsep]
 % \item[draft / final:] This option offers two concurrent modes for
 %   storing custom styles. Selecting either one will tell
@@ -238,14 +237,14 @@
 % organizing the code.
 %
 % To set custom |draft| and |final| behaviors, we use:
-% {\color{blueberry}\begin{verbatim}
+% \begin{verbatim}
 %    \annSetDraft{
 %      [..]
 %    }
 %    \annSetFinal{
 %      [..]
 %    }
-% \end{verbatim}}
+% \end{verbatim}
 %
 % \scholarLY allows for unlimited |\annSet| blocks. Note,
 % however, that creating a new block doesn't automatically override
@@ -264,6 +263,7 @@
 % block followed by an example of a resulting annotation in |final|
 % mode:
 %
+% \begin{minipage}{\linewidth}
 % \begin{verbatim}
 %    \annSetFinal{
 %      \setkeys{annStyles}{
@@ -282,6 +282,7 @@
 %      \annEnumerateOff
 %    }
 % \end{verbatim}
+% \end{minipage}
 %
 % \annSetFinal{
 %    \setkeys{annStyles}{
@@ -318,7 +319,7 @@
 %   preceding \textit{inner} arguments. In effect, they are applied
 %   as:
 %
-%   \bigskip { \begin{center} \color{blueberry} \{ macro-3rd \{
+%   \bigskip { \begin{center} \{ macro-3rd \{
 %     macro-2nd \{ macro \{ item \} \} \} \} \end{center} } \bigskip
 %
 %   Annotations also adhere to other style commands that might be
@@ -394,7 +395,7 @@
 %
 %
 %
-% \subsubsection{Showing and Changing Prefixes}
+% \subsubsection{Prefixes, Other Text Styles}
 %
 % \begin{verbatim}
 % \annSetFinal{
@@ -975,203 +976,18 @@
 \annSameLocationLoose
 %    \end{macrocode}
 %
-% \subsection{Footnote Parsers}
+% \subsection{Embedded Footnotes}
 %
-% This is a work-in-progress, or rather, a temporary solution.
+% This functionality is a TODO. Once implemented, it will provide the
+% ability to use custom footnote hooks within the annotation \textsf{message}
+% in LilyPond and to define them (i.e. type the actual footnote text) there as
+% separate properties.
 %
-% Look for Custom Footnotes:
-%    \begin{macrocode}
-\def\customFootsParse{
-  \StrCount{\bigmessage}{-txt=}[\howmanytxt]
-  \StrCount{\bigmessage}{ann-footnote=}[\howmanyannfn]
-  \ifthenelse{\equal{\howmanyannfn}{0}}{
-    \ifthenelse{\equal{\howmanytxt}{0}}
-      {}
-      {\ifthenelse{\equal{\howmanytxt}{1}}
-        {\StrBehind[1]{\bigmessage}
-          {-txt=}[\resultOne]}
-        {\ifthenelse{\equal{\howmanytxt}{2}}
-          {\StrBetween[1,2]{\bigmessage}
-            {-txt=}{fn-}[\resultOne]
-            \StrGobbleRight{\resultOne}{2}[\resultOne]
-          \StrBehind[2]{\bigmessage}
-            {-txt=}[\resultTwo]}
-          {\ifthenelse{\equal{\howmanytxt}{3}}
-            {\StrBetween[1,2]{\bigmessage}
-              {-txt=}{fn-}[\resultOne]
-              \StrGobbleRight{\resultOne}{2}[\resultOne]
-            \StrBetween[2,3]{\bigmessage}
-              {-txt=}{fn-}[\resultTwo]
-              \StrGobbleRight{\resultTwo}{2}[\resultTwo]
-            \StrBehind[3]{\bigmessage}
-              {-txt=}[\resultThree]}
-            {\ifthenelse{\equal{\howmanytxt}{4}}
-              {\StrBetween[1,2]{\bigmessage}
-                {-txt=}{fn-}[\resultOne]
-                \StrGobbleRight{\resultOne}{2}[\resultOne]
-              \StrBetween[2,3]{\bigmessage}
-                {-txt=}{fn-}[\resultTwo]
-                \StrGobbleRight{\resultTwo}{2}[\resultTwo]
-              \StrBetween[3,4]{\bigmessage}
-                {-txt=}{fn-}[\resultThree]
-                \StrGobbleRight{\resultThree}{2}[\resultThree]
-              \StrBehind[4]{\bigmessage}
-                {-txt=}[\resultFour]}
-              {\ifthenelse{\equal{\howmanytxt}{5}}
-                {\StrBetween[1,2]{\bigmessage}
-                  {-txt=}{fn-}[\resultOne]
-                  \StrGobbleRight{\resultOne}{2}[\resultOne]
-                \StrBetween[2,3]{\bigmessage}
-                  {-txt=}{fn-}[\resultTwo]
-                  \StrGobbleRight{\resultTwo}{2}[\resultTwo]
-                \StrBetween[3,4]{\bigmessage}
-                  {-txt=}{fn-}[\resultThree]
-                  \StrGobbleRight{\resultThree}{2}[\resultThree]
-                \StrBetween[4,5]{\bigmessage}
-                  {-txt=}{fn-}[\resultFour]
-                  \StrGobbleRight{\resultFour}{2}[\resultFour]
-                \StrBehind[5]{\bigmessage}
-                  {-txt=}[\resultFive]}
-                {}}}}}}}
-    {\ifthenelse{\equal{\howmanytxt}{0}}
-      {}
-      {\ifthenelse{\equal{\howmanytxt}{1}}
-        {\StrBetween[1,1]{\bigmessage}
-          {-txt=}{, ann-footnote}[\resultOne]}
-        {\ifthenelse{\equal{\howmanytxt}{2}}
-          {\StrBetween[1,2]{\bigmessage}
-            {-txt=}{fn-}[\resultOne]
-          \StrBetween[2,1]{\bigmessage}
-            {-txt=}{ann-footnote}[\resultTwo]}
-          {\ifthenelse{\equal{\howmanytxt}{3}}
-            {\StrBetween[1,2]{\bigmessage}
-              {-txt=}{fn-}[\resultOne]
-            \StrBetween[2,3]{\bigmessage}
-              {-txt=}{fn-}[\resultTwo]
-            \StrBetween[3,1]{\bigmessage}
-              {-txt=}{ ann-footnote}[\resultThree]}
-            {\ifthenelse{\equal{\howmanytxt}{4}}
-              {\StrBetween[1,2]{\bigmessage}
-                {-txt=}{, fn-}[\resultOne]
-              \StrBetween[2,3]{\bigmessage}
-                {-txt=}{, fn-}[\resultTwo]
-              \StrBetween[3,4]{\bigmessage}
-                {-txt=}{, fn-}[\resultThree]
-              \StrBetween[4,1]{\bigmessage}
-                {-txt=}{, ann-footnote}[\resultFour]}
-              {\ifthenelse{\equal{\howmanytxt}{5}}
-                {\StrBetween[1,2]{\bigmessage}
-                  {-txt=}{, fn-}[\resultOne]
-                \StrBetween[2,3]{\bigmessage}
-                  {-txt=}{, fn-}[\resultTwo]
-                \StrBetween[3,4]{\bigmessage}
-                  {-txt=}{, fn-}[\resultThree]
-                \StrBetween[4,5]{\bigmessage}
-                  {-txt=}{, fn-}[\resultFour]
-                \StrBetween[5,1]{\bigmessage}
-                  {-txt=}{, ann-footnote}[\resultFive]}
-                {}}}}}}}}
-%    \end{macrocode}
-% define the macro names for custom footnotes:
-%    \begin{macrocode}
-\def\extractFNnames{%
-  \expandarg\StrCount{\bigmessage}{fn-}[\theFNnum]
-  \ifthenelse{\equal{\theFNnum}{0}}
-    {}
-    {\ifthenelse{\equal{\theFNnum}{1}}
-      {\StrBetween{\bigmessage}
-        {fn-}{-txt=}[\resultOneMacro]
-        \StrDel{\resultOneMacro}{-}[\resultOneMacro]}
-      {\ifthenelse{\equal{\theFNnum}{2}}
-        {\StrBetween{\bigmessage}
-          {fn-}{-txt=}[\resultOneMacro]
-          \StrDel{\resultOneMacro}{-}[\resultOneMacro]
-        \StrBetween[2,2]{\bigmessage}
-          {fn-}{-txt=}[\resultTwoMacro]
-          \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]}
-        {\ifthenelse{\equal{\theFNnum}{3}}
-          {\StrBetween{\bigmessage}
-            {fn-}{-txt=}[\resultOneMacro]
-            \StrDel{\resultOneMacro}{-}[\resultOneMacro]
-          \StrBetween[2,2]{\bigmessage}
-            {fn-}{-txt=}[\resultTwoMacro]
-            \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]
-          \StrBetween[3,3]{\bigmessage}
-            {fn-}{-txt=}[\resultThreeMacro]
-            \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]}
-          {\ifthenelse{\equal{\theFNnum}{4}}
-            {\StrBetween{\bigmessage}
-              {fn-}{-txt=}[\resultOneMacro]
-              \StrDel{\resultOneMacro}{-}[\resultOneMacro]
-            \StrBetween[2,2]{\bigmessage}
-              {fn-}{-txt=}[\resultTwoMacro]
-              \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]
-            \StrBetween[3,3]{\bigmessage}
-              {fn-}{-txt=}[\resultThreeMacro]
-              \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]
-            \StrBetween[4,4]{\bigmessage}
-              {fn-}{-txt=}[\resultFourMacro]
-              \StrDel{\resultFourMacro}{-}[\resultFourMacro]}
-            {\ifthenelse{\equal{\theFNnum}{5}}
-              {\StrBetween{\bigmessage}
-                {fn-}{-txt=}[\resultOneMacro]
-                \StrDel{\resultOneMacro}{-}[\resultOneMacro]
-              \StrBetween[2,2]{\bigmessage}
-                {fn-}{-txt=}[\resultTwoMacro]
-                \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]
-              \StrBetween[3,3]{\bigmessage}
-                {fn-}{-txt=}[\resultThreeMacro]
-                \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]
-              \StrBetween[4,4]{\bigmessage}
-                {fn-}{-txt=}[\resultFourMacro]
-                \StrDel{\resultFourMacro}{-}[\resultFourMacro]
-              \StrBetween[5,5]{\bigmessage}
-                {fn-}{-txt=}[\resultFiveMacro]
-                \StrDel{\resultFiveMacro}{-}[\resultFiveMacro]}
-              {}}}}}}}
-%    \end{macrocode}
-% create the macros that are used in the messages:
-%    \begin{macrocode}
-\def\makeFNmacros{
-  \ifthenelse{\equal{\theFNnum}{0}}
-    {}
-    {\ifthenelse{\equal{\theFNnum}{1}}
-      {\expandafter\def\csname fn\resultOneMacro\endcsname{%
-        \footnote{\resultOne} }}
-      {\ifthenelse{\equal{\theFNnum}{2}}
-        {\expandafter\def\csname fn\resultOneMacro\endcsname{%
-          \footnote{\resultOne} }
-        \expandafter\def\csname fn\resultTwoMacro\endcsname{%
-          \footnote{\resultTwo} }}
-        {\ifthenelse{\equal{\theFNnum}{3}}
-          {\expandafter\def\csname fn\resultOneMacro\endcsname{%
-            \footnote{\resultOne} }
-          \expandafter\def\csname fn\resultTwoMacro\endcsname{%
-            \footnote{\resultTwo} }
-          \expandafter\def\csname fn\resultThreeMacro\endcsname{%
-            \footnote{\resultThree} }}
-          {\ifthenelse{\equal{\theFNnum}{4}}
-            {\expandafter\def\csname fn\resultOneMacro\endcsname{%
-              \footnote{\resultOne} }
-            \expandafter\def\csname fn\resultTwoMacro\endcsname{%
-              \footnote{\resultTwo} }
-            \expandafter\def\csname fn\resultThreeMacro\endcsname{%
-              \footnote{\resultThree} }
-            \expandafter\def\csname fn\resultFourMacro\endcsname{%
-              \footnote{\resultFour} }}
-            {\ifthenelse{\equal{\theFNnum}{5}}
-              {\expandafter\def\csname fn\resultOneMacro\endcsname{%
-                \footnote{\resultOne} }
-              \expandafter\def\csname fn\resultTwoMacro\endcsname{%
-                \footnote{\resultTwo} }
-              \expandafter\def\csname fn\resultThreeMacro\endcsname{%
-                \footnote{\resultThree} }
-              \expandafter\def\csname fn\resultFourMacro\endcsname{%
-                \footnote{\resultFour} }
-              \expandafter\def\csname fn\resultFiveMacro\endcsname{%
-                \footnote{\resultFive} }}
-              {}}}}}}}
-%    \end{macrocode}
+% For now, and at any point onward, footnotes can of course still be explicity
+% typed into the annotation message with the traditional \textsf{footnote}
+% hook. There is additionally the option to define a footnote for the full
+% annotation, which guarantees that the footnote superscript will be placed
+% at the end of the full annotation (including punctuation).
 %
 % \subsection{Message Parsers}
 %
@@ -1250,10 +1066,6 @@
     \setkeys{scholarLYann}{#1}
     \let\KV@errx\KV@errx@ORI
 \saveexpandmode\expandarg
-  \def\bigmessage{#1}
-    \customFootsParse
-    \extractFNnames
-    \makeFNmacros
   \testMessagePunct
   \processGrobLocation
   \def\currentMeasure{\lymeasureno}
@@ -1294,22 +1106,11 @@
 %
 % \subsection{Custom Annotations}
 %
-% This has not been tested yet, so more of a stub than a complete section.
+% This is a TODO. The idea with custom annotations is to allow end users to
+% define their own annotation formats entirely while still having access to
+%  the infrastructure provided by the bulk of this package (i.e. input file
+% parsing, style blocks, and other useful formatting features).
 %
-% macro to set
-%    \begin{macrocode}
-\newcommand{\setCustomAnn}[1]{\def\customAnnParse{#1}}
-%    \end{macrocode}
-% macro to use
-%    \begin{macrocode}
-\newcommand\useCustomAnn{%
-  \renewcommand\criticalRemark[1][]{\customAnnParse}
-  \renewcommand\musicalIssue[1][]{\customAnnParse}
-  \renewcommand\lilypondIssue[1][]{\customAnnParse}
-  \renewcommand\annotateQuestion[1][]{\customAnnParse}
-  \renewcommand\annotateTODO[1][]{\customAnnParse}
-  \renewcommand\annotation[1][]{\customAnnParse}}
-%    \end{macrocode}
 %
 %\iffalse
 %</package>
