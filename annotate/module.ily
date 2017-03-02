@@ -196,8 +196,7 @@ todo =
 %%%% All settings can be overridden in individual scores.
 
 \consistToContexts #annotationCollector
-  #'(Score
-     Staff
+  #'(Staff
      DrumStaff
      RhythmicStaff
      TabStaff

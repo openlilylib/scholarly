@@ -11,29 +11,6 @@
     ann-footnote={Here is a footnote for the entire annotation; it
         is only used by the \LaTeX{} package.}]
  
-\criticalRemark
-   [grob={NoteHead},
-    grob-location={((beat-string . 4) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 4) (measure-pos . Mom 3/4) (measure-no . 1) (rhythmic-location 1 . Mom 3/4))},
-    grob-type={NoteHead},
-    input-file-name={annotate.ly},
-    context-id={usage-examples},
-    location={/Users/Jeffery/work/scholarLY/usage-examples/annotate.ly 15:4:4},
-    type={critical-remark},
-    message={Go to \textit{school} and \textcolor{red}{sit back}! This
-        annotation has a footnote which LilyPond will ignore.},
-    ann-footnote={Here is a footnote for the entire annotation; it
-        is only used by the \LaTeX{} package.}]
- 
-\musicalIssue
-   [grob={KeySignature},
-    grob-location={((beat-string . 1) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 1) (measure-pos . Mom 0) (measure-no . 3) (rhythmic-location 3 . Mom 0))},
-    grob-type={KeySignature},
-    input-file-name={annotate.ly},
-    context-id={usage-examples},
-    location={/Users/Jeffery/work/scholarLY/usage-examples/annotate.ly 24:4:4},
-    type={musical-issue},
-    message={This is a musical issue with no footnotes.}]
- 
 \musicalIssue
    [grob={KeySignature},
     grob-location={((beat-string . 1) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 1) (measure-pos . Mom 0) (measure-no . 3) (rhythmic-location 3 . Mom 0))},
@@ -64,26 +41,6 @@
     type={critical-remark},
     message={A note about the second voice.}]
  
-\criticalRemark
-   [grob={NoteHead},
-    grob-location={((beat-string . 3) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 3) (measure-pos . Mom 1/2) (measure-no . 3) (rhythmic-location 3 . Mom 1/2))},
-    grob-type={NoteHead},
-    input-file-name={annotate.ly},
-    context-id={usage-examples},
-    location={/Users/Jeffery/work/scholarLY/usage-examples/annotate.ly 32:8:8},
-    type={critical-remark},
-    message={An annotation for the top voice.}]
- 
-\criticalRemark
-   [grob={NoteHead},
-    grob-location={((beat-string . 3) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 3) (measure-pos . Mom 1/2) (measure-no . 3) (rhythmic-location 3 . Mom 1/2))},
-    grob-type={NoteHead},
-    input-file-name={annotate.ly},
-    context-id={usage-examples},
-    location={/Users/Jeffery/work/scholarLY/usage-examples/annotate.ly 40:8:8},
-    type={critical-remark},
-    message={A note about the second voice.}]
- 
 \lilypondIssue
    [grob={TrillSpanner},
     grob-location={((beat-string . 2) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 2) (measure-pos . Mom 1/4) (measure-no . 4) (rhythmic-location 4 . Mom 1/4))},
@@ -93,27 +50,6 @@
     location={/Users/Jeffery/work/scholarLY/usage-examples/annotate.ly 49:4:4},
     type={lilypond-issue},
     message={A message about the trill.}]
- 
-\lilypondIssue
-   [grob={TrillSpanner},
-    grob-location={((beat-string . 2) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 2) (measure-pos . Mom 1/4) (measure-no . 4) (rhythmic-location 4 . Mom 1/4))},
-    grob-type={TrillSpanner},
-    input-file-name={annotate.ly},
-    context-id={usage-examples},
-    location={/Users/Jeffery/work/scholarLY/usage-examples/annotate.ly 49:4:4},
-    type={lilypond-issue},
-    message={A message about the trill.}]
- 
-\annotateQuestion
-   [grob={Slur},
-    grob-location={((beat-string . 2) (beat-fraction . 0) (beat-part . Mom 0) (our-beat . 2) (measure-pos . Mom 1/4) (measure-no . 5) (rhythmic-location 5 . Mom 1/4))},
-    grob-type={Slur},
-    input-file-name={annotate.ly},
-    context-id={usage-examples},
-    location={/Users/Jeffery/work/scholarLY/usage-examples/annotate.ly 56:4:4},
-    type={question},
-    message={A question with a footnote about the slur.},
-    ann-footnote={A random footnote for the question.}]
  
 \annotateQuestion
    [grob={Slur},
