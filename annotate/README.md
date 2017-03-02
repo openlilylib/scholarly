@@ -3,7 +3,9 @@
 The *scholarLY* `annotate` module provides functionality to create annotations of musical 
 scores engraved with GNU LilyPond. Annotations can be controlled through a number of highly customizable 
 parameters, one of the most significant of which is its export capabilities which allow 
-annotations to be further processed by LaTeX (see `scholarly/latex-package`).
+annotations to be further processed by LaTeX (see `scholarly/latex-package`). Note that there are some
+issues with using `lilypond-book` and footnotes; see the issue tracker for updates on that until
+a workaround is implemented.
 
 The basic behavior for annotations is to be printed in the console log. *By default, 
 annotations are printed* (see `scholarly/annotate/config.ily`). At the beginning of
@@ -43,9 +45,9 @@ annotating the slur that follows.
 
 ## Footnotes
 
-Annotations can be made into footnotes by including the `footnote-offset` property. `footnote-text` may be
-included as well to indicate a footnote message different than the annotation message. If `footnote-text`
-is not present, *scholarLY* will automatically use `message`.
+Annotations can be made into LilyPond footnotes by including at least the `footnote-offset` property (which 
+implicitally triggers the footnote engraver). By default, *scholarLY* assumes `message` is the footnote text;
+the `footnote-text` may be included to indicate a footnote message different than the annotation message.
 
 ```lilypond
 \lilypondIssue \with {
@@ -60,7 +62,7 @@ is not present, *scholarLY* will automatically use `message`.
 } Accidental bf
 ```
 
-These footnotes will be engraved to the lilypond score as usual. Note that they are not acknowledged by
+These footnotes will be engraved to the LilyPond score, by LilyPond, as usual. Note that they are not acknowledged by
 LaTeX if/when the annotations are typeset later in that manner.
 
 ## LaTeX-Specific Code
@@ -111,25 +113,10 @@ particular message wrappers specified later by the user).
 }
 ```
 
-Footnotes nested within the message can be organized as such:
-
-```lilypond
-\lilypondIssue \with {
-  message = "This is an annotation\fnSomething with some\fnBlueNote custom footnote\fnRandom hooks."
-  fn-Something-txt = "This is the footnote text."
-  fn-Blue-Note-txt = "This is another footnote."
-  fn-R-a-n-d-o-m-txt = "This footnote, like the other two, will be expanded into the respective hook."
-}
-```
-
-Custom footnote hooks are generated with the syntax `fn-<custom name>-txt`. The *custom name* can include
-any number of hyphens; they will be removed by the parser and recreated as `\fn<custom name (without hyphens)>`.
-Therefore, as in the example above, we can use these unique macros and count on *scholarLY* to take care
-of automatically defining them.
-
-There are several improvements to be made to this functionality. Currently, the number of custom footnote
-hooks is limited to five. Also, the custom names are entirely case-sensitive; it may ultimately not be
-possible to overcome that, but that is a future issue yet to be completely looked into.
+*scholarLY* doesn't yet support custom footnote functionality, which is a major enhancement that 
+would allow the use of unique footnote hooks within the `message` property (like `\footnote<custom-name>` 
+or similar) which can be automatically routed by *scholarLY* to the corresponding text (set as
+additional properties, like `footnote-<custom-name>-text = "Here is the corresponding text."`).
 
 ### The LaTeX Package
 
