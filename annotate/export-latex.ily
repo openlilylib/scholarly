@@ -39,7 +39,6 @@
    str)
 
 % Temporary function to strip property values from #< > parts
-%{#(define badchars (char-set #\# #\< #\>))%}
 #(define (sanitize-prop-value prop)
    (let ((key (car prop))
          (value (cdr prop))
