@@ -125,9 +125,9 @@
                   (let* ((grob (list-ref item 0))
                          (description (assoc-get grob all-grob-descriptions)))
                     (if (member 'spanner-interface
-                        ;; the grob is a spanner, so cancel the balloon
                            (assoc-get 'interfaces
                                       (assoc-get 'meta description)))
+                        ;; the grob is a spanner, so cancel the balloon
                          (ly:input-warning (*location*) "We can't give engrave balloon
                               text to spanners yet; balloon ignored.")
                          (begin
