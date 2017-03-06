@@ -111,6 +111,26 @@
    (question . "Question:")
    (todo . "TODO:"))
 
+
+
+%%%%%%%%%%%%%%%%%
+%%%% HTML options
+%%%%%%%%%%%%%%%%%
+
+% Annotation types for html text output
+\registerOption scholarly.annotate.export.html.labels
+#`((critical-remark . "critical-remark")
+  (musical-issue . "musical-issue")
+  (lilypond-issue . "lilypond-issue>")
+  (question . "question")
+  (todo . "todo"))
+
+% Which props to print to html
+\registerOption scholarly.annotate.export.html.props
+  #`(type grob-type message)
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Handling of annotation types for LaTeX output
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

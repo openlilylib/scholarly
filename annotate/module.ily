@@ -59,6 +59,7 @@
 \include "export.ily"
 \include "export-latex.ily"
 \include "export-plaintext.ily"
+\include "export-html.ily"
 \include "engraver.ily"
 
 % Include `editorial-functions` module
