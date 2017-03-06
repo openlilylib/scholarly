@@ -112,37 +112,36 @@
              #{ \once \override #item #'input-annotation = #props #}))))
          #{
           #tweak-command
-          #(if (assq-ref props 'footnote-offset)
-          ;; If footnote offset present, make footnote
+          #(cond
+             ;; we want a footnote:
+             ((assq-ref props 'footnote-offset)
                (begin
                  (if (not (assq-ref props 'footnote-text))
-                     (set! props (assoc-set! props 'footnote-text (assq-ref props 'message))))
+                     (set! props (assoc-set! props 'footnote-text
+                                   (assq-ref props 'message))))
                  (let ((offset (assq-ref props 'footnote-offset))
                        (text (assq-ref props 'footnote-text)))
-		                  #{ \footnote #offset #text #item #}))
-              ;; ELSE, check if we want balloon text:
-               (if (assq-ref props 'balloon-offset)
-                  (let* ((grob (list-ref item 0))
-                         (description (assoc-get grob all-grob-descriptions)))
-                    (if (member 'spanner-interface
-                           (assoc-get 'interfaces
-                                      (assoc-get 'meta description)))
-                        ;; the grob is a spanner, so cancel the balloon
-                         (ly:input-warning (*location*) "We can't give engrave balloon
-                              text to spanners yet; balloon ignored.")
-                         (begin
-                           (if (not (assq-ref props 'balloon-text))
-                                (set! props (assoc-set! props 'balloon-text
-                                              (assq-ref props 'message))))
-                           (let ((offset (assq-ref props 'balloon-offset))
-                                 (text (assq-ref props 'balloon-text)))
-                                #{ \balloonGrobText #grob #offset \markup { #text } #}))))))
-	  #(if (assq-ref props 'apply)
-	  ;; If `apply` property used, apply editorial function
-	       (let ((edition (string->symbol (assoc-ref props 'apply))))
-                    (editorialFunction edition item mus))
-               mus)
-         #})
+	                  #{ \footnote #offset #text #item #})))
+             ;; we want balloon text:
+             ((assq-ref props 'balloon-offset)
+                (let* ((grob (list-ref item 0))
+                       (description (assoc-get grob all-grob-descriptions)))
+                  (if (member 'spanner-interface
+                         (assoc-get 'interfaces (assoc-get 'meta description)))
+                      ;; the grob is a spanner, so cancel the balloon
+                       (ly:input-warning (*location*) "We can't give engrave balloon text to spanners yet; balloon ignored.")
+                       (begin
+                         (if (not (assq-ref props 'balloon-text))
+                              (set! props (assoc-set! props 'balloon-text
+                                            (assq-ref props 'message))))
+                         (let ((offset (assq-ref props 'balloon-offset))
+                               (text (assq-ref props 'balloon-text)))
+                            #{ \balloonGrobText #grob #offset \markup { #text } #}))))))
+          ;; If `apply` property used, apply editorial function
+      	  #(if (assq-ref props 'apply)
+      	       (let ((edition (string->symbol (assoc-ref props 'apply))))
+                  (editorialFunction edition item mus))
+               mus) #})
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
          #{ #})))))
