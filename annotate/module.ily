@@ -129,7 +129,7 @@
                   (if (member 'spanner-interface
                          (assoc-get 'interfaces (assoc-get 'meta description)))
                       ;; the grob is a spanner, so cancel the balloon
-                       (ly:input-warning (*location*) "We can't give engrave balloon text to spanners yet; balloon ignored.")
+                       (oll:warn "We can't give engrave balloon text to spanners yet. Balloon ignored for ~a" grob)
                        (begin
                          (if (not (assq-ref props 'balloon-text))
                               (set! props (assoc-set! props 'balloon-text
@@ -137,8 +137,9 @@
                          (let ((offset (assq-ref props 'balloon-offset))
                                (text (assq-ref props 'balloon-text)))
                             #{ \balloonGrobText #grob #offset \markup { #text } #}))))))
-          ;; If `apply` property used, apply editorial function
-      	  #(if (assq-ref props 'apply)
+      	  #(if
+            ;; `apply` property is set; apply editorial function
+            (assq-ref props 'apply)
       	       (let ((edition (string->symbol (assoc-ref props 'apply))))
                   (editorialFunction edition item mus))
                mus) #})
