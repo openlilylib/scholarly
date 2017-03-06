@@ -113,13 +113,31 @@
          #{
           #tweak-command
           #(if (assq-ref props 'footnote-offset)
-          ;; If offset present, add automatic footnote
+          ;; If footnote offset present, make footnote
                (begin
                  (if (not (assq-ref props 'footnote-text))
                      (set! props (assoc-set! props 'footnote-text (assq-ref props 'message))))
                  (let ((offset (assq-ref props 'footnote-offset))
                        (text (assq-ref props 'footnote-text)))
-		   #{ \footnote #offset #text #item #})))
+		                  #{ \footnote #offset #text #item #}))
+              ;; ELSE, check if we want balloon text:
+               (let ((grob (list-ref item 0)))
+                 (if (and (assq-ref props 'balloon-offset)
+                          ;; If is is one of these spanners, don't attempt to engrave:
+                          ;; These are just the most common ones, so this is a courtesy
+                          ;; conditional. The alternative is: LilyPond crashes when it
+                          ;; attempts to engrave balloon text to spanners.
+                          (not (equal? grob 'Slur))
+                          (not (equal? grob 'Hairpin))
+                          (not (equal? grob 'Tie))
+                          (not (equal? grob 'Glissando)))
+                     (begin
+                       (if (not (assq-ref props 'balloon-text))
+                            (set! props (assoc-set! props 'balloon-text
+                                          (assq-ref props 'message))))
+                       (let ((offset (assq-ref props 'balloon-offset))
+                             (text (assq-ref props 'balloon-text)))
+                            #{ \balloonGrobText #grob #offset \markup { #text } #})))))
 	  #(if (assq-ref props 'apply)
 	  ;; If `apply` property used, apply editorial function
 	       (let ((edition (string->symbol (assoc-ref props 'apply))))
