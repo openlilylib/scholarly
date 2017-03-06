@@ -121,23 +121,22 @@
                        (text (assq-ref props 'footnote-text)))
 		                  #{ \footnote #offset #text #item #}))
               ;; ELSE, check if we want balloon text:
-               (let ((grob (list-ref item 0)))
-                 (if (and (assq-ref props 'balloon-offset)
-                          ;; If is is one of these spanners, don't attempt to engrave:
-                          ;; These are just the most common ones, so this is a courtesy
-                          ;; conditional. The alternative is: LilyPond crashes when it
-                          ;; attempts to engrave balloon text to spanners.
-                          (not (equal? grob 'Slur))
-                          (not (equal? grob 'Hairpin))
-                          (not (equal? grob 'Tie))
-                          (not (equal? grob 'Glissando)))
-                     (begin
-                       (if (not (assq-ref props 'balloon-text))
-                            (set! props (assoc-set! props 'balloon-text
-                                          (assq-ref props 'message))))
-                       (let ((offset (assq-ref props 'balloon-offset))
-                             (text (assq-ref props 'balloon-text)))
-                            #{ \balloonGrobText #grob #offset \markup { #text } #})))))
+               (if (assq-ref props 'balloon-offset)
+                  (let* ((grob (list-ref item 0))
+                         (description (assoc-get grob all-grob-descriptions)))
+                    (if (member 'spanner-interface
+                        ;; the grob is a spanner, so cancel the balloon
+                           (assoc-get 'interfaces
+                                      (assoc-get 'meta description)))
+                         (ly:input-warning (*location*) "We can't give engrave balloon
+                              text to spanners yet; balloon ignored.")
+                         (begin
+                           (if (not (assq-ref props 'balloon-text))
+                                (set! props (assoc-set! props 'balloon-text
+                                              (assq-ref props 'message))))
+                           (let ((offset (assq-ref props 'balloon-offset))
+                                 (text (assq-ref props 'balloon-text)))
+                                #{ \balloonGrobText #grob #offset \markup { #text } #}))))))
 	  #(if (assq-ref props 'apply)
 	  ;; If `apply` property used, apply editorial function
 	       (let ((edition (string->symbol (assoc-ref props 'apply))))
