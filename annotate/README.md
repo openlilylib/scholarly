@@ -65,6 +65,27 @@ the `footnote-text` may be included to indicate a footnote message different tha
 These footnotes will be engraved to the LilyPond score, by LilyPond, as usual. Note that they are not acknowledged by
 LaTeX if/when the annotations are typeset later in that manner.
 
+## Balloon Text
+
+Annotations can also be engraved as balloon text. As with footnotes, the `balloon-offset` property tells *scholarLY*
+to do so. `message` is the default text, and `balloon-text` can optionally specify an alternative message.
+
+```lilypond
+\lilypondIssue \with {
+  balloon-offset = #'(1 . 2)
+  message = "This is my message, and also the balloon text."
+} NoteHead a4
+
+\annotateTodo \with {
+  balloon-offset = #'(2 . 0)
+  balloon-text = "This is my balloon text."
+  message = "This is my annotation message."
+} Accidental bf
+```
+
+Keep in mind that LilyPond isn't able to engrave balloon text to spanners (Slur, Hairpin, TrillSpanner, etc.) yet; 
+attempts to do so will cause it to crash upon compiling.
+
 ## LaTeX-Specific Code
 
 This section is only relevant to projects which will later incorporate the *scholarLY* LaTeX package for
