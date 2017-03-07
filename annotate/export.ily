@@ -94,7 +94,8 @@ setAnnotationOutputBasename =
    ; TODO
    ; Make the file name configurable and let it respect the target format
    ;
-   (let* ((logfile (format "~a.annotations.~a" annotation-out-basename ext)))
+   (let* ((logfile (if (equal? ext "html") "index.html"
+                        (format "~a.annotations.~a" annotation-out-basename ext))))
      (ly:message "writing '~a' ..." logfile)
      (with-output-to-file logfile
        (lambda ()
@@ -140,5 +141,3 @@ setAnnotationOutputBasename =
         ly:message)
        (ly:message "")))
     annotations))
-
-

@@ -129,6 +129,10 @@
 \registerOption scholarly.annotate.export.html.props
   #`(type grob-type message)
 
+% Which stylesheet to link in html (just a proof of concept at the moment)
+\registerOption scholarly.annotate.export.html.css
+  #"annotate-styles.css"
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

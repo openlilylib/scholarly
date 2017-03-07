@@ -69,9 +69,22 @@
 
 \register-export-routine html
 #(lambda ()
+
+  (append-to-output-stringlist "<head>")
+  (append-to-output-stringlist (string-append
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\""
+    (string-append (getOption `(scholarly annotate export html css))
+                   "\">")))
+
+  (append-to-output-stringlist "</head>")
+  (append-to-output-stringlist " ")
+
+  (append-to-output-stringlist "<body>")
+  (append-to-output-stringlist " ")
+
   ;; wrap everything in the annotations div. this is sort of redundant, but
   ;; could be useful if projects have multiple bookparts with annotation lists.
-  (div-class-open "annotations" 0)
+  (append-to-output-stringlist "<annotations>")
   (append-to-output-stringlist " ")
   (for-each
     (lambda (ann)
@@ -92,6 +105,10 @@
     (append-to-output-stringlist " "))
     annotations)
     ;; close ann list div
-    (div-class-close 0)
+    (append-to-output-stringlist "</annotations>")
+
+    (append-to-output-stringlist " ")
+    (append-to-output-stringlist "</body>")
+
     ;; write to output file
     (write-output-file "html"))
