@@ -57,7 +57,9 @@
         (do ((i 0 (1+ i)))
             ((= i (length props)))
             (let* ((prop (list-ref props i))
-                   (val (assq-ref ann prop)))
+                   (val (if (equal? prop 'grob-location)
+                            (format-location ann)
+                            (assq-ref ann prop))))
               (begin
               (if (symbol? val)
                   (set! val (symbol->string val)))
@@ -70,22 +72,23 @@
 \register-export-routine html
 #(lambda ()
 
-  (append-to-output-stringlist "<head>")
-  (append-to-output-stringlist (string-append
+  (let ((println append-to-output-stringlist))
+
+  (println "<head>")
+  (println (string-append
     "  <link rel=\"stylesheet\" type=\"text/css\" href=\""
     (string-append (getOption `(scholarly annotate export html css))
                    "\">")))
+  (println "</head>")
+  (println " ")
 
-  (append-to-output-stringlist "</head>")
-  (append-to-output-stringlist " ")
-
-  (append-to-output-stringlist "<body>")
-  (append-to-output-stringlist " ")
+  (println "<body>")
+  (println " ")
 
   ;; wrap everything in the annotations div. this is sort of redundant, but
   ;; could be useful if projects have multiple bookparts with annotation lists.
-  (append-to-output-stringlist "<annotations>")
-  (append-to-output-stringlist " ")
+  (println "<annotations>")
+  (println " ")
   (for-each
     (lambda (ann)
     ;; wrap each annotation in the common annotation class
@@ -94,21 +97,17 @@
       (div-class-open
         (getChildOption '(scholarly annotate export html labels) (assq-ref ann 'type))
           2)
-        ;; location
-        (div-class-open "location" 3)
-          (append-to-output-stringlist (nest-indent (format-location ann) 4))
-        (div-class-close 3)
         ;; add the rest of the props to output
-        (html-process-props ann)
+        (html-process-props ann) ;; nest-indents x 3
       (div-class-close 2)
     (div-class-close 1)
-    (append-to-output-stringlist " "))
+    (println " "))
     annotations)
     ;; close ann list div
-    (append-to-output-stringlist "</annotations>")
+    (println "</annotations>")
 
-    (append-to-output-stringlist " ")
-    (append-to-output-stringlist "</body>")
+    (println " ")
+    (println "</body>")
 
     ;; write to output file
-    (write-output-file "html"))
+    (write-output-file "html")))
