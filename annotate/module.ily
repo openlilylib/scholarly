@@ -112,31 +112,30 @@
              #{ \once \override #item #'input-annotation = #props #}))))
          #{
           #tweak-command
-          #(cond
-             ;; we want a footnote:
-             ((assq-ref props 'footnote-offset)
-               (begin
-                 (if (not (assq-ref props 'footnote-text))
-                     (set! props (assoc-set! props 'footnote-text
-                                   (assq-ref props 'message))))
-                 (let ((offset (assq-ref props 'footnote-offset))
-                       (text (assq-ref props 'footnote-text)))
-	                  #{ \footnote #offset #text #item #})))
-             ;; we want balloon text:
-             ((assq-ref props 'balloon-offset)
-                (let* ((grob (list-ref item 0))
-                       (description (assoc-get grob all-grob-descriptions)))
-                  (if (member 'spanner-interface
-                         (assoc-get 'interfaces (assoc-get 'meta description)))
-                      ;; the grob is a spanner, so cancel the balloon
-                       (oll:warn "We can't give engrave balloon text to spanners yet. Balloon ignored for ~a" grob)
-                       (begin
-                         (if (not (assq-ref props 'balloon-text))
-                              (set! props (assoc-set! props 'balloon-text
-                                            (assq-ref props 'message))))
-                         (let ((offset (assq-ref props 'balloon-offset))
-                               (text (assq-ref props 'balloon-text)))
-                            #{ \balloonGrobText #grob #offset \markup { #text } #}))))))
+         #(if (assq-ref props 'footnote-offset)
+         ;; we want a footnote:
+           (begin
+             (if (not (assq-ref props 'footnote-text))
+                 (set! props (assoc-set! props 'footnote-text
+                               (assq-ref props 'message))))
+             (let ((offset (assq-ref props 'footnote-offset))
+                   (text (assq-ref props 'footnote-text)))
+                #{ \footnote #offset #text #item #})))
+         #(if (assq-ref props 'balloon-offset)
+         ;; we want balloon text:
+            (let* ((grob (list-ref item 0))
+                   (description (assoc-get grob all-grob-descriptions)))
+              (if (member 'spanner-interface
+                     (assoc-get 'interfaces (assoc-get 'meta description)))
+                  ;; the grob is a spanner, so cancel the balloon
+                   (oll:warn "We can't give engrave balloon text to spanners yet. Balloon ignored for ~a" grob)
+                   (begin
+                     (if (not (assq-ref props 'balloon-text))
+                          (set! props (assoc-set! props 'balloon-text
+                                        (assq-ref props 'message))))
+                     (let ((offset (assq-ref props 'balloon-offset))
+                           (text (assq-ref props 'balloon-text)))
+                        #{ \balloonGrobText #grob #offset \markup { #text } #})))))
       	  #(if
             ;; `apply` property is set; apply editorial function
             (assq-ref props 'apply)
