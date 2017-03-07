@@ -87,7 +87,7 @@
 
   ;; wrap everything in the annotations div. this is sort of redundant, but
   ;; could be useful if projects have multiple bookparts with annotation lists.
-  (println "<annotations>")
+  (div-class-open "annotations" 0)
   (println " ")
   (for-each
     (lambda (ann)
@@ -104,10 +104,10 @@
     (println " "))
     annotations)
     ;; close ann list div
-    (println "</annotations>")
+    (div-class-close 0)
 
     (println " ")
     (println "</body>")
 
     ;; write to output file
-    (write-output-file "html")))
+    (write-output-file 'html)))

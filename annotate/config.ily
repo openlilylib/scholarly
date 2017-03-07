@@ -94,6 +94,25 @@
 \registerOption scholarly.colorize ##t
 
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Filenames to Export
+%%%%%%%%%%%%%%%%%%%%%%%%
+% default is <project-name>.annotations.<ext>
+\registerOption scholarly.annotate.export.filenames
+%   <ext>   <file name>
+#`((html . "index.html") ;; html
+   (latex . default)     ;; latex
+   (scheme . default)    ;; scheme
+   (plaintext . default) ;; plaintext
+   )
+
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Handling of annotation types for plain text output
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
