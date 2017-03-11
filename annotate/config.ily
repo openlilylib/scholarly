@@ -144,13 +144,6 @@
   (question . "Question")
   (todo . "TODO"))
 
-% Annotation types for html text class tags
-\registerOption scholarly.annotate.export.html.classes
-#`((critical-remark . "critical-remark")
-  (musical-issue . "musical-issue")
-  (lilypond-issue . "lilypond-issue>")
-  (question . "question")
-  (todo . "todo"))
 
 % Which props to print to html
 \registerOption scholarly.annotate.export.html.props

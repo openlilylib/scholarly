@@ -116,9 +116,8 @@
       (div-open ann 1)
 
         ;; type as a class - maybe we want different types to have some different styles
-        (div-open
-          (getChildOption '(scholarly annotate export html classes) (assq-ref ann 'type))
-            2)
+        (div-open (symbol->string (assq-ref ann 'type)) 2)
+        
           ;; add the rest of the props to output
           (html-process-props ann) ;; nest-indents x 3
 
