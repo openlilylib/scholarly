@@ -47,25 +47,25 @@
 #(define (delimit-html-tags tags)
   (format "<div ~a>" tags))
 
+% open div with unique tags
+#(define (div-open ann-or-string nest-level)
+  ;; if class = string, don't check for an id. otherwise it
+  ;; is an ann props list, so check for an id and apply if necessary
+  (if (string? ann-or-string)
+      (let* ((class (string-append "class=" (stringify-html-tag ann-or-string)))
+             (div-tag (delimit-html-tags class))
+             (div-begin (nest-indent div-tag nest-level)))
+          (append-to-output-stringlist div-begin))
+      (let* ((ann ann-or-string)
+             (class (string-append "class=" (stringify-html-tag "annotation")))
+             (id (if (assq-ref ann 'html-id)
+                     (string-append " id=" (stringify-html-tag (assoc-ref ann 'html-id)))
+                     ""))
+             (div-tags (delimit-html-tags (string-append class id)))
+             (div-begin (nest-indent div-tags nest-level)))
+          (append-to-output-stringlist div-begin))))
 
-% the following two should be refactored into a single function that
-% solely accepts the class name as a string, then automatically checks
-% for the html-id tag prop (adding the ann argument to do that)
-% and adds it if necessary.
-#(define (div-class-open div-class nest-level)
-  (let* ((class (string-append "class=" (stringify-html-tag div-class)))
-         (div-tag (delimit-html-tags class))
-         (div-begin (nest-indent div-tag nest-level)))
-    (append-to-output-stringlist div-begin)))
-
-#(define (div-class-id-open div-class div-id nest-level)
-    (let* ((class (string-append "class=" (stringify-html-tag div-class)))
-           (id (string-append " id=" (stringify-html-tag div-id)))
-           (div-tags (delimit-html-tags (string-append class id)))
-           (div-begin (nest-indent div-tags nest-level)))
-      (append-to-output-stringlist div-begin)))
-
-
+% close any div
 #(define (div-close nest-level)
    (append-to-output-stringlist (nest-indent "</div>" nest-level)))
 
@@ -82,7 +82,7 @@
               (begin
               (if (symbol? val)
                   (set! val (symbol->string val)))
-              (div-class-open (symbol->string prop) 3)
+              (div-open (symbol->string prop) 3)
               (append-to-output-stringlist
                 (nest-indent val 4))
               (div-close 3)))))))
@@ -106,44 +106,34 @@
 
   ;; wrap everything in the annotations div. this is sort of redundant, but
   ;; could be useful if projects have multiple bookparts with annotation lists.
-  (div-class-open "annotations" 0)
+  (div-open "annotations" 0)
   (println " ")
+  
   (for-each
     (lambda (ann)
-    ;; wrap each annotation in the common annotation class
-    ;; add div ID tag if available
 
+      ;; wrap each annotation in the common annotation class
+      ;; add div ID tag if available
+      (div-open ann 1)
 
+        ;; type as a class - maybe we want different types to have some different styles
+        (div-open
+          (getChildOption '(scholarly annotate export html labels) (assq-ref ann 'type))
+            2)
+          ;; add the rest of the props to output
+          (html-process-props ann) ;; nest-indents x 3
 
-    ;(if (assq-ref ann 'html-id)
-    ;    (let ((div-id (assoc-ref ann 'html-id)))
-    ;      (div-class-open (string-append "annotation\""
-    ;                              (string-append " id=\"" div-id)) 1))
-    ;    ;; no div ID, so just annotation class
-    ;    (div-class-open "annotation" 1))
+        (div-close 2)
 
+      (div-close 1)
+      (println " "))
 
-    (if (assq-ref ann 'html-id)
-        (let ((div-id (assoc-ref ann 'html-id)))
-          (div-class-id-open "annotation" div-id 1))
-        ;; no div ID, so just annotation class
-        (div-class-open "annotation" 1))
-
-
-      ;; type as a class - maybe we want different types to have some different styles
-      (div-class-open
-        (getChildOption '(scholarly annotate export html labels) (assq-ref ann 'type))
-          2)
-        ;; add the rest of the props to output
-        (html-process-props ann) ;; nest-indents x 3
-      (div-close 2)
-    (div-close 1)
-    (println " "))
     annotations)
+
     ;; close ann list div
     (div-close 0)
-
     (println " ")
+
     (println "</body>")
 
     ;; write to output file
