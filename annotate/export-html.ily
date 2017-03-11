@@ -69,14 +69,12 @@
 #(define (div-close nest-level)
    (append-to-output-stringlist (nest-indent "</div>" nest-level)))
 
-% TODO simplify the following to a lambda procedure?
+% get all the props we want exported from the option
 #(define (html-process-props ann)
   (let ((props (getOption `(scholarly annotate export html props))))
-    (if (> (length props) 0)
-        (do ((i 0 (1+ i)))
-            ((= i (length props)))
-            (let* ((prop (list-ref props i))
-                   (val (if (equal? prop 'grob-location)
+        (for-each
+          (lambda (prop)
+            (let* ((val (if (equal? prop 'grob-location)
                             (format-location ann)
                             (assq-ref ann prop))))
               (begin
@@ -85,7 +83,9 @@
               (div-open (symbol->string prop) 3)
               (append-to-output-stringlist
                 (nest-indent val 4))
-              (div-close 3)))))))
+              (div-close 3))))
+          props)))
+
 
 
 \register-export-routine html
@@ -108,7 +108,7 @@
   ;; could be useful if projects have multiple bookparts with annotation lists.
   (div-open "annotations" 0)
   (println " ")
-  
+
   (for-each
     (lambda (ann)
 
