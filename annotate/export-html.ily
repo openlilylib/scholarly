@@ -35,11 +35,6 @@
         (set! indentation (string-append indentation "  ")))
     (string-append indentation inpt)))
 
-% Probably a more sophisticated approach would be to use a list of div-props
-% which contain the class (still automatically set here) as well as id's which
-% may be set by the user or also automatically by scholarly. Those will presumably
-% be necessary for linking the annotations to grobs later, which is an important
-% feature to keep in mind.
 
 % convenience functions
 #(define (stringify-html-tag tag)

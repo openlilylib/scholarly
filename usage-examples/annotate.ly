@@ -10,6 +10,9 @@
 
 \setOption scholarly.annotate.export-targets #'(plaintext latex html)
 
+\setOption scholarly.annotate.export.html.props
+  #`(type grob-type message)
+  
 music = \relative c'{
   c4 d e
     \criticalRemark \with {
