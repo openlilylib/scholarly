@@ -3,8 +3,6 @@
 Welcome to scholarLY's documentation!
 =====================================
 
-Forward
--------
 
 *scholarLY* is a project of openLilyLib, a collection of community resources
 around GNU LilyPond music notation software. It provides a framework for extending
@@ -40,15 +38,17 @@ how to setup OLL on your system.
 About this documentation
 ========================
 
-This documentation is built using `sphinx`_, which will make
-html (mobile-friendly), pdf, and epub versions from the same source.
-To build it yourself, install sphinx and cd into scholarly/doc, the
-`make builder` where 'builder' is one of `html`, `latexpdf`, or `epub`. Other
+This documentation is built using `Sphinx`_, which makes
+HTML (mobile-friendly), PDF, and ePub versions from the same source.
+To build it yourself, install Sphinx and ``cd`` into scholarly/doc, then
+``make builder`` where `builder` is one of ``html``, ``latexpdf``, or ``epub``. Other
 options (which haven't been tested with this documentation) are listed in
-the sphinx documentation.
-Currently, the 'lilypond' lexer for 'pygments', which provides syntax
-highlighting for the sphinx builder, isn't published with pygments itself.
-You'll need to `download`_ and install it manually in order for sphinx to
+the Sphinx docs.
+
+Currently, the LilyPond lexer for Pygments, which provides syntax
+highlighting for LilyPond code blocks used by the Sphinx builder,
+isn't packaged with Pygments itself.
+You'll need to `download`_ and install it manually in order for Sphinx to
 properly highlight the lilypond code blocks.
 
 .. _sphinx: www.sphinx-doc.org

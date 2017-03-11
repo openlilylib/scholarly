@@ -10,7 +10,7 @@ project without imposing the inclusion of *all* available modules. After loading
 
     \loadPackage \with {
       modules = annotate
-    } scholarly
+    } scholarly 
 
 The currently available modules are `annotate` and `editorial-functions`.
 The `annotate` modules implicitly loads `editorial-functions`, so there is no
@@ -26,8 +26,20 @@ Editorial Functions
 TODO
 
 
+Options
+-------
+
+TODO
+
+
 
 Annotate
 ========
+
+TODO
+
+
+Options
+--------
 
 TODO
