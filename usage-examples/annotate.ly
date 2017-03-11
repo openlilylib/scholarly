@@ -32,6 +32,7 @@ music = \relative c'{
     { \voiceOne
         \criticalRemark \with {
           message = "An annotation for the top voice."
+          html-id = "my-unique-id"
         }
         NoteHead
       cis d
