@@ -131,8 +131,8 @@ We load them like so:
 .. code-block:: lilypond
 
   \loadPackage \with {
-    % modules = annotate <<-| TODO: add lilypondlexer kev = val tokens
-  } % scholarly          <<-|
+    modules = annotate
+  } scholarly
 
 And that's it! Now should should see a confirmation of the specific package (and its
 version) at the top of the output log each time you compile a document with a

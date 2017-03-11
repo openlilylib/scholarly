@@ -17,7 +17,7 @@ workflows...
 About the state of the art for annotated/critical editions of scores...
 
 Definitely, definitely mention the opportunity for critical reports made with
-the LaTeX package
+the LaTeX package.
 
 
 

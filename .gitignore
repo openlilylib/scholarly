@@ -27,3 +27,9 @@
 *.out
 *.toc
 
+# Generated Sphinx docs files
+*.doctree
+*.pickle
+*.txt
+*.buildinfo
+*.inv

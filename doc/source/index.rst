@@ -35,9 +35,21 @@ how to setup OLL on your system.
    LaTeX package <latex>
    Contributing <contributing>
 
-.. Indices and tables
-.. ==================
 
-.. * :ref:`genindex`
-.. * :ref:`modindex`
-.. * :ref:`search`
+
+About this documentation
+========================
+
+This documentation is built using `sphinx`_, which will make
+html (mobile-friendly), pdf, and epub versions from the same source.
+To build it yourself, install sphinx and cd into scholarly/doc, the
+`make builder` where 'builder' is one of `html`, `latexpdf`, or `epub`. Other
+options (which haven't been tested with this documentation) are listed in
+the sphinx documentation.
+Currently, the 'lilypond' lexer for 'pygments', which provides syntax
+highlighting for the sphinx builder, isn't published with pygments itself.
+You'll need to `download`_ and install it manually in order for sphinx to
+properly highlight the lilypond code blocks.
+
+.. _sphinx: www.sphinx-doc.org
+.. _download: https://github.com/jefferyshivers/lilypondlexer
