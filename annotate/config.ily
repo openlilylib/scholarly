@@ -138,6 +138,14 @@
 
 % Annotation types for html text output
 \registerOption scholarly.annotate.export.html.labels
+#`((critical-remark . "Critical Remark")
+  (musical-issue . "Musical Issue")
+  (lilypond-issue . "Lilypond Issue>")
+  (question . "Question")
+  (todo . "TODO"))
+
+% Annotation types for html text class tags
+\registerOption scholarly.annotate.export.html.classes
 #`((critical-remark . "critical-remark")
   (musical-issue . "musical-issue")
   (lilypond-issue . "lilypond-issue>")
