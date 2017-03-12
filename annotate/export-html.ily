@@ -100,7 +100,7 @@
       (println "<html>")
       (println "")
       (println "<head>")
-      (println "<meta charset=\"utf-8\"/>")
+      (println "  <meta charset=\"utf-8\"/>")
       (println
        (format "  <link rel=\"stylesheet\" type=\"text/css\" href=\"~a\">"
          (getOption `(scholarly annotate export html css))))
