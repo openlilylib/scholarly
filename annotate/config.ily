@@ -144,6 +144,9 @@
   (question . "Question")
   (todo . "TODO"))
 
+% Print full document with header (including CSS link) and body, or just
+% annotations div
+\registerOption scholarly.annotate.export.html.full-document ##t
 
 % Which props to print to html
 \registerOption scholarly.annotate.export.html.props
@@ -151,7 +154,7 @@
 
 % Which stylesheet to link in html (just a proof of concept at the moment)
 \registerOption scholarly.annotate.export.html.css
-  #"annotate-styles.css"
+  #"styles.css"
 
 
 

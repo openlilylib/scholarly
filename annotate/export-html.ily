@@ -90,18 +90,21 @@
 \register-export-routine html
 #(lambda ()
 
-  (let ((println append-to-output-stringlist))
+  (let ((println append-to-output-stringlist)
+        (full-doc (getOption `(scholarly annotate export html full-document))))
 
-  (println "<head>")
-  (println (string-append
-    "  <link rel=\"stylesheet\" type=\"text/css\" href=\""
-    (string-append (getOption `(scholarly annotate export html css))
-                   "\">")))
-  (println "</head>")
-  (println " ")
-
-  (println "<body>")
-  (println " ")
+  ;; If option is True, add the header and body
+  (if full-doc
+    (begin
+      (println "<head>")
+        (println (string-append
+          "  <link rel=\"stylesheet\" type=\"text/css\" href=\""
+          (string-append (getOption `(scholarly annotate export html css))
+                         "\">")))
+      (println "</head>")
+      (println " ")
+      (println "<body>")
+      (println " ")))
 
   ;; wrap everything in the annotations div. this is sort of redundant, but
   ;; could be useful if projects have multiple bookparts with annotation lists.
@@ -117,7 +120,7 @@
 
         ;; type as a class - maybe we want different types to have some different styles
         (div-open (symbol->string (assq-ref ann 'type)) 2)
-        
+
           ;; add the rest of the props to output
           (html-process-props ann) ;; nest-indents x 3
 
@@ -128,11 +131,13 @@
 
     annotations)
 
-    ;; close ann list div
+    ;; close "annotations" div
     (div-close 0)
-    (println " ")
 
-    (println "</body>")
+    (if full-doc
+      (begin
+        (println " ")
+        (println "</body>")))
 
     ;; write to output file
     (write-output-file 'html)))
