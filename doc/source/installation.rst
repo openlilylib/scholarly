@@ -1,29 +1,27 @@
-=========================
-Installation of scholarLY
-=========================
+============
+Installation
+============
 
 This is the general introduction to scholarLY.
 
+ 
 
-Section One
-===========
+Loading the Package
+===================
 
-section one text
+openLilyLib provides the ability to invoke particular modules needed for each
+project without imposing the inclusion of *all* available modules. After loading
+`oll-core`, list unique modules like so:
 
+.. code-block:: latex
 
-Subsection about stuff
-----------------------
+    \loadPackage \with {
+      modules = annotate
+    } scholarly
 
-the subsection text
+The currently available modules are `annotate` and `editorial-functions`.
+The `annotate` modules implicitly loads `editorial-functions`, so there is no
+need to specify both.
 
-
-Subsubsection about more stuff
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-the subsubsection text
-
-
-Section Two
-===========
-
-section two text
+Since `editorial-functions`' functionality is built into `annotate`, we'll explain
+the former first before diving into all that the latter provides.

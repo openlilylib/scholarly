@@ -11,7 +11,7 @@ forthcoming.
 
 
 Introduction
-=============
+============
 
 The best way to appreciate what OLL can do is to see it in action. Most of its
 packages include examples (typically in a subdirectory called `usage-examples`
@@ -30,7 +30,7 @@ Here is a brief list of the currently available packages
 
 
 Installation
-===================
+============
 
 Get `oll-core` from github.com/openlilylib/oll-core.
 The recommended method for doing this is to clone the repository with git
@@ -71,7 +71,7 @@ we should be able to see a list of the top-level subdirectories and files:
   internal           temp-package-declaration.ily
 
 Check the project on Github to find out about new updates and upcoming features.
-To synchronize your clone of the repository, you can ``pull`` any changes
+To synchronize your clone of the repository with the latest release, you can ``pull`` any changes
 into this local directory without having to redownload the entire project.
 
 To do this, make sure you are in the directory as before, and also in the master
@@ -107,6 +107,8 @@ Now we can pull in any new changes from the remote repository by simply:
   $ git pull
 
 
+
+
 Git will update everything in the directory if there are any changes, otherwise
 it will report that your local repository is current with the remote one.
 
@@ -125,22 +127,37 @@ the issue tracker.
 
 
 
+Using lyp
+---------
+
+Another option is to use `lyp`, a third-party package management system for
+LilyPond. `lyp` may not include all OLL packages (such as scholarLY -- stay tuned),
+but it is worth considering as an alternative to git if you are hesitant about the
+git protocol. It is installed as a Ruby gem, and provides pretty simple and
+convenient commands for installing and updating the packages on its list.
+
+`lyp` is well-documented, so refer to its `website`_ for the (relatively
+simple) instructions on how to install and use it.
+
+.. _website: http://lyp.noteflakes.com/#/
+
+
 Basic Usage and Configuration
 =============================
 
-Any project that use openLilyLib must invoke it at the top of the document.
+Any subproject of openLilyLib must first load 'oll-core' at the top of the document.
 
 .. code-block:: lilypond
 
-  % mandatory invocation of openLilyLib:
+  % mandatory invocation of openLilyLib's core infrastructure:
   \include "oll-core/package.ily"
 
-If you are using LilyPond from the command line, make sure you have configured
-it to include the path to oll-core. In Frescobaldi, this is done in `Frescobaldi > Preferences > LilyPond Preferences > "LilyPond include paths:"`.
+If you are using LilyPond from the command line, make sure it is configured
+to include the path to `oll-core`. In Frescobaldi, this is done in `Frescobaldi > Preferences > LilyPond Preferences > "LilyPond include paths:"`.
 
-This is the minimum requirement for the `oll-core` utilities, which most of the
-OLL packages use, and it `must precede any code in the project which uses it`,
-including the loading of packages themselves.
+This is the minimum requirement for the `oll-core` utilities, and it
+`must precede any code in the project which uses it`, including the
+loading of packages themselves.
 
 
 
@@ -148,7 +165,7 @@ Loading Packages and Modules
 ----------------------------
 
 OLL libraries are maintained as packages of modules. scholarLY, for example,
-is a library with two available modules: annotate and editorial functions.
+currently has two available modules: annotate and editorial functions.
 We load them like so:
 
 .. code-block:: lilypond
@@ -157,7 +174,7 @@ We load them like so:
     modules = annotate
   } scholarly
 
-And that's it! Now should should see a confirmation of any loaded packages at
+And that's it! Now you should see a confirmation of any loaded packages at
 the top of the output log each time you compile your document.
 
 
@@ -167,10 +184,10 @@ Option Handling
 ----------------
 
 Some OLL libraries come with a set of options which can be configured using
-OLL's globals option handling system. Regardless of the specific details of
+OLL's global option handling system. Regardless of the specific details of
 each option, the same generic command, ``\setOption``, is available as a standard hook, both
-as a means of convienience and as a way to avoid naming collisions between
-packages (though its robust tree system).
+as a means of convenience and as a way to avoid naming collisions between
+packages (through its robust tree system).
 
 Here is an example of an option that only takes a single boolean.
 
@@ -184,7 +201,7 @@ acknowledge that option, to false. The following example takes a more complex ar
 .. code-block:: lilypond
 
   \setOption scholarly.annotate.colors
-    #`((critical-remark . ,darkgreen)
+    #`((critical-remark . ,darkgreen) % Notice the usage of "`" and ","
        (musical-issue . ,green)
        (lilypond-issue . ,green)
        (question . ,blue)
@@ -197,7 +214,11 @@ means that the colors set here are only specifically applied to grobs that are
 affected by the annotate module, while the `scholarly.colorize` option may
 toggle all grobs under the `scholarly` umbrella.
 
-Note the punctuations (the "backquote" or "quasiquote" before the list, and "unquotes" of each of the color names) which help us to manage the symbols as they are being sorted into and out of the options tree.
+As pointed out in the comment in the above example, the punctuations
+(the "backquote" or "quasiquote" before the list, and "unquotes" of each of the
+color names) help us to manage the symbols as they are being sorted into and out
+of the options tree. This is a common gotcha, particularly where arguments in a
+list are intended to evaluate to `music` or `scheme` functions.
 
 
 Contributing
