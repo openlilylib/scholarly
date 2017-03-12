@@ -100,6 +100,7 @@
       (println "<html>")
       (println "")
       (println "<head>")
+      (println "<meta charset=\"utf-8\"/>")
         (println (string-append
           "  <link rel=\"stylesheet\" type=\"text/css\" href=\""
           (string-append (getOption `(scholarly annotate export html css))
