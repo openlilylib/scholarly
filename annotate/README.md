@@ -17,7 +17,7 @@ the music document, we can tell *scholarLY* which types of documents to export:
 
 Those output files will automatically format annotations to be further processed by the
 relevant programs. Currently, *plaintext*, *latex* and *html* are available, while other types
-are on the wishlist (such as *scheme* and *markdown*).
+are on the wishlist (such as *scheme*, *json* and *markdown*).
 
 ## Basic Syntax
 
