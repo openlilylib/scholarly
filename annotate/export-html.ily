@@ -96,6 +96,9 @@
   ;; If option is True, add the header and body
   (if full-doc
     (begin
+      (println "<!DOCTYPE html>")
+      (println "<html>")
+      (println "")
       (println "<head>")
         (println (string-append
           "  <link rel=\"stylesheet\" type=\"text/css\" href=\""
@@ -137,7 +140,9 @@
     (if full-doc
       (begin
         (println " ")
-        (println "</body>")))
+        (println "</body>")
+        (println "")
+        (println "</html>")))
 
     ;; write to output file
     (write-output-file 'html)))
