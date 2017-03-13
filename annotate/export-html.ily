@@ -37,8 +37,6 @@
 
 
 % convenience functions
-#(define (stringify-html-tag tag)
-  (format "\"~a\"" tag))
 #(define (classify-html-tag class)
   (format "class=\"~a\"" class))
 #(define (idify-html-tag id)
