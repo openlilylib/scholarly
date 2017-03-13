@@ -39,30 +39,44 @@
 % convenience functions
 #(define (stringify-html-tag tag)
   (format "\"~a\"" tag))
-#(define (delimit-html-tags tags)
-  (format "<div ~a>" tags))
+#(define (classify-html-tag class)
+  (format "class=\"~a\"" class))
+#(define (idify-html-tag id)
+  (format "id=\"~a\"" id))
+#(define (delimit-html-tags div-type tags)
+  (format "<~a ~a>" div-type tags))
 
 % open div with unique tags
-#(define (div-open ann-or-string nest-level)
+#(define (div-open type ann-or-string nest-level)
   ;; if class = string, don't check for an id. otherwise it
   ;; is an ann props list, so check for an id and apply if necessary
   (if (string? ann-or-string)
-      (let* ((class (string-append "class=" (stringify-html-tag ann-or-string)))
-             (div-tag (delimit-html-tags class))
+      (let* ((class (classify-html-tag ann-or-string))
+             (div-type (symbol->string (getChildOption
+                                        `(scholarly annotate export html divs)
+                                        type)))
+             (div-tag (delimit-html-tags div-type class))
              (div-begin (nest-indent div-tag nest-level)))
           (append-to-output-stringlist div-begin))
       (let* ((ann ann-or-string)
-             (class (string-append "class=" (stringify-html-tag "annotation")))
+             (class (classify-html-tag "annotation"))
+             (div-type (symbol->string (getChildOption
+                                        `(scholarly annotate export html divs)
+                                        type)))
              (id (if (assq-ref ann 'html-id)
-                     (string-append " id=" (stringify-html-tag (assoc-ref ann 'html-id)))
+                     (idify-html-tag (assoc-ref ann 'html-id))
                      ""))
-             (div-tags (delimit-html-tags (string-append class id)))
+             (div-tags (delimit-html-tags div-type (string-append class id)))
              (div-begin (nest-indent div-tags nest-level)))
           (append-to-output-stringlist div-begin))))
 
 % close any div
-#(define (div-close nest-level)
-   (append-to-output-stringlist (nest-indent "</div>" nest-level)))
+#(define (div-close type nest-level)
+  (let ((div-type (symbol->string (getChildOption
+                                    `(scholarly annotate export html divs)
+                                    type))))
+    (append-to-output-stringlist
+      (nest-indent (format "</~a>" div-type) nest-level))))
 
 % get all the props we want exported from the option
 #(define (html-process-props ann)
@@ -79,10 +93,10 @@
               (begin
               (if (symbol? val)
                   (set! val (symbol->string val)))
-              (div-open (symbol->string prop) 3)
+              (div-open 'each-ann-props (symbol->string prop) 3)
               (append-to-output-stringlist
                 (nest-indent val 4))
-              (div-close 3))))
+              (div-close 'each-ann-props 3))))
           props)))
 
 
@@ -111,7 +125,7 @@
 
   ;; wrap everything in the annotations div. this is sort of redundant, but
   ;; could be useful if projects have multiple bookparts with annotation lists.
-  (div-open "annotations" 0)
+  (div-open 'full-ann-list "annotations" 0)
   (println " ")
 
   (for-each
@@ -119,29 +133,30 @@
 
       ;; wrap each annotation in the common annotation class
       ;; add div ID tag if available
-      (div-open ann 1)
+      (div-open 'each-ann-outer ann 1)
 
         ;; type as a class - maybe we want different types to have some different styles
-        (div-open (symbol->string (assq-ref ann 'type)) 2)
+        ;; this also lets us make each *ann* a list itself if we want
+        (div-open 'each-ann-inner (symbol->string (assq-ref ann 'type)) 2)
 
           ;; add the rest of the props to output
           (html-process-props ann) ;; nest-indents x 3
 
-        (div-close 2)
+        (div-close 'each-ann-inner 2)
 
-      (div-close 1)
+      (div-close 'each-ann-outer 1)
       (println " "))
 
     annotations)
 
     ;; close "annotations" div
-    (div-close 0)
+    (div-close 'full-ann-list 0)
 
     (if full-doc
       (begin
         (println " ")
         (println "</body>")
-        (println "")
+        (println " ")
         (println "</html>")))
 
     ;; write to output file

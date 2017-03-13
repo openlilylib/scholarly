@@ -148,6 +148,17 @@
 % annotations div
 \registerOption scholarly.annotate.export.html.full-document ##t
 
+
+% Annotation div types (can technically be anything, since they get directly
+% converted to string; so even a new type of div, or `a`, or whatever else.)
+\registerOption scholarly.annotate.export.html.divs
+#`((full-ann-list . ul)  ;; the div containing all annotations
+   (each-ann-outer . li) ;; the outer shell of an annotation
+   (each-ann-inner . ul) ;; the inner shell of an annotation
+   (each-ann-props . li) ;; each prop
+   )
+
+
 % Which props to print to html
 \registerOption scholarly.annotate.export.html.props
   #`(type grob-location grob-type message)
