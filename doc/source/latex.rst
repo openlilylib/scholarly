@@ -2,5 +2,4 @@
 The scholarLY LaTeX Package
 ============================
 
-TODO
- 
+Info about that...

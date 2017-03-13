@@ -4,10 +4,11 @@ OpenLilyLib Primer
 
 Besides hosting a growing list of unique projects, openLilyLib (OLL) provides a
 robust infrastructure for building new libraries/frameworks from the ground up.
-Its most important and ubiquitous features are the package and option handling
-systems. Though this is not a comprehensive guide to all of OLL,
-we will go over every feature that is at least relevant to using scholarLY. More information and an updated, unified documentation of all of openLilyLib (including all of its child projects') is
-forthcoming.
+Its most important and ubiquitous features from a user's standpoint are the
+package and option handling systems. Though this is not a comprehensive guide to
+all of OLL, we will go over every feature that is at least relevant to using
+scholarLY. More information and an updated, unified documentation of all of
+openLilyLib (including all of its child projects') is forthcoming.
 
 
 Introduction
@@ -21,12 +22,9 @@ a complete LilyPond document.
 
 Here is a brief list of the currently available packages
 
-
-
 .. note! If this is made into the OLL manual, we can intersphinx into each of
   the other documentations. Or otherwise, link to those subsections (though in
   that case it might be redundant to the TOC..)
-
 
 
 Installation
@@ -36,8 +34,6 @@ Get `oll-core` from github.com/openlilylib/oll-core.
 The recommended method for doing this is to clone the repository with git
 so that you can pull updates as the project develops over time.
 Otherwise, your can directly download it from Github as well.
-
-
 
 
 Using git
@@ -84,7 +80,6 @@ but sometimes mistakes happen [#f1]_, so here's how to double-check:
   some-other-branch
   * master
 
-
 The asterisk (and probably some text coloring as well) shows that we are in
 fact on the master branch. If that wasn't the case, the way to maneuver back to
 it would be:
@@ -99,15 +94,11 @@ it would be:
   some-other-branch
   * master
 
-
 Now we can pull in any new changes from the remote repository by simply:
 
 .. code-block:: console
 
   $ git pull
-
-
-
 
 Git will update everything in the directory if there are any changes, otherwise
 it will report that your local repository is current with the remote one.
@@ -119,12 +110,9 @@ that your copy for `all` package directories are up-to-date before posting to
 the issue tracker.
 
 
-
-
 .. rubric:: Footnotes
 
 .. [#f1] If you aren't developing stuff in the repository yourself, you should only ever need to be in the master branch, so be sure that is always the case. If you do want to experiment on a new feature, you can always make a new (local) branch yourself and go back to the stable master branch when you need to use it.
-
 
 
 Using lyp
@@ -160,7 +148,6 @@ This is the minimum requirement for the `oll-core` utilities, and it
 loading of packages themselves.
 
 
-
 Loading Packages and Modules
 ----------------------------
 
@@ -176,8 +163,6 @@ We load them like so:
 
 And that's it! Now you should see a confirmation of any loaded packages at
 the top of the output log each time you compile your document.
-
-
 
 
 Option Handling
@@ -219,6 +204,19 @@ As pointed out in the comment in the above example, the punctuations
 color names) help us to manage the symbols as they are being sorted into and out
 of the options tree. This is a common gotcha, particularly where arguments in a
 list are intended to evaluate to `music` or `scheme` functions.
+
+Another way to set options is to extend the tree (the argument that comes after
+the ``\setOption`` hook) one more level. This means that we can set the same options
+from the previous example like so:
+
+::
+
+  \setOption scholarly.annotate.colors.critical-remark = #,darkgreen
+  \setOption scholarly.annotate.colors.musical-issue = #,green
+  % ... and so on
+  a b16 b 16 gab
+
+And so on...
 
 
 Contributing

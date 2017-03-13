@@ -1,8 +1,10 @@
-
 Welcome to scholarLY's documentation!
 =====================================
 
 .. include:: introduction.rst
+
+
+----
 
 
 .. toctree::
@@ -14,10 +16,12 @@ Welcome to scholarLY's documentation!
    Annotate <annotate>
    Editorial Functions <editorial-fns>
    The scholarLY LaTeX package <latex>
+   Package Index <package-index>
    Contribute to scholarLY <contributing>
 
 
- 
+----
+
 
 About this documentation
 ------------------------

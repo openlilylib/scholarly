@@ -4,7 +4,12 @@ Installation
 
 This is the general introduction to scholarLY.
 
- 
+
+Getting scholarLY
+=================
+
+Download from git ...
+
 
 Loading the Package
 ===================
@@ -13,7 +18,7 @@ openLilyLib provides the ability to invoke particular modules needed for each
 project without imposing the inclusion of *all* available modules. After loading
 `oll-core`, list unique modules like so:
 
-.. code-block:: latex
+::
 
     \loadPackage \with {
       modules = annotate
