@@ -36,33 +36,24 @@
    (format "class=\"~a\"" class))
 #(define (idify-html-tag id)
    (format "id=\"~a\"" id))
-#(define (delimit-html-tags div-type tags)
-   (format "<~a ~a>" div-type tags))
+#(define (delimit-html-tags tags)
+   (format "<~a>" (string-join tags " ")))
 
 % open div with unique tags
 #(define (div-open type ann-or-string nest-level)
    ;; if class = string, don't check for an id. otherwise it
    ;; is an ann props list, so check for an id and apply if necessary
-   (let ((trailing-line (if (= nest-level 0) "\n" "")))
-     (if (string? ann-or-string)
-         (let* ((class (classify-html-tag ann-or-string))
-                (div-type (symbol->string (getChildOption
-                                           `(scholarly annotate export html divs)
-                                           type)))
-                (div-tag (delimit-html-tags div-type class))
-                (div-begin (format "~a~a" (nest-indent div-tag nest-level) trailing-line)))
-           (append-to-output-stringlist div-begin))
-         (let* ((ann ann-or-string)
-                (class (classify-html-tag "annotation"))
-                (div-type (symbol->string (getChildOption
-                                           `(scholarly annotate export html divs)
-                                           type)))
-                (id (if (assq-ref ann 'html-id)
-                        (idify-html-tag (assoc-ref ann 'html-id))
-                        ""))
-                (div-tags (delimit-html-tags div-type (string-append class id)))
-                (div-begin (format "~a~a" (nest-indent div-tags nest-level) trailing-line)))
-           (append-to-output-stringlist div-begin)))))
+   (let* ((trailing-line (if (= nest-level 0) "\n" ""))
+          (div-type (symbol->string
+                     (getChildOption `(scholarly annotate export html divs) type)))
+          (class (classify-html-tag (if (string? ann-or-string) ann-or-string "annotation")))
+          (id
+           (let ((html-id (and (not (string? ann-or-string))
+                               (assq-ref ann-or-string 'html-id))))
+             (if html-id (idify-html-tag html-id) "")))
+          (div-tags (delimit-html-tags (list div-type class id)))
+          (div-begin (format "~a~a" (nest-indent div-tags nest-level) trailing-line)))
+     (append-to-output-stringlist div-begin)))
 
 % close any div
 #(define (div-close type nest-level)
