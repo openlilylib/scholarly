@@ -81,7 +81,10 @@
   (let ((props (getOption `(scholarly annotate export html props))))
         (for-each
           (lambda (prop)
-            (let* ((val (cond ((equal? prop 'grob-location)
+            (let* ((key (assq-ref (getOption
+                                    `(scholarly annotate export html prop-labels))
+                                      prop))
+                   (val (cond ((equal? prop 'grob-location)
                                  (format-location ann))
                               ((equal? prop 'type)
                                  (getChildOption
@@ -93,7 +96,7 @@
                   (set! val (symbol->string val)))
               (div-open 'each-ann-props (symbol->string prop) 3)
               (append-to-output-stringlist
-                (nest-indent val 4))
+                (nest-indent (if key (string-append key val) val) 4))
               (div-close 'each-ann-props 3))))
           props)))
 
@@ -115,7 +118,7 @@
       (println "  <meta charset=\"utf-8\"/>")
       (println
        (format "  <link rel=\"stylesheet\" type=\"text/css\" href=\"~a\">"
-         (getOption `(scholarly annotate export html css))))
+         (getOption `(scholarly annotate export html css-name))))
       (println "</head>")
       (println " ")
       (println "<body>")

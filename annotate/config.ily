@@ -163,9 +163,37 @@
 \registerOption scholarly.annotate.export.html.props
   #`(type grob-location grob-type message)
 
-% Which stylesheet to link in html (just a proof of concept at the moment)
-\registerOption scholarly.annotate.export.html.css
-  #"styles.css"
+% Which labels to print for props (only affect props included in previous list)
+\registerOption scholarly.annotate.export.html.prop-labels
+  #`((type . "Type: ")
+     (grob-location . #f)
+     (grob-type . #f)
+     (message . #f))
+
+
+% Which stylesheet to link, or print in header, or generate
+% if the `use-css` is set to default, it will ignore whatever is here
+% and point to the default stylesheet. We happen to refer to that here
+% by default anyway. But the name/location of that default styles should
+% be hardcoded into export-html.ily presumably.
+\registerOption scholarly.annotate.export.html.css-name
+  #"default-styles.css"
+
+
+% How to handle CSS upon html export
+%   #f = no CSS at all
+%   #`header = print in header;
+%   #`linked = link in header
+\registerOption scholarly.annotate.export.html.with-css
+  #`linked
+
+
+% Which CSS to use when used at all
+%   #`default = handle the default CSS included in the repository
+%   #`generate = generate a new CSS (using the name from `css-name` option)
+%   #`external =
+\registerOption scholarly.annotate.export.html.use-css
+  #`default
 
 
 
