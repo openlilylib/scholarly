@@ -46,35 +46,37 @@
 
 % open div with unique tags
 #(define (div-open type ann-or-string nest-level)
-  ;; if class = string, don't check for an id. otherwise it
-  ;; is an ann props list, so check for an id and apply if necessary
-  (if (string? ann-or-string)
-      (let* ((class (classify-html-tag ann-or-string))
-             (div-type (symbol->string (getChildOption
-                                        `(scholarly annotate export html divs)
-                                        type)))
-             (div-tag (delimit-html-tags div-type class))
-             (div-begin (nest-indent div-tag nest-level)))
-          (append-to-output-stringlist div-begin))
-      (let* ((ann ann-or-string)
-             (class (classify-html-tag "annotation"))
-             (div-type (symbol->string (getChildOption
-                                        `(scholarly annotate export html divs)
-                                        type)))
-             (id (if (assq-ref ann 'html-id)
-                     (idify-html-tag (assoc-ref ann 'html-id))
-                     ""))
-             (div-tags (delimit-html-tags div-type (string-append class id)))
-             (div-begin (nest-indent div-tags nest-level)))
-          (append-to-output-stringlist div-begin))))
+   ;; if class = string, don't check for an id. otherwise it
+   ;; is an ann props list, so check for an id and apply if necessary
+   (let ((trailing-line (if (= nest-level 0) "\n" "")))
+     (if (string? ann-or-string)
+         (let* ((class (classify-html-tag ann-or-string))
+                (div-type (symbol->string (getChildOption
+                                           `(scholarly annotate export html divs)
+                                           type)))
+                (div-tag (delimit-html-tags div-type class))
+                (div-begin (format "~a~a" (nest-indent div-tag nest-level) trailing-line)))
+           (append-to-output-stringlist div-begin))
+         (let* ((ann ann-or-string)
+                (class (classify-html-tag "annotation"))
+                (div-type (symbol->string (getChildOption
+                                           `(scholarly annotate export html divs)
+                                           type)))
+                (id (if (assq-ref ann 'html-id)
+                        (idify-html-tag (assoc-ref ann 'html-id))
+                        ""))
+                (div-tags (delimit-html-tags div-type (string-append class id)))
+                (div-begin (format "~a~a" (nest-indent div-tags nest-level) trailing-line)))
+           (append-to-output-stringlist div-begin)))))
 
 % close any div
 #(define (div-close type nest-level)
-  (let ((div-type (symbol->string (getChildOption
+   (let ((div-type (symbol->string (getChildOption
                                     `(scholarly annotate export html divs)
-                                    type))))
-    (append-to-output-stringlist
-      (nest-indent (format "</~a>" div-type) nest-level))))
+                                    type)))
+         (trailing-line (if (= nest-level 1) "\n" "")))
+     (append-to-output-stringlist
+      (nest-indent (format "</~a>~a" div-type trailing-line) nest-level))))
 
 % get all the props we want exported from the option
 #(define (html-process-props ann)
@@ -105,13 +107,12 @@
 \register-export-routine html
 #(lambda ()
 
-  (let ((println append-to-output-stringlist)
-        (full-doc (getOption `(scholarly annotate export html full-document))))
+   (let ((full-doc (getOption `(scholarly annotate export html full-document))))
 
-  ;; If option is True, add the header and body
-  (if full-doc
-      (println (format
-"<!DOCTYPE html>
+     ;; If option is True, add the header and body
+     (if full-doc
+         (append-to-output-stringlist (format
+                                       "<!DOCTYPE html>
 <html>
 
 <head>
@@ -120,13 +121,11 @@
 </head>
 
 <body>
-
 " (getOption `(scholarly annotate export html css-name)))))
 
   ;; wrap everything in the annotations div. this is sort of redundant, but
   ;; could be useful if projects have multiple bookparts with annotation lists.
   (div-open 'full-ann-list "annotations" 0)
-  (println " ")
 
   (for-each
     (lambda (ann)
@@ -145,7 +144,6 @@
         (div-close 'each-ann-inner 2)
 
       (div-close 'each-ann-outer 1)
-      (println " "))
 
     annotations)
 
@@ -154,8 +152,7 @@
 
     (if full-doc
       (begin
-        (println "
-
+          (append-to-output-stringlist "
 </body>
 </html>")))
 
