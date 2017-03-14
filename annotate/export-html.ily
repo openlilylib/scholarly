@@ -110,19 +110,18 @@
 
   ;; If option is True, add the header and body
   (if full-doc
-    (begin
-      (println "<!DOCTYPE html>")
-      (println "<html>")
-      (println "")
-      (println "<head>")
-      (println "  <meta charset=\"utf-8\"/>")
-      (println
-       (format "  <link rel=\"stylesheet\" type=\"text/css\" href=\"~a\">"
-         (getOption `(scholarly annotate export html css-name))))
-      (println "</head>")
-      (println " ")
-      (println "<body>")
-      (println " ")))
+      (println (format
+"<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset=\"utf-8\"/>
+  <link rel=\"stylesheet\" type=\"text/css\" href=\"~a\">
+</head>
+
+<body>
+
+" (getOption `(scholarly annotate export html css-name)))))
 
   ;; wrap everything in the annotations div. this is sort of redundant, but
   ;; could be useful if projects have multiple bookparts with annotation lists.
@@ -155,10 +154,10 @@
 
     (if full-doc
       (begin
-        (println " ")
-        (println "</body>")
-        (println " ")
-        (println "</html>")))
+        (println "
+
+</body>
+</html>")))
 
     ;; write to output file
     (write-output-file 'html)))
