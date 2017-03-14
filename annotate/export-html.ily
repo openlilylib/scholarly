@@ -97,6 +97,12 @@
 
      ;; If option is True, add the header and body
      (if full-doc
+       (let* ((css-type (getOption `(scholarly annotate export html use-css)))
+              (css-name (cond ((equal? css-type 'generate)
+                             (getOption `(scholarly annotate export html generate-css-name)))
+                         ((equal? css-type 'external)
+                             (getOption `(scholarly annotate export html external-css-name)))
+                         (else "default-stylesheet.css"))))
          (append-to-output-stringlist (format
                                        "<!DOCTYPE html>
 <html>
@@ -107,7 +113,7 @@
 </head>
 
 <body>
-" (getOption `(scholarly annotate export html css-name)))))
+" css-name))))
 
      ;; wrap everything in the annotations div. this is sort of redundant, but
      ;; could be useful if projects have multiple bookparts with annotation lists.

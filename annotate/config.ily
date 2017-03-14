@@ -140,7 +140,7 @@
 \registerOption scholarly.annotate.export.html.labels
 #`((critical-remark . "Critical Remark")
   (musical-issue . "Musical Issue")
-  (lilypond-issue . "Lilypond Issue>")
+  (lilypond-issue . "Lilypond Issue")
   (question . "Question")
   (todo . "TODO"))
 
@@ -152,7 +152,7 @@
 % Annotation div types (can technically be anything, since they get directly
 % converted to string; so even a new type of div, or `a`, or whatever else.)
 \registerOption scholarly.annotate.export.html.divs
-#`((full-ann-list . ul)  ;; the div containing all annotations
+#`((full-ann-list . ol)  ;; the div containing all annotations
    (each-ann-outer . li) ;; the outer shell of an annotation
    (each-ann-inner . ul) ;; the inner shell of an annotation
    (each-ann-props . li) ;; each prop
@@ -165,7 +165,7 @@
 
 % Which labels to print for props (only affect props included in previous list)
 \registerOption scholarly.annotate.export.html.prop-labels
-  #`((type . "Type: ")
+  #`((type . "<em>Type:</em> ")
      (grob-location . #f)
      (grob-type . #f)
      (message . #f))
@@ -176,8 +176,11 @@
 % and point to the default stylesheet. We happen to refer to that here
 % by default anyway. But the name/location of that default styles should
 % be hardcoded into export-html.ily presumably.
-\registerOption scholarly.annotate.export.html.css-name
-  #"default-styles.css"
+\registerOption scholarly.annotate.export.html.external-css-name
+  #"my-external-styles.css"
+
+\registerOption scholarly.annotate.export.html.generate-css-name
+  #"my-generated-styles.css"
 
 
 % How to handle CSS upon html export
@@ -188,10 +191,10 @@
   #`linked
 
 
-% Which CSS to use when used at all
+% Which CSS to use when used at all (default is the fallback if not one of the other two)
 %   #`default = handle the default CSS included in the repository
 %   #`generate = generate a new CSS (using the name from `css-name` option)
-%   #`external =
+%   #`external = (link to) external stylesheet (does not support *importing* yet)
 \registerOption scholarly.annotate.export.html.use-css
   #`default
 
