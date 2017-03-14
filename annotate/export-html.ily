@@ -29,20 +29,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 #(define (nest-indent inpt num)
-  (let* ((indentation ""))
-    (do ((i 0 (1+ i)))
-        ((= i num))
-        (set! indentation (string-append indentation "  ")))
-    (string-append indentation inpt)))
+   (let* ((indentation ""))
+     (do ((i 0 (1+ i)))
+       ((= i num))
+       (set! indentation (string-append indentation "  ")))
+     (string-append indentation inpt)))
 
 
 % convenience functions
 #(define (classify-html-tag class)
-  (format "class=\"~a\"" class))
+   (format "class=\"~a\"" class))
 #(define (idify-html-tag id)
-  (format "id=\"~a\"" id))
+   (format "id=\"~a\"" id))
 #(define (delimit-html-tags div-type tags)
-  (format "<~a ~a>" div-type tags))
+   (format "<~a ~a>" div-type tags))
 
 % open div with unique tags
 #(define (div-open type ann-or-string nest-level)
@@ -80,27 +80,27 @@
 
 % get all the props we want exported from the option
 #(define (html-process-props ann)
-  (let ((props (getOption `(scholarly annotate export html props))))
-        (for-each
-          (lambda (prop)
-            (let* ((key (assq-ref (getOption
-                                    `(scholarly annotate export html prop-labels))
-                                      prop))
-                   (val (cond ((equal? prop 'grob-location)
-                                 (format-location ann))
-                              ((equal? prop 'type)
-                                 (getChildOption
-                                   `(scholarly annotate export html labels)
-                                   (assq-ref ann 'type)))
-                              (else (assq-ref ann prop)))))
-              (begin
-              (if (symbol? val)
-                  (set! val (symbol->string val)))
-              (div-open 'each-ann-props (symbol->string prop) 3)
-              (append-to-output-stringlist
-                (nest-indent (if key (string-append key val) val) 4))
-              (div-close 'each-ann-props 3))))
-          props)))
+   (let ((props (getOption `(scholarly annotate export html props))))
+     (for-each
+      (lambda (prop)
+        (let* ((key (assq-ref (getOption
+                               `(scholarly annotate export html prop-labels))
+                      prop))
+               (val (cond ((equal? prop 'grob-location)
+                           (format-location ann))
+                      ((equal? prop 'type)
+                       (getChildOption
+                        `(scholarly annotate export html labels)
+                        (assq-ref ann 'type)))
+                      (else (assq-ref ann prop)))))
+          (begin
+           (if (symbol? val)
+               (set! val (symbol->string val)))
+           (div-open 'each-ann-props (symbol->string prop) 3)
+           (append-to-output-stringlist
+            (nest-indent (if key (string-append key val) val) 4))
+           (div-close 'each-ann-props 3))))
+      props)))
 
 
 
@@ -123,38 +123,38 @@
 <body>
 " (getOption `(scholarly annotate export html css-name)))))
 
-  ;; wrap everything in the annotations div. this is sort of redundant, but
-  ;; could be useful if projects have multiple bookparts with annotation lists.
-  (div-open 'full-ann-list "annotations" 0)
+     ;; wrap everything in the annotations div. this is sort of redundant, but
+     ;; could be useful if projects have multiple bookparts with annotation lists.
+     (div-open 'full-ann-list "annotations" 0)
 
-  (for-each
-    (lambda (ann)
+     (for-each
+      (lambda (ann)
 
-      ;; wrap each annotation in the common annotation class
-      ;; add div ID tag if available
-      (div-open 'each-ann-outer ann 1)
+        ;; wrap each annotation in the common annotation class
+        ;; add div ID tag if available
+        (div-open 'each-ann-outer ann 1)
 
         ;; type as a class - maybe we want different types to have some different styles
         ;; this also lets us make each *ann* a list itself if we want
         (div-open 'each-ann-inner (symbol->string (assq-ref ann 'type)) 2)
 
-          ;; add the rest of the props to output
-          (html-process-props ann) ;; nest-indents x 3
+        ;; add the rest of the props to output
+        (html-process-props ann) ;; nest-indents x 3
 
         (div-close 'each-ann-inner 2)
 
-      (div-close 'each-ann-outer 1)
+        (div-close 'each-ann-outer 1))
 
-    annotations)
+      annotations)
 
-    ;; close "annotations" div
-    (div-close 'full-ann-list 0)
+     ;; close "annotations" div
+     (div-close 'full-ann-list 0)
 
-    (if full-doc
-      (begin
+     (if full-doc
+         (begin
           (append-to-output-stringlist "
 </body>
 </html>")))
 
-    ;; write to output file
-    (write-output-file 'html)))
+     ;; write to output file
+     (write-output-file 'html)))
