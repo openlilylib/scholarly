@@ -28,7 +28,7 @@
 %%%% Export annotations to html file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-#(define (nest-indent inpt num)
+#(define (indent inpt num)
    (string-append (make-string num #\space) inpt))
 
 % convenience functions
@@ -52,7 +52,7 @@
                                (assq-ref ann-or-string 'html-id))))
              (if html-id (idify-html-tag html-id) "")))
           (div-tags (delimit-html-tags (list div-type class id)))
-          (div-begin (format "~a~a" (nest-indent div-tags nest-level) trailing-line)))
+          (div-begin (format "~a~a" (indent div-tags nest-level) trailing-line)))
      (append-to-output-stringlist div-begin)))
 
 % close any div
@@ -62,7 +62,7 @@
                                     type)))
          (trailing-line (if (= nest-level 1) "\n" "")))
      (append-to-output-stringlist
-      (nest-indent (format "</~a>~a" div-type trailing-line) nest-level))))
+      (indent (format "</~a>~a" div-type trailing-line) nest-level))))
 
 % get all the props we want exported from the option
 #(define (html-process-props ann)
@@ -84,7 +84,7 @@
                (set! val (symbol->string val)))
            (div-open 'each-ann-props (symbol->string prop) 3)
            (append-to-output-stringlist
-            (nest-indent (if key (string-append key val) val) 4))
+            (indent (if key (string-append key val) val) 4))
            (div-close 'each-ann-props 3))))
       props)))
 
@@ -125,7 +125,7 @@
         (div-open 'each-ann-inner (symbol->string (assq-ref ann 'type)) 2)
 
         ;; add the rest of the props to output
-        (html-process-props ann) ;; nest-indents x 3
+        (html-process-props ann) ;; indents x 3
 
         (div-close 'each-ann-inner 2)
 
