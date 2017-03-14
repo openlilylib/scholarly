@@ -29,12 +29,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 #(define (nest-indent inpt num)
-   (let* ((indentation ""))
-     (do ((i 0 (1+ i)))
-       ((= i num))
-       (set! indentation (string-append indentation "  ")))
-     (string-append indentation inpt)))
-
+   (string-append (make-string num #\space) inpt))
 
 % convenience functions
 #(define (classify-html-tag class)
