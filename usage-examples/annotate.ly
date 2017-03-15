@@ -14,14 +14,23 @@
   #`(type grob-type message)
   
 \setOption scholarly.annotate.export.html.generate-css-settings
-  #`((class . ((full-ann-list . ("background: gray"
-                                    "margin: 0.5em"
-                                    "line-height: 1.2"
-                                   (ul . "list-style-type: none")))
-                 (each-ann-inner . ((ul . "background: lightgray")
-                                    (ul_li . ("background: gray"
-                                              "margin: 0.25em"))))))
-    (id . ((my-id-for-something . ("foo: bar")))))
+  #`((class . ((full-ann-list . ("margin: 1em"
+                                 "padding-left: 0"
+                                (ul . "list-style-type: none")))
+                 (annotation . ("margin-top: 1em"
+                                "margin-left: 0.25"
+                                "background: #b0b0bb"
+                                (ul . "padding-left: 0")))
+                 (todo . ("background: #caa8a8"
+                          "color: darkred"))
+                 (type . ("color: white"
+                          "background: #444444"))))
+     (id . ((my-id-for-something . ("foo: bar"))))
+     ;; "tag" is just a generic key here.. anything other than
+     ;; "class" or "id" just means that the elements within it
+     ;; will be printed without "." or "#".
+     (tag . ((body . ("width: 50%"
+                       "min-width: 400px")))))
 
 \setOption scholarly.annotate.export.html.use-css
   #`generate
