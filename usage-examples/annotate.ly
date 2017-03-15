@@ -58,7 +58,7 @@ music = \relative c'{
     }
      \new Voice = "voice two"
     { \voiceTwo
-        \criticalRemark \with {
+        \todo \with {
           message="A note about the second voice."
         }
         NoteHead

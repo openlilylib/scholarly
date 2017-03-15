@@ -41,18 +41,18 @@
 
 #(define default-css-settings
   `((class . ((full-ann-list . ("background: gray"
-                                    "margin: 0.5em"
-                                    "line-height: 1.2"
-                                   (ul . "list-style-type: none")))
-                 (each-ann-inner . ((ul . "background: lightgray")
-                                    (ul_li . ("background: gray"
-                                              "margin: 0.25em"))))))
-    (id . ((my-id-for-something . ("foo: bar"))))))
+                                "margin: 0.5em"
+                                "line-height: 1.2"
+                               (ul . "list-style-type: none")))
+              (annotation . ((ul . "background: lightgray")
+                             (ul_li . "margin: 0.25em")))
+              (todo . ("background: red"))
+              (question . ("background: green"))))
+    (id . ((my-unique-annotations-list . ("foo: bar"))))))
 
 % nicely formatted css for header or exported
-#(define formatted-css
-    (let* ((css-type (getOption `(scholarly annotate export html use-css)))
-           (css-settings (if (eq? css-type 'default)
+#(define (formatted-css css-type)
+    (let* ((css-settings (if (eq? css-type 'default)
                              default-css-settings
                              (getOption `(scholarly annotate export html
                                            generate-css-settings))))
@@ -200,7 +200,7 @@
                 (format "<link rel=\"stylesheet\" type=\"text/css\" href=\"~a\">"
                   css-name))
               ((eq? css-method 'header)
-                (format "\n<style>\n~a\n</style>\n" formatted-css))))))))
+                (format "\n<style>\n~a\n</style>\n" (formatted-css css-type)))))))))
 
 
 
