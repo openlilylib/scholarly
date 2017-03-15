@@ -28,6 +28,78 @@
 %%%% Export annotations to html file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+% Default CSS Settings:
+% ~~~~~~~~~~~~~~~~~~~~
+% If the class/id name matches a builtin (such as annotations, annotation, etc.)
+% then it is applied to that div (even if the user has distinguished a new class/id
+% name for that particular div). This allows default css to still be toggled
+% without the user needing to manually rename their stuff to match these.
+% OTHERWISE, if it isn't a builtin, scholarLY turns that name (such as
+% `my-id-for-something` below) into a string, and applies it to the matching
+% class/id at the time of processing.
+
+#(define default-css-settings
+  `((by-class . ((full-ann-list . ("background: gray"
+                                    "margin: 0.5em"
+                                    "line-height: 1.2"
+                                   (ul . "list-style-type: none")))
+                 (each-ann-inner . ((ul . "background: lightgray")
+                                    (ul_li . ("background: gray"
+                                              "margin: 0.25em"))))))
+    (by-id . ((my-id-for-something . ("foo: bar"))))))
+
+% nicely formatted css for header or exported
+#(define formatted-css
+    (let* ((css-type (getOption `(scholarly annotate export html use-css)))
+           (css-settings (if (eq? css-type 'default)
+                             default-css-settings
+                             (getOption `(scholarly annotate export html
+                                           generate-css-settings))))
+           (pretty-css ""))
+        (for-each
+          (lambda (family)
+            (for-each
+              (lambda (member)
+                (set! pretty-css (string-append pretty-css
+                  (format (cond ((eq? (car family) 'by-class)
+                                  "\n.~a {~a }\n")
+                                ((eq? (car family) 'by-id)
+                                  "\n#~a {\n~a }\n")
+                                (else "\n~a {~a }\n"))
+                    (car member)
+                    (let ((sub-mem-styles ""))
+                      (for-each
+                        (lambda (sub-member)
+                          (set! sub-mem-styles
+                            (if (string? sub-member)
+                                (format "~a\n  ~a;" sub-mem-styles sub-member)
+                                (format "~a\n} ~a {~a"
+                                  sub-mem-styles
+                                  (let ((multi-segs (string-match "(-|_)"
+                                                      (symbol->string (car sub-member)))))
+                                      (if (not multi-segs)
+                                          (car sub-member)
+                                          (regexp-substitute #f
+                                            multi-segs
+                                            'pre " " 'post)))
+                                  (if (string? (cdr sub-member))
+                                      (format "\n  ~a;" (cdr sub-member))
+                                      (let* ((sub-lst ""))
+                                        (for-each
+                                          (lambda (mem)
+                                            (set! sub-lst
+                                              (format "~a\n  ~a;"
+                                                sub-lst mem)))
+                                        (cdr sub-member))
+                                      sub-lst))))))
+                        (cdr member))
+                      sub-mem-styles)))))
+              (cdr family)))
+          css-settings)
+        pretty-css))
+
+
 #(define (indent inpt num)
    (string-append (make-string num #\space) inpt))
 

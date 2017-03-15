@@ -186,7 +186,7 @@
 % How to handle CSS upon html export
 %   #f = no CSS at all
 %   #`header = print in header;
-%   #`linked = link in header
+%   #`linked = link in header, which also means export css (default or generated)
 \registerOption scholarly.annotate.export.html.with-css
   #`linked
 
@@ -197,6 +197,18 @@
 %   #`external = (link to) external stylesheet (does not support *importing* yet)
 \registerOption scholarly.annotate.export.html.use-css
   #`default
+
+
+
+
+% css settings for a generated file
+% for linking, scholarLY converts this all into a css file and links to it
+% for printing in header, we do the same but print into the header
+% for embedded/inline css, scholarly sorts the option as best it can; if the
+% options don't match the divs (say, we have a setting for "foo" class, but there
+% is no "foo" class in the document), it is ignored.
+\registerOption scholarly.annotate.export.html.generate-css-settings #`()
+
 
 
 
