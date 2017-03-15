@@ -184,7 +184,7 @@
 
 
 % How to handle CSS upon html export
-%   #f = no CSS at all
+%   #`inline = embed css inline (very much not yet implemented)
 %   #`header = print in header;
 %   #`linked = link in header, which also means export css (default or generated)
 \registerOption scholarly.annotate.export.html.with-css

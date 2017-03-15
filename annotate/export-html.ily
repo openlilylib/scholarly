@@ -176,16 +176,25 @@
                                 (getOption `(scholarly annotate export html external-css-name)))
                               (else "default-stylesheet.css"))))
          (append-to-output-stringlist (format
-                                       "<!DOCTYPE html>
+"<!DOCTYPE html>
 <html>
 
 <head>
   <meta charset=\"utf-8\"/>
-  <link rel=\"stylesheet\" type=\"text/css\" href=\"~a\">
+  ~a
 </head>
 
 <body>
-" css-name))))
+"
+        ;; insert link to css, or directly embed css in header.
+        (let ((css-method (getOption `(scholarly annotate export html with-css))))
+          (cond ((eq? css-method 'linked)
+                (format "<link rel=\"stylesheet\" type=\"text/css\" href=\"~a\">"
+                  css-name))
+              ((eq? css-method 'header)
+                (format "\n<style>\n~a\n</style>\n" formatted-css))))))))
+
+
 
      ;; wrap everything in the annotations div. this is sort of redundant, but
      ;; could be useful if projects have multiple bookparts with annotation lists.
