@@ -85,7 +85,7 @@
                                             'pre " " 'post)))
                                   (if (string? (cdr sub-member))
                                       (format "\n  ~a;" (cdr sub-member))
-                                      (let* ((sub-lst ""))
+                                      (let ((sub-lst ""))
                                         (for-each
                                           (lambda (mem)
                                             (set! sub-lst
