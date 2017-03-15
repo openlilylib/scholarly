@@ -35,8 +35,9 @@
 \setOption scholarly.annotate.export.html.use-css
   #`generate
 \setOption scholarly.annotate.export.html.with-css
-  #`header
-  
+  #`linked
+
+%\displayOptions
 
 music = \relative c'{
   c4 d e

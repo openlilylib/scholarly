@@ -28,6 +28,9 @@
 %%%% Export annotations to html file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+#(use-modules (ice-9 rdelim))
+#(use-modules (ice-9 regex))
+
 
 % Default CSS Settings:
 % ~~~~~~~~~~~~~~~~~~~~
@@ -188,16 +191,18 @@
 \register-export-routine html
 #(lambda ()
 
-   (let ((full-doc (getOption `(scholarly annotate export html full-document))))
+   (let* ((full-doc (getOption `(scholarly annotate export html full-document)))
+          (css-method (getOption `(scholarly annotate export html with-css)))
+          (css-type (getOption `(scholarly annotate export html use-css)))
+          (css-name (cond ((eq? css-type 'generate)
+                                   (getOption `(scholarly annotate export html generate-css-name)))
+                          ((eq? css-type 'external)
+                                   (getOption `(scholarly annotate export html external-css-name)))
+                          (else "default-stylesheet.css"))))
 
      ;; If option is True, add the header and body
      (if full-doc
-       (let* ((css-type (getOption `(scholarly annotate export html use-css)))
-              (css-name (cond ((eq? css-type 'generate)
-                                (getOption `(scholarly annotate export html generate-css-name)))
-                              ((eq? css-type 'external)
-                                (getOption `(scholarly annotate export html external-css-name)))
-                              (else "default-stylesheet.css"))))
+        (begin
          (append-to-output-stringlist (format
 "<!DOCTYPE html>
 <html>
@@ -209,13 +214,19 @@
 
 <body>
 "
-        ;; insert link to css, or directly embed css in header.
-        (let ((css-method (getOption `(scholarly annotate export html with-css))))
-          (cond ((eq? css-method 'linked)
-                (format "<link rel=\"stylesheet\" type=\"text/css\" href=\"~a\">"
-                  css-name))
-              ((eq? css-method 'header)
-                (format "\n<style>\n~a\n</style>\n" (formatted-css css-type)))))))))
+              ;; insert link to css, or directly embed css in header.
+              (cond ((eq? css-method 'linked)
+                    (format "<link rel=\"stylesheet\" type=\"text/css\" href=\"~a\">"
+                      css-name))
+                  ((eq? css-method 'header)
+                    (format "\n<style>\n~a\n</style>\n" (formatted-css css-type))))))
+          ;; if we want to generate and link to a seperate .css file
+          (if (and (eq? css-method 'linked)
+                   (or (eq? css-type 'generate)
+                       (eq? css-type 'default)))
+              (with-output-to-file
+                css-name ; css-name
+                  (lambda () (write-line (formatted-css css-type)))))))
 
 
 
