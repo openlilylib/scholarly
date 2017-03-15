@@ -14,14 +14,14 @@
   #`(type grob-type message)
   
 \setOption scholarly.annotate.export.html.generate-css-settings
-  #`((by-class . ((full-ann-list . ("background: gray"
+  #`((class . ((full-ann-list . ("background: gray"
                                     "margin: 0.5em"
                                     "line-height: 1.2"
                                    (ul . "list-style-type: none")))
                  (each-ann-inner . ((ul . "background: lightgray")
                                     (ul_li . ("background: gray"
                                               "margin: 0.25em"))))))
-    (by-id . ((my-id-for-something . ("foo: bar")))))
+    (id . ((my-id-for-something . ("foo: bar")))))
 
 \setOption scholarly.annotate.export.html.use-css
   #`generate

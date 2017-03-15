@@ -158,6 +158,9 @@
    (each-ann-props . li) ;; each prop
    )
 
+\registerOption scholarly.annotate.export.html.annotations-div-tags
+   #`((class . "my-annotations")
+      (id . #f))
 
 % Which props to print to html
 \registerOption scholarly.annotate.export.html.props
