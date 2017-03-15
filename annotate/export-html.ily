@@ -40,14 +40,14 @@
 % class/id at the time of processing.
 
 #(define default-css-settings
-  `((by-class . ((full-ann-list . ("background: gray"
+  `((class . ((full-ann-list . ("background: gray"
                                     "margin: 0.5em"
                                     "line-height: 1.2"
                                    (ul . "list-style-type: none")))
                  (each-ann-inner . ((ul . "background: lightgray")
                                     (ul_li . ("background: gray"
                                               "margin: 0.25em"))))))
-    (by-id . ((my-id-for-something . ("foo: bar"))))))
+    (id . ((my-id-for-something . ("foo: bar"))))))
 
 % nicely formatted css for header or exported
 #(define formatted-css
@@ -62,12 +62,20 @@
             (for-each
               (lambda (member)
                 (set! pretty-css (string-append pretty-css
-                  (format (cond ((eq? (car family) 'by-class)
+                  (format (cond ((eq? (car family) 'class)
                                   "\n.~a {~a \n}\n")
-                                ((eq? (car family) 'by-id)
+                                ((eq? (car family) 'id)
                                   "\n#~a {~a \n}\n")
                                 (else "\n~a {~a \n}\n"))
-                    (car member)
+                    (if (eq? (car member) 'full-ann-list)
+                        (let ((anns-tag-redefined
+                                (getChildOption
+                                  `(scholarly annotate export html annotations-div-tags)
+                                      (car family))))
+                          (if anns-tag-redefined
+                              anns-tag-redefined
+                              (car member)))
+                        (car member))
                     (let ((sub-mem-styles ""))
                       (for-each
                         (lambda (sub-member)
