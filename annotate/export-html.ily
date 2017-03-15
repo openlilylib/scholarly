@@ -63,10 +63,10 @@
               (lambda (member)
                 (set! pretty-css (string-append pretty-css
                   (format (cond ((eq? (car family) 'by-class)
-                                  "\n.~a {~a }\n")
+                                  "\n.~a {~a \n}\n")
                                 ((eq? (car family) 'by-id)
-                                  "\n#~a {\n~a }\n")
-                                (else "\n~a {~a }\n"))
+                                  "\n#~a {~a \n}\n")
+                                (else "\n~a {~a \n}\n"))
                     (car member)
                     (let ((sub-mem-styles ""))
                       (for-each
