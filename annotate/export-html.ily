@@ -126,11 +126,26 @@
    (let* ((trailing-line (if (= nest-level 0) "\n" ""))
           (div-type (symbol->string
                      (getChildOption `(scholarly annotate export html divs) type)))
-          (class (classify-html-tag (if (string? ann-or-string) ann-or-string "annotation")))
+          (class (classify-html-tag (if (string? ann-or-string)
+                                        (if (equal? ann-or-string "annotations")
+                                            (let ((anns-class-renamed (assq-ref (getOption
+                                                    `(scholarly annotate export html annotations-div-tags))
+                                                      'class)))
+                                                (if anns-class-renamed
+                                                    anns-class-renamed
+                                                    ann-or-string))
+                                              ann-or-string)
+                                          "annotation")))
           (id
-           (let ((html-id (and (not (string? ann-or-string))
-                               (assq-ref ann-or-string 'html-id))))
-             (if html-id (idify-html-tag html-id) "")))
+            (if (equal? ann-or-string "annotations")
+                (let ((anns-id-renamed (assq-ref (getOption
+                        `(scholarly annotate export html annotations-div-tags))
+                          'id)))
+                  (if anns-id-renamed
+                      (idify-html-tag anns-id-renamed) ""))
+                (let ((html-id (and (not (string? ann-or-string))
+                                    (assq-ref ann-or-string 'html-id))))
+                  (if html-id (idify-html-tag html-id) ""))))
           (div-tags (delimit-html-tags (list div-type class id)))
           (div-begin (format "~a~a" (indent div-tags nest-level) trailing-line)))
      (append-to-output-stringlist div-begin)))
