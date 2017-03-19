@@ -1,5 +1,5 @@
 ==================
-OpenLilyLib Primer
+openLilyLib Primer
 ==================
 
 Besides hosting a growing list of unique projects, openLilyLib (OLL) provides a
@@ -20,11 +20,27 @@ or similar). With the packages installed (following the instructions in this gui
 you can compile any of the examples to see the functionalities in the context of
 a complete LilyPond document.
 
-Here is a brief list of the currently available packages
+Here is a list of the currently available packages:
 
-.. note! If this is made into the OLL manual, we can intersphinx into each of
-  the other documentations. Or otherwise, link to those subsections (though in
-  that case it might be redundant to the TOC..)
+.. table:: list of openLilyLib packages
+   :widths: auto
+
+   =========================  =========================================================
+    Title                      Description
+   =========================  =========================================================
+    **oll-core**               Library infrastructure for LilyPond add-ons
+    **breaks**                 A utility package to manage break sets in LilyPond
+    **edition-engraver\***     Apply tweaks to LilyPond by addressing items externally
+    **gridly\***               Implements a "segmented grid" approach to LilyPond scores
+    **ji**                     Encoding and displaying just intonation with LilyPond
+    **LO-ly\***                LibreOffice-LilyPond extension
+    **page-layout**            Functions to enhance and simplify working with page layout in LilyPond
+    **scholarLY**              Implements annotations and editorial functions with LilyPond
+   =========================  =========================================================
+
+\*
+*not configured for standard OLL installation/usage. Refer
+to their specific instructions for more information.*
 
 
 Installation
@@ -133,19 +149,20 @@ simple) instructions on how to install and use it.
 Basic Usage and Configuration
 =============================
 
-Any subproject of openLilyLib must first load 'oll-core' at the top of the document.
+Any subproject of openLilyLib must first load `oll-core` at the top of the document.
 
 .. code-block:: lilypond
 
   % mandatory invocation of openLilyLib's core infrastructure:
   \include "oll-core/package.ily"
 
-If you are using LilyPond from the command line, make sure it is configured
-to include the path to `oll-core`. In Frescobaldi, this is done in `Frescobaldi > Preferences > LilyPond Preferences > "LilyPond include paths:"`.
-
-This is the minimum requirement for the `oll-core` utilities, and it
+This is the minimum requirement for the `oll-core` utilities, which provide all
+the infrastructure for loading and configuring packages, and it
 `must precede any code in the project which uses it`, including the
 loading of packages themselves.
+
+If you are using LilyPond from the command line, make sure it is configured
+to include the path to `oll-core`. In Frescobaldi, this is done in `Frescobaldi > Preferences > LilyPond Preferences > "LilyPond include paths:"`.
 
 
 Loading Packages and Modules
@@ -153,26 +170,58 @@ Loading Packages and Modules
 
 OLL libraries are maintained as packages of modules. scholarLY, for example,
 currently has two available modules: annotate and editorial functions.
-We load them like so:
+We load them with either ``\loadPackage`` or ``\loadModule``.
 
-.. code-block:: lilypond
+The syntax for ``\loadPackage`` is ``<command> <options> <package-name>``, such
+as in the following.
+
+::
 
   \loadPackage \with {
     modules = annotate
   } scholarly
 
-And that's it! Now you should see a confirmation of any loaded packages at
-the top of the output log each time you compile your document.
+The ``\with`` block contains optional arguments for including modules and any
+other options the package provides. More than one module can be set like:
+
+::
+
+  \loadPackage \with {
+    modules = #'(annotate editorial-functions)
+  } scholarly
+
+If you need to use a package for its core
+functionality without necessarily including any modules, this could be done
+more simply like:
+
+::
+
+  \loadPackage scholarly
+
+And the ``\loadModule`` command offers another way to invoke specific modules:
+
+::
+
+  \loadModule scholarly.annotate
+
+You should see a confirmation of any loaded packages at the top of the output
+log each time you compile your document.
 
 
 Option Handling
 ----------------
 
 Some OLL libraries come with a set of options which can be configured using
-OLL's global option handling system. Regardless of the specific details of
-each option, the same generic command, ``\setOption``, is available as a standard hook, both
-as a means of convenience and as a way to avoid naming collisions between
-packages (through its robust tree system).
+OLL's global option handling system.
+
+
+Setting Options
+^^^^^^^^^^^^^^^
+
+Regardless of the specific details of each option, the same generic command,
+``\setOption``, is available as a standard hook, both as a means of convenience
+and as a way to avoid naming collisions between packages (through its robust
+tree system).
 
 Here is an example of an option that only takes a single boolean.
 
@@ -211,12 +260,19 @@ from the previous example like so:
 
 ::
 
-  \setOption scholarly.annotate.colors.critical-remark = #,darkgreen
-  \setOption scholarly.annotate.colors.musical-issue = #,green
+  \setOption scholarly.annotate.colors.critical-remark #,darkgreen
+  \setOption scholarly.annotate.colors.musical-issue #,green
   % ... and so on
-  a b16 b 16 gab
 
-And so on...
+
+Displaying Options
+^^^^^^^^^^^^^^^^^^
+
+The ``\displayOptions`` command, which takes no arguments, will *pretty-print* to
+console all of the options available in the loaded packages with their current
+settings. The output of this may be affected by the location of the command in
+your source code (i.e. before it is called *after* you set your options); otherwise,
+it can technically be placed anywhere.
 
 
 Contributing
