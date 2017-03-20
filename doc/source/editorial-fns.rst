@@ -115,7 +115,7 @@ For example, here is how scholarLY defines the ``\editorialAddition`` macro:
        (symbol-list? ly:music?)
        (editorialFunction 'addition item mus))
 
-The name ``editorialAddition`` names the macro, and the first argument to
+The hook ``editorialAddition`` names the macro, and the first argument to
 ``editorialFunction`` in the fourth line (in this example, ``'addition``)
 determines what edition `type` the macro will apply when used. Note that this
 doesn't actually configure what the edition does; that is set later via
@@ -128,7 +128,7 @@ Editorial Functions within Annotations
 Annotations can hook all of the editorial functions commands dynamically through
 its property interface. We trigger them implicitly by their inclusion in the
 context (similar to how `annotate` applies footnotes and balloon text
-automatically with either's ``-offset`` property is included).
+automatically when either's ``-offset`` property is included).
 
 This is done in the second measure of this chapter's minimal example:
 
@@ -140,27 +140,36 @@ Syntax
 ------
 
 Since this editorial function is applied as an annotation *property*, it takes
-the form of ``key = value``; the ``apply`` property triggers the edition, and
-its value, which must be one recognized by the module, describes the type to
+the form of ``key = value``; the ``apply`` property key triggers the edition,
+and its value, which must be one recognized by the module, describes the type to
 apply. The next section addresses how to actually configure that list.
 
-`Refer to the previous chapter on the *annotate* module for a more comprehensive explanation of its syntax.`
+*Refer to the previous chapter on the* **annotate** *module for a more comprehensive explanation of its syntax.*
+
+Currently, ``apply``-ing a type of edition which isn't paired with the item in
+the relevant option (such as ``addition`` with ``slur``, mapping to something
+like ``slurDashed``) will do nothing to the music. LilyPond will ignore the
+attempted edition as if it weren't invoked, and scholarLY will send a warning to
+the console.
 
 
 Options
 =======
 
 Editorial functions are a somewhat tricky feature for scholarLY to implement due
-to the fact that not all *functions* are really functions at all. Some are, in
+to the fact that not all *functions* are evaluated in the same way. Some are, in
 fact, evaluated as bonified LilyPond music functions, while others simply
 trigger modifications to a context. For example, one might want to affect any
 notehead of type `addition` with ``\parenthesize`` and any slur of type
 `addition` with ``\slurDashed``.
 
 In order to facilitate a common interface that handles all of these operations
-in the common syntax, we have to require a little bit of Scheme magic in the
-options. Here's a literal copy of the default editorial functions, if one were
-to set them again:
+in a consistent syntax, we have to require a little bit of extra Scheme in the
+options. This means prepending to each of the "functions" (using that word
+loosely) a comma. scholarLY will sort and apply them accordingly later.
+
+**scholarly.editorial.functions.addition** `association list`
+  description
 
 ::
 
@@ -168,8 +177,7 @@ to set them again:
     #`((NoteHead . ,parenthesize)
        (Slur . ,slurDashed))
 
-Prepend to each of the "functions" (using that word loosely) a comma. scholarLY
-will sort and apply them accordingly later.
+Prepend to each
 
 ---
 
