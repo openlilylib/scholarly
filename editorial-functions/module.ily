@@ -16,9 +16,9 @@ editorialFunction =
 #(define-music-function (type item mus)
    (symbol? symbol-list? ly:music?)
    (let ((edit (getChildOptionWithFallback
-              		`(scholarly editorial-functions ,type)
-              		  (last item)
-              		#f))
+                  `(scholarly editorial-functions ,type)
+                    (last item)
+                  #f))
          (apply-edits (getOption `(scholarly editorial-functions apply)))
          (ignored-type (memq type (getOption
                                       `(scholarly editorial-functions ignored-types)))))
