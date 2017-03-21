@@ -28,6 +28,8 @@ annotations. In the *Options* section later, we'll see how to actually configure
 what effects are applied to specific items per specific types of editions, and
 how to toggle them.
 
+**resulting image of the minimum example here...**
+
 Choosing a method to invoke editorial functions, either standalone or through
 annotations, isn't only a matter of taste. One can imagine the need for some
 items to be both or either, and this close integration of the two offers a
@@ -72,15 +74,17 @@ Predefined Functions
 
 `editorial-functions` comes with three preconfigured commands:
 
-``\editorialAddition``
-  details
+``\editorialAddition item music``
+  Triggers an editorial `addition` to the `item` in `music`;
 
 ``\editorialDeletion``
-  details
+  Triggers an editorial `deletion` to the `item` in `music`.
 
 ``\editorialEmendation``
-  details
+  Triggers an editorial `emendation` to the `item` in `music`.
 
+Though they are maybe the most common types of editions one might use, we aren't
+limited to only these three.
 
 Also available is the``\editorialFunction`` command which scholarLY uses
 internally; the hook is more of a generic invocation, followed by ``type`` and

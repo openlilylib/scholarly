@@ -30,7 +30,7 @@ begin with this minimum example which includes an *annotation* in the context of
 a compilable LilyPond document:
 
 .. literalinclude:: ../examples/annotate/min.ly
-
+  :lines: 1-23
 
 
 
@@ -39,6 +39,11 @@ but with the annotated grob (in this case, a slur) printed in a color other than
 the default black.(link to cutout from the printed score)
 If you are working in Frescobaldi, the line of code with ``\criticalRemark ...``
 should be highlighted as well.(link to a screenshot of Frescobaldi)
+
+.. figure:: ../examples/min-from-1.0.1-to-2.0.1-clip.png
+  :align: center
+
+  Caption here?
 
 **Here should be an image of the resulting output from the example.**
 
