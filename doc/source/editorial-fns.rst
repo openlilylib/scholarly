@@ -19,6 +19,7 @@ independently through its own similar functionality. The following example
 does both to the same excerpt in consecutive measures.
 
 .. literalinclude:: ../examples/editorial-functions/min.ly
+  :lines: 1-23
 
 The above edition, by default, will make the slur a dashed line instead of the
 typical solid line. Comment the line with ``apply = addition`` in the second
@@ -28,7 +29,10 @@ annotations. In the *Options* section later, we'll see how to actually configure
 what effects are applied to specific items per specific types of editions, and
 how to toggle them.
 
-**resulting image of the minimum example here...**
+.. figure:: ../examples/editorial-functions/min-from-1.0.1-to-3.0.1-clip.png
+  :align: center
+
+  Caption
 
 Choosing a method to invoke editorial functions, either standalone or through
 annotations, isn't only a matter of taste. One can imagine the need for some
@@ -170,19 +174,13 @@ LilyPond document.
 Map an editorial function to the ``\edit`` shorthand which will then retain
 those settings until changed again using the same method:
 
-::
+.. literalinclude:: ../examples/editorial-functions/shorthand.ly
+  :lines: 16-26
 
-  \editorialShorthand #'deletion Stem
+.. figure:: ../examples/editorial-functions/shorthand-from-1.0.1-to-5.0.1-clip.png
+  :align: center
 
-    c'4 \edit d'( e') \edit c'(
-    |
-    f'8) \edit f' \edit e'4( b8) \edit d'( c'4)
-
-  \editorialShorthand #'addition Slur
-
-    c'4 \edit d'( e') \edit c'(
-    |
-    f'8) \edit f' \edit e'4( b8) \edit d'( c'4)
+  Caption
 
 
 Syntax
@@ -228,13 +226,10 @@ parenthesize function, for example), add an optional ``\with`` argument.
 In this context mod, the ``function`` key can be set to whatever music function
 will be applied to the expression:
 
-::
+.. literalinclude:: ../examples/editorial-functions/sections.ly
+  :lines: 19-31
 
-  \editorialSection \with {
-    function = #something-to-apply-once
-    } #'deletion Slur {
-    c'4 e'( d') c'
-  }
+.. figure:: ../examples/editorial-functions/sections-from-1.0.1-to-5.0.1-clip.png
 
 Syntax
 ------
@@ -282,8 +277,10 @@ Prepend to each
 The next two options are configured similarly.
 
 **scholarly.editorial-functions.deletion** `alist`
+  description
 
 **scholarly.editorial-functions.emendation** `alist`
+  description
 
 
 

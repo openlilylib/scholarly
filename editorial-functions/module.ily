@@ -100,7 +100,7 @@ editorialSection =
                         (if apply-edits
                             (if (ly:music-function? edit)
                                   (edit m)
-                                  #{ #edit #m #})
+                                  #{ \once #edit #m #})
                             m)
                         (begin
                           ; Send a message for each instance. Do we want to warn
