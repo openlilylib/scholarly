@@ -30,28 +30,23 @@ begin with this minimum example which includes an *annotation* in the context of
 a compilable LilyPond document:
 
 .. literalinclude:: ../examples/annotate/min.ly
+  :name: ex. 1
   :lines: 1-23
-
-
 
 Compiling this example will print the music ``c4 e( d) d`` mostly as expected,
 but with the annotated grob (in this case, a slur) printed in a color other than
-the default black.(link to cutout from the printed score)
-If you are working in Frescobaldi, the line of code with ``\criticalRemark ...``
-should be highlighted as well.(link to a screenshot of Frescobaldi)
+the default black. If you are working in Frescobaldi, the line of code with
+``\criticalRemark ...`` should be highlighted as well.
 
-.. figure:: ../examples/min-from-1.0.1-to-2.0.1-clip.png
+.. figure:: ../examples/annotate/min-from-1.0.1-to-2.0.1-clip.png
+  :name: bla
   :align: center
 
-  Caption here?
-
-**Here should be an image of the resulting output from the example.**
-
-**Here should be a screenshot of the Frescobaldi text input panel.**
+  Output of :ref:`ex. 1 <ex. 1>`
 
 These coloring effects are default features of scholarLY, and they confirm
-that the annotation engraver has recognized the annotation and created a list
-of annotations for this score.
+that the annotation engraver has recognized the annotation and created an
+internal list of annotations for this score.
 
 
 Syntax
@@ -160,18 +155,25 @@ default, scholarLY assumes ``message`` is the footnote text;
 Let's take the same example from before and make it a footnote:
 
 .. literalinclude:: ../examples/annotate/footnotes-01.ly
+  :name: ex. 2
   :lines: 9-17
 
-**Insert result here.. cut page size down and make sure footnote is included**
+.. figure:: ../examples/annotate/footnotes-01.png
+  :align: center
 
+  Output of :ref:`ex. 2 <ex. 2>`
 
 The ``footnote-text`` property may be included to indicate text different than
 the annotation message.
 
 .. literalinclude:: ../examples/annotate/footnotes-02.ly
+  :name: ex. 3
   :lines: 9-18
 
-**Insert result here.. cut page size down and make sure footnote is included**
+.. figure:: ../examples/annotate/footnotes-02.png
+  :align: center
+
+  Output of :ref:`ex. 3 <ex. 3>`
 
 
 This functionality only affects footnotes engraved by LilyPond. Footnotes
@@ -188,14 +190,25 @@ property. message is the default text, and ``balloon-text`` can optionally
 specify an alternative message.
 
 .. literalinclude:: ../examples/annotate/balloon-text-01.ly
+  :name: ex. 4
   :lines: 9-17
+
+.. figure:: ../examples/annotate/balloon-text-01-from-1.0.1-to-2.0.1-clip.png
+  :align: center
+
+  Output of :ref:`ex. 4 <ex. 4>`
 
 
 And with a unique message for the balloon text:
 
 .. literalinclude:: ../examples/annotate/balloon-text-02.ly
+  :name: ex. 5
   :lines: 9-18
 
+.. figure:: ../examples/annotate/balloon-text-02-from-1.0.1-to-2.0.1-clip.png
+  :align: center
+
+  Output of :ref:`ex. 5 <ex. 5>`
 
 Keep in mind that LilyPond isn't able to engrave balloon text to spanners (Slur,
 Hairpin, TrillSpanner, etc.) yet; attempts to do so will typically cause
