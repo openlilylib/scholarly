@@ -74,7 +74,7 @@
       (props (context-mod->props properties))
       ;; retrieve a pair with containing directory and input file
       (input-file (string-split (car (ly:input-file-line-char-column (*location*))) #\/ ))
-      (ctx (list-tail input-file (- (length input-file) 2)))
+      (ctx (list-tail input-file (- (length input-file) 1)))
       ;; extract directory name (-> part/voice name)
       (input-directory (car ctx))
       ;; extract segment name
