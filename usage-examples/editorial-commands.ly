@@ -24,9 +24,13 @@
 longerfunction =
 #(define-music-function (mus) (ly:music?)
    #{ \once \set fontSize = -4 \parenthesize #mus #})
+transparentStem =
+#(define-music-function (mus) (ly:music?)
+   #{ \once \override Stem.transparent = ##t #mus #})
 
 \setOption scholarly.editorial-functions.deletion #`(
-  (NoteHead . ,longerfunction))
+  (NoteHead . ,longerfunction)
+  (Stem . ,transparentStem))
 
 
 
@@ -48,17 +52,24 @@ music = {
 
 % using editions:
 
+
+
     \criticalRemark
     \with{
         message = "A remark about adding the slur."
         apply = addition
     } Slur a4( b c') d'
 
+    \mark \markup { in annotations }
+
     \musicalIssue
     \with{
         message = "This note needs to be added."
         apply = addition
     } NoteHead a4( b c') d'
+
+  \break
+
 
 
 % applying edition without an annotation
@@ -68,7 +79,7 @@ music = {
 
     \editorialAddition Slur a4( b c') d'
 
-
+  \mark \markup { standalone }
 
 % using editions predefined by user:
 
@@ -86,10 +97,55 @@ music = {
     \with{
         message = "Should we remove the slur?"
         apply = emendation
-    } Slur a4( b c') d'
+    } Slur a4( b c') d' |
+
+
+    \break
+
+
+
+    % Set the \edit macro as a shorthand:
+
+    \editorialShorthand #'addition NoteHead
+      c'8 \edit d' e' <a' \edit f'>
+
+    \mark \markup { editorial shorthands "(\\edit)" }
+
+    \editorialShorthand #'addition Slur
+      c' \edit c'( d') c'( e' f') \edit d'( c') d'8 c' b c'
+
+
+    \break
+
+
+
+    % Edit everything in the music of item and type, with
+    % optional prepend and append (perhaps large parens, etc.)
+
+    \editorialSection #'addition NoteHead {
+      \tuplet 5/4 {
+        c'4 b' b
+        <c' e'>
+        c'8( d')
+      }
+    }
+
+    \mark \markup { editorial sections }
+
+    \editorialSection #'deletion Stem {
+      f'4( g') f'( g')
+    }
+
+    \editorialSection #'addition Slur {
+      f'8( g'4) f'8 a16( b c') e'( c'4)
+    }
 
 }
 
 \score {
   \new Staff = "my staff" \music
+}
+
+\paper {
+  system-system-spacing.basic-distance = #20
 }
