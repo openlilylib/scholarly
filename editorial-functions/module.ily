@@ -89,20 +89,20 @@ editorialSection =
          ; TODO uncomment and commit the following once `editorial-opts` branch is merged
          ;(ignored-type (memq type (getOption `(scholarly editorial-function ignored-types))))
          (music (music-map
-            (lambda (m)
-              (if edit
-                  ; TODO change to: (and apply-edits (not ignored-type)):
-                  (if apply-edits
-                      (if (ly:music-function? edit)
-                            (edit m)
-                            #{ #edit #m #})
-                      m)
-                  (begin
-                    ; Send a message for each instance. Do we want to warn
-                    ; only once for the entire section though?
-                    (oll:warn "Editorial command ~a not set for ~a." edit (car item))
-                    m)))
-          sect))
+                  (lambda (m)
+                    (if edit
+                        ; TODO change to: (and apply-edits (not ignored-type)):
+                        (if apply-edits
+                            (if (ly:music-function? edit)
+                                  (edit m)
+                                  #{ #edit #m #})
+                            m)
+                        (begin
+                          ; Send a message for each instance. Do we want to warn
+                          ; only once for the entire section though?
+                          (oll:warn "Editorial command ~a not set for ~a." edit (car item))
+                          m)))
+                  sect))
           ; function prop: applied to the group, such as large parens etc.
           (fun (if props (assq-ref props 'function) #f)))
       (if fun
