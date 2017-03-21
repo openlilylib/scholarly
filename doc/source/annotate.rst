@@ -463,7 +463,7 @@ HTML
 
 This section is pending with the pull request which will implement html export.
 
-**scholarly.annotate.export.html.labels** `association list`
+**scholarly.annotate.export.html.labels** `alist`
 
 ::
 
@@ -483,7 +483,7 @@ This section is pending with the pull request which will implement html export.
   % annotations div
   \registerOption scholarly.annotate.export.html.full-document ##t
 
-**scholarly.annotate.export.html.divs** `association list`
+**scholarly.annotate.export.html.divs** `alist`
 
 ::
 
@@ -495,7 +495,7 @@ This section is pending with the pull request which will implement html export.
      (each-ann-inner . ul)
      (each-ann-props . li))
 
-**scholarly.annotate.export.html.annotations-div-tags** `association list`
+**scholarly.annotate.export.html.annotations-div-tags** `alist`
 
 ::
 
@@ -513,7 +513,7 @@ This section is pending with the pull request which will implement html export.
 
 
 
-**scholarly.annotate.export.html.prop-labels** `association list`
+**scholarly.annotate.export.html.prop-labels** `alist`
 
   % Which labels to print for props (only affect props included in previous list)
 
@@ -575,7 +575,7 @@ TODO
 
 
 
-**scholarly.annotate.export.html.generate-css-settings** `association list`
+**scholarly.annotate.export.html.generate-css-settings** `alist`
 
 ::
 

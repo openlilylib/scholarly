@@ -153,6 +153,102 @@ attempted edition as if it weren't invoked, and scholarLY will send a warning to
 the console.
 
 
+
+
+The ``\edit`` Shorthand
+=======================
+
+The ``\edit`` macro can be hooked to any editorial function as a shorthand. This
+is mostly a convenience function to cut down on visual complexity in the
+LilyPond document.
+
+
+Map an editorial function to the ``\edit`` shorthand which will then retain
+those settings until changed again using the same method:
+
+::
+
+  \editorialShorthand #'deletion Stem
+
+    c'4 \edit d'( e') \edit c'(
+    |
+    f'8) \edit f' \edit e'4( b8) \edit d'( c'4)
+
+  \editorialShorthand #'addition Slur
+
+    c'4 \edit d'( e') \edit c'(
+    |
+    f'8) \edit f' \edit e'4( b8) \edit d'( c'4)
+
+
+Syntax
+------
+
+.. table:: scholarLY editorial-functions shorthand definition syntax
+   :widths: auto
+
+   ========= ======================== ========================================================
+    role      example                  description
+   ========= ======================== ========================================================
+    `hook`    ``\editorialShorthand``  invokes the function to update ``\edit``'s mapping
+    `type`    ``#'deletion``           the type of edition to apply
+    `item`    ``Stem``                 the symbol name for the affected grob
+   ========= ======================== ========================================================
+
+
+.. table:: scholarLY editorial-functions shorthand macro syntax
+   :widths: auto
+
+   ========= ======================== ========================================================
+    role      example                  description
+   ========= ======================== ========================================================
+    `macro`   ``\edit``                apply the currently mapped editorial function to music
+    `music`   ``d'(``                  the music to which the edition is applied
+   ========= ======================== ========================================================
+
+
+Editorial Sections
+==================
+
+With editorial sections, scholarLY can automatically apply functions to all
+applicable grobs in a music expression.
+
+::
+
+  \editorialSection #'addition NoteHead {
+    c'4 e'
+  }
+
+To apply an aditional function to the entire selection `once` (such as a special
+parenthesize function, for example), add an optional ``\with`` argument.
+In this context mod, the ``function`` key can be set to whatever music function
+will be applied to the expression:
+
+::
+
+  \editorialSection \with {
+    function = #something-to-apply-once
+    } #'deletion Slur {
+    c'4 e'( d') c'
+  }
+
+Syntax
+------
+
+.. table:: scholarLY editorial-functions section syntax
+   :widths: auto
+
+   ============== ======================= =========================================================
+    role           example                 description
+   ============== ======================= =========================================================
+    `hook`         ``\editorialSection``   invokes the function for the pair of `type` and `item`
+    `properties`   ``\with { ... }``       contains key = value pairs (expects ``function = ...``)
+    `type`         ``#'deletion``          the type of edition to apply
+    `item`         ``Stem``                the symbol name for the affected grob
+    `music`        ``{ c'4 e' }``          the music expression containing the affected grobs
+   ============== ======================= =========================================================
+
+
 Options
 =======
 
@@ -168,21 +264,35 @@ in a consistent syntax, we have to require a little bit of extra Scheme in the
 options. This means prepending to each of the "functions" (using that word
 loosely) a comma. scholarLY will sort and apply them accordingly later.
 
-**scholarly.editorial.functions.addition** `association list`
+**scholarly.editorial-functions.addition** `alist`
   description
 
 ::
 
-  \setOption scholarly.editorial.functions.addition
+  \setOption scholarly.editorial-functions.addition
     #`((NoteHead . ,parenthesize)
        (Slur . ,slurDashed))
 
 Prepend to each
 
----
+The next two options are configured similarly.
+
+**scholarly.editorial-functions.deletion** `alist`
+
+**scholarly.editorial-functions.emendation** `alist`
+
+
+
+
+
+
+**scholarly.editorial-functions.ignored-types** `list`
+
 
 And finally, we have available
 
+**scholarly.editorial-functions.apply**
+
 ::
 
-  \setOption scholarly.editorial.functions.apply ##t
+  \setOption scholarly.editorial-functions.apply ##t
