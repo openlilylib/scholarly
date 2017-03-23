@@ -74,8 +74,13 @@
       (props (context-mod->props properties))
       ;; retrieve a pair with containing directory and input file
       (input-file (string-split (car (ly:input-file-line-char-column (*location*))) #\/ ))
-      (ctx (list-tail input-file (- (length input-file)
-                                    (if (> (length input-file) 1) 2 1))))
+      (ctx
+       (if (= 1 (length input-file))
+           ;; relative path to current directory => no parent available
+           ;; solution: take the last element of the current working directory
+           (last (os-path-cwd-list))
+           ;; absolute path, take second-to-last element
+           (list-tail input-file (- (length input-file) 2))))
       ;; extract directory name (-> part/voice name)
       (input-directory (car ctx))
       ;; extract segment name
