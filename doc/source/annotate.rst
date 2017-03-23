@@ -486,7 +486,7 @@ This section is pending with the pull request which will implement html export.
 ::
 
   % Annotation types for html text output
-  \registerOption scholarly.annotate.export.html.labels
+  \setOption scholarly.annotate.export.html.labels
   #`((critical-remark . "Critical Remark")
     (musical-issue . "Musical Issue")
     (lilypond-issue . "Lilypond Issue")
@@ -499,7 +499,13 @@ This section is pending with the pull request which will implement html export.
 
   % Print full document with header (including CSS link) and body, or just
   % annotations div
-  \registerOption scholarly.annotate.export.html.full-document ##t
+  \setOption scholarly.annotate.export.html.full-document ##t
+
+
+For each annotation list exported, the division of items, from outermost to
+innermost, is
+
+
 
 **scholarly.annotate.export.html.divs** `alist`
 
@@ -507,93 +513,187 @@ This section is pending with the pull request which will implement html export.
 
   % Annotation div types (can technically be anything, since they get directly
   % converted to string; so even a new type of div, or `a`, or whatever else.)
-  \registerOption scholarly.annotate.export.html.divs
+  \setOption scholarly.annotate.export.html.divs
   #`((full-ann-list . ol)
      (each-ann-outer . li)
      (each-ann-inner . ul)
      (each-ann-props . li))
 
 **scholarly.annotate.export.html.annotations-div-tags** `alist`
+  Change the tags for the annotations list div.
 
 ::
 
-  \registerOption scholarly.annotate.export.html.annotations-div-tags
+  \setOption scholarly.annotate.export.html.annotations-div-tags
      #`((class . "my-annotations")
         (id . #f))
 
 **scholarly.annotate.export.html.props** `list`
+  Which properties to print to html, and in what order. Default is as follows:
 
 ::
 
-  % Which props to print to html
-  \registerOption scholarly.annotate.export.html.props
+  \setOption scholarly.annotate.export.html.props
     #`(type grob-location grob-type message)
 
-
-
 **scholarly.annotate.export.html.prop-labels** `alist`
-
-  % Which labels to print for props (only affect props included in previous list)
+  Which labels to print for props (only affects props included in the
+  `export.html.props` list). Default is as follows.
 
 ::
 
-  \registerOption scholarly.annotate.export.html.prop-labels
+  \setOption scholarly.annotate.export.html.prop-labels
     #`((type . "<em>Type:</em> ")
        (grob-location . #f)
        (grob-type . #f)
        (message . #f))
 
 
-Generating CSS
-^^^^^^^^^^^^^^
+Working with CSS
+^^^^^^^^^^^^^^^^
 
-A general intro here.
-
-.
-
-TODO
-
-.
+Like the output filenames option, you can of course specific files in other
+directories in the following options. Note that the directories must already
+exist, even for generated files.
 
 **scholarly.annotate.export.html.external-css-name** `string`
+  What is the filename of any external file you provide. Note that scholarLY
+  currently doesn't read this and will only link to it if requested. Default
+  is `#f`.
 
 ::
 
-  \registerOption scholarly.annotate.export.html.external-css-name
+  \setOption scholarly.annotate.export.html.external-css-name
     #"my-external-styles.css"
 
 **scholarly.annotate.export.html.generate-css-name** `string`
+  What is the filename of the generated file. Default is an arbitrary suggestion
+  "my-generated-styles.css".
 
 ::
 
-  \registerOption scholarly.annotate.export.html.generate-css-name
+  \setOption scholarly.annotate.export.html.generate-css-name
     #"my-generated-styles.css"
 
+The following two have a subtle naming difference, but together they determine
+the exact CSS behavior scholarLY will implement. Not every combination is
+possible (such as loading and printing an external file to the header (yet) or
+inline).
+
 **scholarly.annotate.export.html.with-css** `symbol`
+  How to route/reference CSS. Default is ``linked``. Applicable settings:
+
+  - *inline*: embed css inline (not yet implemented)
+  - *header*: print css in header
+  - *linked*: link to file in header
 
 ::
 
-  % How to handle CSS upon html export
-  %   #`inline = embed css inline (very much not yet implemented)
-  %   #`header = print in header;
-  %   #`linked = link in header, which also means export css (default or generated)
-  \registerOption scholarly.annotate.export.html.with-css
+  \setOption scholarly.annotate.export.html.with-css
     #`linked
 
 **scholarly.annotate.export.html.use-css** `symbol`
+  Which CSS to use. Default is ``default``. Applicable settings:
+
+  - *default* the default CSS provided by the repository
+  - *generate* a generated CSS
+  - *external* external stylesheet
 
 ::
 
-  % Which CSS to use when used at all (default is the fallback if not one of the other two)
-  %   #`default = handle the default CSS included in the repository
-  %   #`generate = generate a new CSS (using the name from `css-name` option)
-  %   #`external = (link to) external stylesheet (does not support *importing* yet)
-  \registerOption scholarly.annotate.export.html.use-css
+  \setOption scholarly.annotate.export.html.use-css
     #`default
 
+The valid combinations of the previous two options are:
 
+  - `with-css` ``inline`` - `use-css` ``default`` or ``generate``
+
+  - `with-css` ``header`` - `use-css` ``default`` or ``generate``
+
+  - `with-css` ``linked`` - `use-css` ``external`` or ``generate``
+
+Designing the Generated CSS
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **scholarly.annotate.export.html.generate-css-settings** `alist`
+
+For generated CSS, we create styles in a sort of cascading `alist`.
+
+The left hand argument or `key` of each pair, such as ``class`` and ``id`` in
+the example below, describes what type of tag the enclosed elements should have.
+This basically prepends a ``.`` or ``#`` in front of the element's name for
+``class`` and ``id``,  respectively, and any other type will be printed without
+such an alteration.
+
+The right hand argument is a list containing one or more pairs. The `key` of each
+pair is the name, as mentioned before, and the value is another list containing
+one or more strings and/or one or more `additional` lists of pairs. For those
+additional lists, the `key` is again the name of the element, and the `value` is
+a string or a list of one or more strings.
+
+The characters ``_`` and ``-`` in any `key` name will be replaced with spaces.
+This means that the following two settings are equivalent:
+
+::
+
+  \setOption scholarly.annotate.export.html.generate-css-settings
+    #`((class . ((annotations . (ul_li ("background: gray"))))))
+
+  % AND
+
+  \setOption scholarly.annotate.export.html.generate-css-settings
+    #`((class . ((annotations_ul_li . ("background: gray")))))
+
+Those examples would generate the following CSS:
+
+.. code-block:: css
+
+  .annotations ul li {
+    background: gray;
+  }
+
+  .annotations {
+  } ul li {
+    background: gray;
+  }
+
+You'll notice that the two CSS examples don't exactly get formatted the same
+way in the end. This is because scholarLY groups annotations within the same
+`class`, `id` or other top level pair together, and the second example was
+list in such a way that it noticed a hierarchical difference between ``annotations``
+and ``ul_li``.
+
+Here's another simple example extending the previous one which illustrates this
+difference within a more complex setting:
+
+::
+
+  \setOption scholarly.annotate.export.html.generate-css-settings
+    #`((class . ((myannotations . ("background: gray"
+                                    "margin: 0.5em"))
+                 (anotherclass . ("color: blue"
+                                  (ul . "list-style-type: none")
+                                  (ul_li . "margin: 0.25em"))))))
+
+Which gets printed to:
+
+.. code-block:: css
+
+  .myannotations {
+    background: gray;
+    margin: 0.5em;
+  }
+
+  .anotherclass {
+    color: blue;
+  } ul {
+    list-style-type: none;
+  } ul li {
+    margin: 0.25em;
+  }
+
+And, finally, another excerpt showing the full scope of this hierarchy with
+multiple div types and elements.:
 
 ::
 
@@ -602,13 +702,13 @@ TODO
                                   "margin: 0.5em"
                                   "line-height: 1.2"
                                  (ul . "list-style-type: none")))
-                (annotation . ((ul . "background: lightgray")
-                               (ul_li . "margin: 0.25em")))
-                (todo . ("background: red"))
-                (question . ("background: green"))))
+                 (annotation . ((ul . "background: lightgray")
+                                (ul_li . "margin: 0.25em")))
+                 (todo . ("background: red"))
+                 (question . ("background: green"))))
        (id . ((my-unique-annotations-list . ("foo: bar")))))
 
-In a header or generated file, the above would be compiled to:
+In a header or generated file, the above would be rendered to:
 
 .. code-block:: css
 
@@ -639,17 +739,14 @@ In a header or generated file, the above would be compiled to:
     foo: bar;
   }
 
-scholarLY prints the CSS in a nicely formatted presentation.
+Other things to note are that semicolons are automatically appended to each
+string, and that the `class`, `id` and other `key` types can each be used
+multiple times within the setting without fault. The latter point would be
+useful for trying out CSS settings before comitting to the task of embedding
+them more concisely within a minimal alist.
 
-.
+The names `full-ann-list` is r
 
-TODO
-
-.
-
-Options
-^^^^^^^
-
-More options?
-
-TODO
+scholarLY prints the CSS in a nicely indented, readable format. Inline CSS isn't
+yet implemented, but once it is the same option for setting the generated CSS
+will be automatically compatible with that option.

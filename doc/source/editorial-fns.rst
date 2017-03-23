@@ -8,7 +8,12 @@ Overview
 
 Editorial functions can be used to apply and organize certain critical changes
 made to musical scores. They can be implemented concurrently with annotations or
-through their own standalone hooks.
+through their own standalone hooks. What these functions ultimately accomplish
+is a way to toggle groups of changes to score items without rewriting any of the
+code (except the toggles themselves). This means that any number of editions,
+mapped to unique, configurable functions and tweaks in LilyPond, can be
+configured quite easily and in a number of fashions to suite a range of minimal
+and more literate documents.
 
 
 Minimum Example
@@ -19,7 +24,7 @@ independently through its own similar functionality. The following example
 does both to the same excerpt in consecutive measures.
 
 .. literalinclude:: ../examples/editorial-functions/min.ly
-  :lines: 1-23
+  :lines: 1-31
 
 The above edition, by default, will make the slur a dashed line instead of the
 typical solid line. Comment the line with ``apply = addition`` in the second
@@ -227,7 +232,7 @@ In this context mod, the ``function`` key can be set to whatever music function
 will be applied to the expression:
 
 .. literalinclude:: ../examples/editorial-functions/sections.ly
-  :lines: 19-31
+  :lines: 16-26
 
 .. figure:: ../examples/editorial-functions/sections-from-1.0.1-to-5.0.1-clip.png
 
@@ -254,9 +259,9 @@ Options
 Editorial functions are a somewhat tricky feature for scholarLY to implement due
 to the fact that not all *functions* are evaluated in the same way. Some are, in
 fact, evaluated as bonified LilyPond music functions, while others simply
-trigger modifications to a context. For example, one might want to affect any
-notehead of type `addition` with ``\parenthesize`` and any slur of type
-`addition` with ``\slurDashed``.
+trigger tweaks. For example, one might want to affect any notehead of type
+`addition` with ``\parenthesize`` and any slur of type `addition` with
+``\slurDashed``.
 
 In order to facilitate a common interface that handles all of these operations
 in a consistent syntax, we have to require a little bit of extra Scheme in the
@@ -264,7 +269,7 @@ options. This means prepending to each of the "functions" (using that word
 loosely) a comma. scholarLY will sort and apply them accordingly later.
 
 **scholarly.editorial-functions.addition** `alist`
-  description
+  Configure editorial functions for type ``addition``
 
 ::
 
@@ -272,28 +277,60 @@ loosely) a comma. scholarLY will sort and apply them accordingly later.
     #`((NoteHead . ,parenthesize)
        (Slur . ,slurDashed))
 
-Prepend to each
-
-The next two options are configured similarly.
-
 **scholarly.editorial-functions.deletion** `alist`
-  description
+  Configure editorial functions for type ``deletion``
+
+::
+
+  \setOption scholarly.editorial-functions.deletion
+    #`((NoteHead . ,parenthesize)
+       (Slur . ,slurDotted))
 
 **scholarly.editorial-functions.emendation** `alist`
-  description
+  Configure editorial functions for type ``emendation``
+
+::
+
+  \setOption scholarly.editorial-functions.emendation
+    #`((NoteHead . ,parenthesize)
+       (Slur . ,slurDashed))
 
 
+Options for Custom Functions
+----------------------------
+
+Set options for custom function types in almost the same way. If the type isn't
+builtin or already registered in the document, initialize it like so:
+
+::
+
+  \registerOption scholarly.editorial-functions.my-type
+    #`((NoteHead . parenthesize)
+       (Stem . another-function)
+       (Glissando . some-tweak))
 
 
+Global Toggles
+--------------
 
+All of the editorial functions, whether triggered by standalone hooks, within
+annotations, via the ``\edit`` shorthand, or within an editorial section, with
+adhere to the same options. The following two provide the ability to globally
+toggle functions.
 
-**scholarly.editorial-functions.ignored-types** `list`
-
-
-And finally, we have available
-
-**scholarly.editorial-functions.apply**
+**scholarly.editorial-functions.apply** `boolean`
+  Globally toggles all editorial functions. If true, editorial functions may be
+  applied. If false, no editorial functions will be applied. Default is ``#t``.
 
 ::
 
   \setOption scholarly.editorial-functions.apply ##t
+
+**scholarly.editorial-functions.ignored-types** `list`
+  Sets which editorial functions types to ignore even if the global ``apply``
+  option is true. Default is ``()`` (empty).
+
+::
+
+  \setOption scholarly.editorial-functions.ignored-types
+    #`(deletion emendation)
