@@ -78,7 +78,7 @@
        (if (= 1 (length input-file))
            ;; relative path to current directory => no parent available
            ;; solution: take the last element of the current working directory
-           (last (os-path-cwd-list))
+           (cons (last (os-path-cwd-list)) (last input-file))
            ;; absolute path, take second-to-last element
            (list-tail input-file (- (length input-file) 2))))
       ;; extract directory name (-> part/voice name)
