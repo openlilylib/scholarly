@@ -15,7 +15,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % By detault, scholarLY applies editorial functions when set.
-\registerOption scholarly.editorial.functions.apply ##t
+\registerOption scholarly.editorial-functions.apply ##t
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -29,15 +29,14 @@
 
 % NOTE. these are *not* real suggestions, but placeholders for now.
 
-\registerOption scholarly.editorial.functions.addition
+\registerOption scholarly.editorial-functions.addition
 #`((NoteHead . ,parenthesize)
    (Slur . ,slurDashed))
 
-\registerOption scholarly.editorial.functions.deletion
+\registerOption scholarly.editorial-functions.deletion
 #`((NoteHead . ,parenthesize)
    (Slur . ,slurDotted))
 
-\registerOption scholarly.editorial.functions.emendation
+\registerOption scholarly.editorial-functions.emendation
 #`((NoteHead . ,parenthesize)
    (Slur . ,slurDashed))
-
