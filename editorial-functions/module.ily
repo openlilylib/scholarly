@@ -31,7 +31,7 @@ editorialFunction =
 
 
 
-%% available user commands:
+%% predefined user commands:
 
 editorialAddition =
 #(define-music-function (item mus)
@@ -52,10 +52,6 @@ editorialEmendation =
 
 %% editorialShorthand `type` `item`
 % - hooks the \edit macro to `editorialFunction type item`
-%
-% Ideally, this could be limited to only an { expression } argument following
-% the editorialShorthand invocation. Since the expression inside expands *before*
-% the invocation's arguments are applied to the context, that seems not possible.
 
 #(define edit-sect-state (make-hash-table))
 
@@ -104,7 +100,9 @@ editorialSection =
                           m)))
                   sect))
           ; function prop: applied to the group, such as large parens etc.
-          (fun (if props (assq-ref props 'function) #f)))
+          (fun (assq-ref props 'function)))
       (if fun
-          (fun music)
+          (if (ly:music-function? fun)
+            (fun music)
+            #{ #fun #music #})
           music)))
