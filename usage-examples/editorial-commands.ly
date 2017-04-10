@@ -5,7 +5,7 @@
   modules = annotate
 } scholarly
 
-% \setOption scholarly.editorial-functions.apply ##f
+\setOption scholarly.editorial-functions.apply ##t
 
 
 %{

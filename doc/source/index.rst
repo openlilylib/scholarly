@@ -16,11 +16,11 @@ Welcome to scholarLY's documentation!
    Annotate <annotate>
    Editorial Functions <editorial-fns>
    The scholarLY LaTeX package <latex>
-   Package Index <package-index>
    Contribute to scholarLY <contributing>
+   Appendix <appendix>
 
 
-----
+
 
 
 About this documentation
