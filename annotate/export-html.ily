@@ -61,8 +61,10 @@
                                            generate-css-settings))))
            (pretty-css ""))
         (for-each
+          ;; family = a group named .class, #id, or anything else
           (lambda (family)
             (for-each
+              ;; member = each .class, #id, or anything else
               (lambda (member)
                 (set! pretty-css (string-append pretty-css
                   (format (cond ((eq? (car family) 'class)
@@ -79,23 +81,31 @@
                               anns-tag-redefined
                               (car member)))
                         (car member))
+                    ;; sub-mem-styles = a list of everything in each sub-member:
+                    ;;                  sub-member { sub-mem-styles }
                     (let ((sub-mem-styles ""))
                       (for-each
+                        ;; sub-member = list of strings and/or pairs
                         (lambda (sub-member)
                           (set! sub-mem-styles
                             (if (string? sub-member)
+                                ;; string gets printed literally
                                 (format "~a\n  ~a;" sub-mem-styles sub-member)
+                                ;; pairs are formatted like members and squeezed
+                                ;; between the first and last delimiters
                                 (format "~a\n} ~a {~a"
                                   sub-mem-styles
                                   (let ((multi-segs (string-match "(-|_)"
                                                       (symbol->string (car sub-member)))))
                                       (if (not multi-segs)
                                           (car sub-member)
+                                          ;; turn "ul_li" or "ul-li" into "ul li"
                                           (regexp-substitute #f
                                             multi-segs
                                             'pre " " 'post)))
                                   (if (string? (cdr sub-member))
                                       (format "\n  ~a;" (cdr sub-member))
+                                      ;; it is a list of strings
                                       (let ((sub-lst ""))
                                         (for-each
                                           (lambda (mem)
