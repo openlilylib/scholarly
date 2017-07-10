@@ -41,13 +41,8 @@
 
 \version "2.19.22"
 
-% TODO:
-% Once the module handling system in oll-core has been updated
-% (see https://github.com/openlilylib/oll-core/issues/9)
-% change the following includes accordingly
-% From oll-core
-\include "oll-core/util/consist-to-contexts.ily"
-\include "oll-core/util/grob-location.ily"
+\loadModule oll-core.util.consist-to-contexts
+\loadModule oll-core.util.grob-location
 
 % Global object storing all annotations
 #(define annotations '())
