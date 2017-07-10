@@ -19,7 +19,8 @@ dependencies: [
 oll-core: 0.0.0
 maintainers: [
   Urs Liska <ul@openlilylib.org>
+  Jeffery Shivers <jefferyshivers@gmail.com>
   ]
 version: 0.0.1
 license: GPL3
-repository:  https://github.com/openlilylib/ji/
+repository:  https://github.com/openlilylib/scholarly/
