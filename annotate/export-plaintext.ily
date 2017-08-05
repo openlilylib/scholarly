@@ -73,5 +73,4 @@
     annotations)
 
    ;; write to output file
-   (write-output-file "log"))
-
+   (write-output-file 'plaintext))

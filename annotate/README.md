@@ -12,12 +12,12 @@ annotations are printed* (see `scholarly/annotate/config.ily`). At the beginning
 the music document, we can tell *scholarLY* which types of documents to export:
 
 ```lilypond
-\setOption scholarly.annotate.export-targets #'(plaintext latex)
+\setOption scholarly.annotate.export-targets #'(plaintext html latex)
 ```
 
 Those output files will automatically format annotations to be further processed by the
-relevant programs. Currently, *plaintext* and *latex* are available, while other types
-are on the wishlist (such as *scheme* and *markdown*).
+relevant programs. Currently, *plaintext*, *latex* and *html* are available, while other types
+are on the wishlist (such as *scheme*, *json* and *markdown*).
 
 ## Basic Syntax
 

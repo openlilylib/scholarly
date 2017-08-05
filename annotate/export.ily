@@ -86,15 +86,22 @@ setAnnotationOutputBasename =
 
 % Take the stringlist 'annotate-export-stringlist
 % and write it out to a file
-#(define (write-output-file ext)
+#(define (write-output-file type)
    ;
    ; TODO
    ; remove "messages" here and directly use the global object
    ;
-   ; TODO
-   ; Make the file name configurable and let it respect the target format
-   ;
-   (let* ((logfile (format "~a.annotations.~a" annotation-out-basename ext)))
+   (let* ((default-exts '((html . "html")
+                          (latex . "inp")
+                          (scheme . "scm")
+                          (plaintext . "log")))
+          (logfile (if (equal? (getChildOption
+                                 '(scholarly annotate export filenames) type)
+                               'default)
+                        (format "~a.annotations.~a" annotation-out-basename
+                          (assoc-ref default-exts type))
+                        (getChildOption
+                          '(scholarly annotate export filenames) type))))
      (ly:message "writing '~a' ..." logfile)
      (with-output-to-file logfile
        (lambda ()
@@ -140,5 +147,3 @@ setAnnotationOutputBasename =
         ly:message)
        (ly:message "")))
     annotations))
-
-

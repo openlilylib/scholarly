@@ -218,5 +218,4 @@
     annotations)
 
    ;; write to output file
-   (write-output-file "inp"))
-
+   (write-output-file 'latex))

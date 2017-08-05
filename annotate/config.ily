@@ -94,6 +94,25 @@
 \registerOption scholarly.colorize ##t
 
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Filenames to Export
+%%%%%%%%%%%%%%%%%%%%%%%%
+% default is <project-name>.annotations.<ext>
+\registerOption scholarly.annotate.export.filenames
+%   <ext>   <file name>
+#`((html . "index.html") ;; html
+   (latex . default)     ;; latex
+   (scheme . default)    ;; scheme
+   (plaintext . default) ;; plaintext
+   )
+
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Handling of annotation types for plain text output
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -110,6 +129,91 @@
    (lilypond-issue . "LilyPond Issue:")
    (question . "Question:")
    (todo . "TODO:"))
+
+
+
+%%%%%%%%%%%%%%%%%
+%%%% HTML options
+%%%%%%%%%%%%%%%%%
+
+% Annotation types for html text output
+\registerOption scholarly.annotate.export.html.labels
+#`((critical-remark . "Critical Remark")
+  (musical-issue . "Musical Issue")
+  (lilypond-issue . "Lilypond Issue")
+  (question . "Question")
+  (todo . "TODO"))
+
+% Print full document with header (including CSS link) and body, or just
+% annotations div
+\registerOption scholarly.annotate.export.html.full-document ##t
+
+
+% Annotation div types (can technically be anything, since they get directly
+% converted to string; so even a new type of div, or `a`, or whatever else.)
+\registerOption scholarly.annotate.export.html.divs
+#`((full-ann-list . ol)  ;; the div containing all annotations
+   (each-ann-outer . li) ;; the outer shell of an annotation
+   (each-ann-inner . ul) ;; the inner shell of an annotation
+   (each-ann-props . li) ;; each prop
+   )
+
+\registerOption scholarly.annotate.export.html.annotations-div-tags
+   #`((class . "my-annotations")
+      (id . #f))
+
+% Which props to print to html
+\registerOption scholarly.annotate.export.html.props
+  #`(type grob-location grob-type message)
+
+% Which labels to print for props (only affect props included in previous list)
+\registerOption scholarly.annotate.export.html.prop-labels
+  #`((type . "<em>Type:</em> ")
+     (grob-location . #f)
+     (grob-type . #f)
+     (message . #f))
+
+
+% Which stylesheet to link, or print in header, or generate
+% if the `use-css` is set to default, it will ignore whatever is here
+% and point to the default stylesheet. We happen to refer to that here
+% by default anyway. But the name/location of that default styles should
+% be hardcoded into export-html.ily presumably.
+\registerOption scholarly.annotate.export.html.external-css-name
+  #"my-external-styles.css"
+
+\registerOption scholarly.annotate.export.html.generate-css-name
+  #"my-generated-styles.css"
+
+
+% How to handle CSS upon html export
+%   #`inline = embed css inline (very much not yet implemented)
+%   #`header = print in header;
+%   #`linked = link in header, which also means export css (default or generated)
+\registerOption scholarly.annotate.export.html.with-css
+  #`linked
+
+
+% Which CSS to use when used at all (default is the fallback if not one of the other two)
+%   #`default = handle the default CSS included in the repository
+%   #`generate = generate a new CSS (using the name from `css-name` option)
+%   #`external = (link to) external stylesheet (does not support *importing* yet)
+\registerOption scholarly.annotate.export.html.use-css
+  #`default
+
+
+
+
+% css settings for a generated file
+% for linking, scholarLY converts this all into a css file and links to it
+% for printing in header, we do the same but print into the header
+% for embedded/inline css, scholarly sorts the option as best it can; if the
+% options don't match the divs (say, we have a setting for "foo" class, but there
+% is no "foo" class in the document), it is ignored.
+\registerOption scholarly.annotate.export.html.generate-css-settings #`()
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Handling of annotation types for LaTeX output
