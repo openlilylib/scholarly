@@ -41,13 +41,8 @@
 
 \version "2.19.22"
 
-% TODO:
-% Once the module handling system in oll-core has been updated
-% (see https://github.com/openlilylib/oll-core/issues/9)
-% change the following includes accordingly
-% From oll-core
-\include "oll-core/util/consist-to-contexts.ily"
-\include "oll-core/util/grob-location.ily"
+\loadModule oll-core.util.consist-to-contexts
+\loadModule oll-core.util.grob-location
 
 % Global object storing all annotations
 #(define annotations '())
@@ -74,7 +69,13 @@
       (props (context-mod->props properties))
       ;; retrieve a pair with containing directory and input file
       (input-file (string-split (car (ly:input-file-line-char-column (*location*))) #\/ ))
-      (ctx (list-tail input-file (- (length input-file) 2)))
+      (ctx
+       (if (= 1 (length input-file))
+           ;; relative path to current directory => no parent available
+           ;; solution: take the last element of the current working directory
+           (cons (last (os-path-cwd-list)) (last input-file))
+           ;; absolute path, take second-to-last element
+           (list-tail input-file (- (length input-file) 2))))
       ;; extract directory name (-> part/voice name)
       (input-directory (car ctx))
       ;; extract segment name
@@ -112,20 +113,36 @@
              #{ \once \override #item #'input-annotation = #props #}))))
          #{
           #tweak-command
-          #(if (assq-ref props 'footnote-offset)
-          ;; If offset present, add automatic footnote
-               (begin
-                 (if (not (assq-ref props 'footnote-text))
-                     (set! props (assoc-set! props 'footnote-text (assq-ref props 'message))))
-                 (let ((offset (assq-ref props 'footnote-offset))
-                       (text (assq-ref props 'footnote-text)))
-		   #{ \footnote #offset #text #item #})))
-	  #(if (assq-ref props 'apply)
-	  ;; If `apply` property used, apply editorial function
-	       (let ((edition (string->symbol (assoc-ref props 'apply))))
-                    (editorialFunction edition item mus))
-               mus)
-         #})
+         #(if (assq-ref props 'footnote-offset)
+         ;; we want a footnote:
+           (begin
+             (if (not (assq-ref props 'footnote-text))
+                 (set! props (assoc-set! props 'footnote-text
+                               (assq-ref props 'message))))
+             (let ((offset (assq-ref props 'footnote-offset))
+                   (text (assq-ref props 'footnote-text)))
+                #{ \footnote #offset #text #item #})))
+         #(if (assq-ref props 'balloon-offset)
+         ;; we want balloon text:
+            (let* ((grob (list-ref item 0))
+                   (description (assoc-get grob all-grob-descriptions)))
+              (if (member 'spanner-interface
+                     (assoc-get 'interfaces (assoc-get 'meta description)))
+                  ;; the grob is a spanner, so cancel the balloon
+                   (oll:warn "We can't give engrave balloon text to spanners yet. Balloon ignored for ~a" grob)
+                   (begin
+                     (if (not (assq-ref props 'balloon-text))
+                          (set! props (assoc-set! props 'balloon-text
+                                        (assq-ref props 'message))))
+                     (let ((offset (assq-ref props 'balloon-offset))
+                           (text (assq-ref props 'balloon-text)))
+                        #{ \balloonGrobText #grob #offset \markup { #text } #})))))
+      	  #(if
+            ;; `apply` property is set; apply editorial function
+            (assq-ref props 'apply)
+      	       (let ((edition (string->symbol (assoc-ref props 'apply))))
+                  (editorialFunction edition item mus))
+               mus) #})
         (begin
          (ly:input-warning (*location*) "Improper annotation. Maybe there are mandatory properties missing?")
          #{ #})))))

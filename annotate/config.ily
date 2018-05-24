@@ -57,7 +57,15 @@
 %%%%%%%%%%%%%%%%%
 % Limiting output
 
-% By default all annotation types are processed
+% By default all annotation types are processed.
+% Any annotations whose type is included in the symbol-list will
+% not be included in the export.
+% Possible values for the list elements are:
+% - critical-remark
+% - musical-issue
+% - lilypond-issue
+% - question
+% - todo
 \registerOption scholarly.annotate.ignored-types #'()
 
 %%%%%%%%%%%%%%%%%%%%%

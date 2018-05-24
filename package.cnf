@@ -1,0 +1,27 @@
+#
+# openLilyLib/scholarly configuration
+#
+
+name: scholarly
+display-name: scholarLY
+short-description: Tools for scholarly editions
+description: <
+  The core component of this package is a system to annotate score
+  elements in LilyPond. Annotations can highlight the element or be
+  exported to various file formats.
+  Functions to highlight annotated elements in consistent ways
+  can be used independently.
+  >
+modules: [
+  annotate
+  editorial-functions
+  ]
+oll-core: 0.5.0
+maintainers: [
+  Urs Liska <ul@openlilylib.org>
+  Jeffery Shivers <jefferyshivers@gmail.com>
+  ]
+version: 0.0.1
+license: GPL3
+website: https://github.com/openlilylib/scholarly
+repository: https://github.com/openlilylib/scholarly.git
