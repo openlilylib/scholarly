@@ -116,8 +116,8 @@
      (location-props
       (let ((lp (assq-ref ann 'grob-location)))
         (if (getOption '(scholarly annotate export latex use-lilyglyphs))
-            lp
-            (append lp (list (cons 'beat-string-lilyglyphs lp))))))
+            (append lp (list (cons 'beat-string-lilyglyphs lp)))
+            lp)))
      ;; Generate a string list with key=value assignments
      (assignments
       (map
