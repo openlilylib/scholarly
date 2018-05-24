@@ -93,7 +93,20 @@ annotationCollector =
                                 (if (not (member actual-context-id (list "" "\\new")))
                                     actual-context-id
                                     #f))
-                              (assq-ref annotation 'context-id))))
+                              (assq-ref annotation 'context-id)))
+                         (score-id
+                          (letrec ((score-ctx
+                                 (lambda (ctx)
+                                   (let ((parent (ly:context-parent ctx)))
+                                     (if parent
+                                         (if (eq? (ly:context-name parent) 'Score)
+                                             (ly:context-id parent)
+                                             (score-ctx parent))
+                                         "")))))
+                            (score-ctx context)))                                         
+                         )
+                     (set! annotation 
+                           (assq-set! annotation 'score-id score-id))
                      ;; Look up a context-name label from the options if one is set,
                      ;; otherwise use the retrieved context-name.
                      (set! annotation
