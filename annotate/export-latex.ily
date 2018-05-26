@@ -41,6 +41,7 @@
        (repl (car rule) (cdr rule)))
      '(("_" . "\\textunderscore ")
        ("\\#" . "\\#")
+       ("&" . "\\&")
        ))
     result))
 
