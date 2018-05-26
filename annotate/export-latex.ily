@@ -28,6 +28,22 @@
   Output annotations as LaTeX code
 %}
 
+% Replace illegal characters for use in LaTeX.
+#(define (sanitize-latex-string val)
+   (let*
+    ((result val)
+     (repl
+      (lambda (in out)
+        (set! result
+              (regexp-substitute/global #f in result 'pre out 'post)))))
+    (for-each
+     (lambda (rule)
+       (repl (car rule) (cdr rule)))
+     '(("_" . "\\textunderscore ")
+       ("\\#" . "\\#")
+       ))
+    result))
+
 % Lookup list for lilyglyphs representations of rhythmic values
 #(define lilyglyphs-rhythmic-values
    '((1 . "\\wholeNote")
@@ -87,6 +103,7 @@
          (lilyglyphs-beat-string val))
         (else
          (cond
+          ((string? val) (sanitize-latex-string val))
           ((ly:moment? val) (ly:moment-main val))
           ((ly:input-location? val)
            (let*
