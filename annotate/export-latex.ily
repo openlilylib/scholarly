@@ -28,76 +28,22 @@
   Output annotations as LaTeX code
 %}
 
-#(define (indent-multiline-latex-string str)
-   ;; make nice indentation
-   (set! str
-         (regexp-substitute/global #f "\n"
-           (regexp-substitute/global #f "\n +" str
-             'pre "\n" 'post)
-           'pre "\n     " 'post))
-   ;; "return" normalized string
-   str)
-
-% Temporary function to strip property values from #< > parts
-#(define (sanitize-prop-value prop)
-   (let ((key (car prop))
-         (value (cdr prop)))
-     (cond
-      ((or (string? value)
-           (eq? key 'grob-type)
-           (eq? key 'type))
-       value)
-      ((ly:grob? value) (assq-ref (ly:grob-property value 'meta) 'name))
-      ((ly:input-location? value)
-       (let ((location (ly:input-file-line-char-column value)))
-         (string-append (car location) " "
-           (string-append
-            (number->string (second location)) ":"
-            (number->string (third location)) ":"
-            (number->string (fourth location))))))
-      ((eq? 'grob-location key) "Can't display grob location yet")
-      ((eq? key 'input-file-name) (car value))
-      (else "Can't display yet"))))
-
-% Return a string list for the "remaining" properties,
-% formatted as a list of key=value arguments
-#(define (format-latex-remaining-properties type props loc-props)
-   (let ((cmd
-          (or (assq-ref annotation-type-latex-commands type)
-              "\\annotation"))
-         (props
-          (map
-           (lambda (p)
-             (cons (car p)
-               (if (ly:music? (cdr p))
-                   (format-ly-music (cdr p))
-                   (sanitize-prop-value p))))
-           props))
-         (result '()))
-     ;; Start with LaTeX command
-     (set! result
-           (append-to-messages result
-             (format "~a" cmd)))
-     ;; First line of optional argument with opening bracket
-     (set! result
-           (append-to-messages result
-             (format "   [~a={~a}," (car (first props)) (cdr (first props)))))
-     (set! props (cdr props))
-     ;; write all remaining properties as key=value pair
-     (for-each
-      (lambda (p)
+% Replace illegal characters for use in LaTeX.
+#(define (sanitize-latex-string val)
+   (let*
+    ((result val)
+     (repl
+      (lambda (in out)
         (set! result
-              (append-to-messages result
-                (format "    ~a={~a}," (car p) (cdr p)))))
-      props)
-     ;; properly close last entry
-     (list-set! result (- (length result) 1)
-       (format "~a]"
-         (string-copy
-          (last result)
-          0
-          (- (string-length (last result)) 1))))
-     result))
+              (regexp-substitute/global #f in result 'pre out 'post)))))
+    (for-each
+     (lambda (rule)
+       (repl (car rule) (cdr rule)))
+     '(("_" . "\\textunderscore ")
+       ("\\#" . "\\#")
+       ("&" . "\\&")
+       ))
+    result))
 
 % Lookup list for lilyglyphs representations of rhythmic values
 #(define lilyglyphs-rhythmic-values
@@ -139,82 +85,82 @@
            (format "~a. ~a" part-numerator
              (lilyglyphs-lookup sub-beat-length)))))))
 
+
+% Format a single property assignment into a LaTeX-optional-argument.
+#(define (format-property prop)
+   (let
+    ((k (car prop))
+     (val (cdr prop)))
+    (cons k
+      ;; Format the right hand side of the assignment
+      ;; handling special known keys and all others
+      ;; depending on the *type* of the value.
+      (case k
+        ;; handle known keys
+        ((input-file-name) (car val))
+        ((rhythmic-location)
+         (format "~a,~a" (car val) (ly:moment-main (cdr val))))
+        ((beat-string-lilyglyphs)
+         (lilyglyphs-beat-string val))
+        (else
+         (cond
+          ((string? val) (sanitize-latex-string val))
+          ((ly:moment? val) (ly:moment-main val))
+          ((ly:input-location? val)
+           (let*
+            ((vals (ly:input-file-line-char-column val))
+             (nums (map number->string (cdr vals))))
+            (string-join (append (list (first vals)) nums) ":")))
+          ((ly:music? val)
+           ;; use \displayLilyMusic for music arguments,
+           ;; stripping the (redundant) curly braces.
+           (let ((mus-string
+                  (with-output-to-string
+                   (lambda () (display-lily-music val)))))
+             (substring mus-string 1 (- (string-length mus-string) 2))))
+          ;; everything else will be printed as-is
+          (else val)))))))
+
+% Format a single annotation for export as a LaTeX command
+#(define (format-annotation ann)
+   (let*
+    ((regular-props
+      ;; all properties except 'grob-location (which is a list of sub-props)
+      (filter
+       (lambda (p)
+         (not (member (car p) '(grob-location grob))))
+       ann))
+     ;; The sub-list of 'grob-location
+     (location-props
+      (let ((lp (assq-ref ann 'grob-location)))
+        (if (getOption '(scholarly annotate export latex use-lilyglyphs))
+            (append lp (list (cons 'beat-string-lilyglyphs lp)))
+            lp)))
+     ;; Generate a string list with key=value assignments
+     (assignments
+      (map
+       (lambda (p)
+         (let ((prop (format-property p)))
+           (format "    ~a={~a}" (car prop)(cdr prop))))
+       (append regular-props location-props)))
+     )
+
+    ;; compose the resulting string list
+    (append-to-output-stringlist
+     (string-append
+      (or (assq-ref annotation-type-latex-commands (assq-ref ann 'type))
+          "\\annotation")
+      "[\n"
+      (string-join assignments ",\n")
+      "]\n"))))
+
+% Generate and write annotations to a LaTeX input file
 \register-export-routine latex
 #(lambda ()
-   ;; Generate and write annotations to LaTeX input file
-   ;
-   ; TODO::
-   ; - implement configurable grouping options
-   ; - output to separate files
-   ; - using a function to compose the stringlist for each annotation
-   ;   to enable different output targets
-   ;   (eventually this should be template based).
-   ;   Planned target formats are (potential order implementation):
-   ;   - JSON
-   ;   - plain text with textedit links ("Frescobaldi mode")
-   ;   - markdown
-   ;   - HTML
-   ;   - PDF(??)
-   ;
-
    ;; process annotations, adding lines to 'annotate-export-stringlist'
    (for-each
-    ;
-    ; TODO:
-    ; This is the part that should be factored out
-    ;
     (lambda (ann)
-      (let*
-       ((loc-props (assq-ref ann 'grob-location))
-        (rem-props (list-copy ann)))
-
-       ;; Create a list rem-props with "remaining properties"
-       ;; that are not used explicitly.
-       (for-each
-        (lambda (p)
-          (set! rem-props (assq-remove! rem-props p)))
-        (list "type" "grob-type" "context-id" "input-file-name"
-          "message" "location" "grob" "grob-location"))
-
-       ;; If there are remaining properties
-       ;; output them to a key-value list as an optional argument
-       ;; otherwise write a simple command
-       (if (> (length rem-props) 0)
-           (append-to-output-stringlist
-            (format-latex-remaining-properties
-             (assq-ref ann 'type) rem-props loc-props))
-           ;; start entry with LaTeX command and rhythmic location
-           (append-to-output-stringlist
-            (format "~a"
-              ;                     (format "~a{~a}{~a}"
-              (assq-ref annotation-type-latex-commands
-                (assq-ref ann 'type)))))
-       ;; output location arguments
-       (append-to-output-stringlist
-        (format "    {~a}{~a}"
-          (assq-ref loc-props 'measure-no)
-          (if (getOption '(scholarly annotate export latex use-lilyglyphs))
-              (lilyglyphs-beat-string loc-props)
-              (beat-string loc-props))))
-
-       ;; Affected context
-       (append-to-output-stringlist
-        (format "    {~a}"
-          (assq-ref ann 'context-id)))
-       ;; Affected grob type
-       (append-to-output-stringlist
-        (format "    {~a}"
-          (assq-ref ann 'grob-type)))
-
-       ;; For a custom annotation we have to append
-       ;; the type as 6th argument
-       (let ((type (assq-ref annotation-type-latex-commands
-                     (assq-ref ann 'type))))
-         (if (not type)
-             (append-to-output-stringlist
-              (format "    {~a}" (assq-ref ann 'type)))))
-       ;; add newline to annotation entry
-       (append-to-output-stringlist " ")))
+      (format-annotation ann))
     annotations)
 
    ;; write to output file
