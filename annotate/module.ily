@@ -45,7 +45,7 @@
 \loadModule oll-core.util.grob-location
 
 % Global object storing all annotations
-#(define annotations '())
+\registerOption scholarly.annotations #'()
 
 % Include factored out functionality
 \include "config.ily"

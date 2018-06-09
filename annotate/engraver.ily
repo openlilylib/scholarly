@@ -103,9 +103,9 @@ annotationCollector =
                                              (ly:context-id parent)
                                              (score-ctx parent))
                                          "")))))
-                            (score-ctx context)))                                         
+                            (score-ctx context)))
                          )
-                     (set! annotation 
+                     (set! annotation
                            (assq-set! annotation 'score-id score-id))
                      ;; Look up a context-name label from the options if one is set,
                      ;; otherwise use the retrieved context-name.
@@ -146,7 +146,7 @@ annotationCollector =
                       (assq-ref annotation 'grob-location))))
 
              ;; add current annotation to the list of annotations
-             (set! annotations (append annotations (list annotation)))))
+             (appendToOption '(scholarly annotations) annotation)))
          (reverse grobs)))))))
 
 
@@ -160,8 +160,8 @@ annotationProcessor =
      ;; Sort annotations by the given criteria
      (for-each
       (lambda (s)
-        (set! annotations
-              (sort-annotations annotations
+        (setOption '(scholarly annotations)
+              (sort-annotations (getOption '(scholarly annotations))
                 (assq-ref annotation-comparison-predicates s))))
       (reverse (getOption '(scholarly annotate sort-criteria))))
 

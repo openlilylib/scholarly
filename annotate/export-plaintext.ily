@@ -70,7 +70,7 @@
          (list "type" "input-file-name" "location" "grob" "grob-location")))
       ;; add newline to annotation entry
       (append-to-output-stringlist " "))
-    annotations)
+    (getOption '(scholarly annotations)))
 
    ;; write to output file
    (write-output-file "log"))

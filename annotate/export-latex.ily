@@ -161,7 +161,7 @@
    (for-each
     (lambda (ann)
       (format-annotation ann))
-    annotations)
+    (getOption '(scholarly annotations)))
 
    ;; write to output file
    (write-output-file "inp"))

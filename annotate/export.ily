@@ -139,6 +139,6 @@ setAnnotationOutputBasename =
           '(context type location input-file-name grob grob-location))
         ly:message)
        (ly:message "")))
-    annotations))
+    (getOption '(scholarly annotations))))
 
 
