@@ -47,7 +47,6 @@
 #(set-object-property! 'input-annotation 'backend-doc "custom grob property")
 
 
-
 %%%%%%%%%%%%%%%%%%%%%
 % Annotation engraver
 % - Original stub provided by David Nalesnik
@@ -56,6 +55,120 @@
 % Collector acknowledges annotations and appends them
 % to the global annotations object
 annotationCollector =
+#(lambda (context)
+   (let* ((grobs '())
+          (all-grobs '())
+          (annotations '()))
+     (make-engraver
+      ;; receive grobs with annotations, set a few more properties
+      ;; and append annotation objects to the global annotations list
+      (acknowledgers
+       ((grob-interface engraver grob source-engraver)
+        (set! all-grobs (cons grob all-grobs))))
+      
+      ((process-acknowledged translator)
+       (for-each
+        (lambda (grob)
+          (let ((annotation (ly:grob-property grob 'input-annotation)))            
+            ;; A grob is to be accepted when 'annotation *does* have some content
+            (if (and (not (null-list? annotation))
+                     ;; filter annotations that don't trigger actual annotations
+                     (assq-ref annotation 'ann-type)
+                     ;; filter annotations the user has excluded
+                     (not (member
+                           (assq-ref annotation 'type)
+                           (getOption '(scholarly annotate ignored-types)))))
+                ;; add more properties that are only now available
+                (begin
+                 (if (or
+                      (getOption '(scholarly annotate print))
+                      (not (null? (getOption '(scholarly annotate export-targets)))))
+                     ;; only add to the list of grobs in the engraver
+                     ;; when we actually process them afterwards
+                     (let ((ctx-id
+                            ;; Set ctx-id to
+                            ;; a) an explicit context name defined or
+                            ;; b) an implicit context name through the named Staff context or
+                            ;; c) the directory name (as determined in the \annotate function)
+                            (or (assq-ref annotation 'context)
+                                (let ((actual-context-id (ly:context-id context)))
+                                  (if (not (member actual-context-id (list "" "\\new")))
+                                      actual-context-id
+                                      #f))
+                                (assq-ref annotation 'context-id)))
+                           (score-id
+                            (letrec ((score-ctx
+                                      (lambda (ctx)
+                                        (let ((parent (ly:context-parent ctx)))
+                                          (if parent
+                                              (if (eq? (ly:context-name parent) 'Score)
+                                                  (ly:context-id parent)
+                                                  (score-ctx parent))
+                                              "")))))
+                              (score-ctx context)))
+                           )
+                       (set! annotation
+                             (assq-set! annotation 'score-id score-id))
+                       ;; Look up a context-name label from the options if one is set,
+                       ;; otherwise use the retrieved context-name.
+                       (set! annotation
+                             (assq-set! annotation
+                               'context-id
+                               (getChildOptionWithFallback
+                                '(scholarly annotate context-names)
+                                (string->symbol ctx-id)
+                                ctx-id)))
+                       ;; Get the name of the annotated grob type
+                       (set! annotation
+                             (assq-set! annotation 'grob-type (grob::name grob)))
+                       ;; Initialize a 'grob-location' property as a sub-alist,
+                       ;; for now with a 'meter' property. This will be populated in 'finalize'.
+                       (set! annotation
+                             (assq-set! annotation 'grob-location
+                               (assq-set! '() 'meter
+                                 (ly:context-property context 'timeSignatureFraction))))
+                       (set! grobs (cons (list grob annotation) grobs))
+                       (set! all-grobs '())
+                       )
+                     
+                     ))
+                )))
+        all-grobs)
+       (set! annotations (cons annotation annotations))
+       )
+
+      ;; Iterate over collected grobs and produce a list of annotations
+      ;; (when annotations are neither printed nor logged the list is empty).
+      ((finalize trans)
+       (begin
+        (for-each
+         (lambda (g)
+           (let* ((annotation (last g)))
+             ;; Add location info, which seems only possible here
+             (set! annotation (assq-set! annotation 'grob (first g)))
+
+             ;; retrieve rhythmical properties of the grob and
+             ;; store them in 'grob-location' alist
+             (set! annotation
+                   (assq-set! annotation 'grob-location
+                     (grob-location-properties
+                      (first g)
+                      (assq-ref annotation 'grob-location))))
+
+             ;; add current annotation to the list of annotations
+             (appendToOption '(scholarly annotations) annotation)
+             ))
+         (reverse grobs)))))))
+
+
+%%%%%%%%%%%%%%%%%%%%%
+% Annotation engraver
+% - Original stub provided by David Nalesnik
+% - Adapted to the existing \annotation function by Urs Liska
+
+% Collector acknowledges annotations and appends them
+% to the global annotations object
+annotationCollectorBak =
 #(lambda (context)
    (let* ((grobs '()))
      (make-engraver
@@ -76,8 +189,8 @@ annotationCollector =
                    ;; colorize grob, retrieving color from sub-option
                    (set! (ly:grob-property grob 'color)
                          (getChildOption
-                            '(scholarly annotate colors)
-                            (assq-ref annotation 'type))))
+                          '(scholarly annotate colors)
+                          (assq-ref annotation 'type))))
                (if (or
                     (getOption '(scholarly annotate print))
                     (not (null? (getOption '(scholarly annotate export-targets)))))
@@ -96,13 +209,13 @@ annotationCollector =
                               (assq-ref annotation 'context-id)))
                          (score-id
                           (letrec ((score-ctx
-                                 (lambda (ctx)
-                                   (let ((parent (ly:context-parent ctx)))
-                                     (if parent
-                                         (if (eq? (ly:context-name parent) 'Score)
-                                             (ly:context-id parent)
-                                             (score-ctx parent))
-                                         "")))))
+                                    (lambda (ctx)
+                                      (let ((parent (ly:context-parent ctx)))
+                                        (if parent
+                                            (if (eq? (ly:context-name parent) 'Score)
+                                                (ly:context-id parent)
+                                                (score-ctx parent))
+                                            "")))))
                             (score-ctx context)))
                          )
                      (set! annotation
@@ -113,9 +226,9 @@ annotationCollector =
                            (assq-set! annotation
                              'context-id
                              (getChildOptionWithFallback
-                                '(scholarly annotate context-names)
-                                (string->symbol ctx-id)
-                                ctx-id)))
+                              '(scholarly annotate context-names)
+                              (string->symbol ctx-id)
+                              ctx-id)))
                      ;; Get the name of the annotated grob type
                      (set! annotation
                            (assq-set! annotation 'grob-type (grob::name grob)))
@@ -161,8 +274,8 @@ annotationProcessor =
      (for-each
       (lambda (s)
         (setOption '(scholarly annotations)
-              (sort-annotations (getOption '(scholarly annotations))
-                (assq-ref annotation-comparison-predicates s))))
+          (sort-annotations (getOption '(scholarly annotations))
+            (assq-ref annotation-comparison-predicates s))))
       (reverse (getOption '(scholarly annotate sort-criteria))))
 
      ;; Optionally print annotations
