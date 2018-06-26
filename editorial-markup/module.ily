@@ -64,27 +64,23 @@
 % - If 'footnote-text is set this is used as footnote text
 %   else the 'message is copied to the footnote.
 #(define make-footnote
-   (define-void-function (mus annot) (ly:music? list?)
+   (define-void-function (mus anchor annot) (ly:music? ly:music? list?)
      (let ((offset (assq-ref annot 'footnote-offset)))
        (if offset
            (let*
             ;; Determine footnote text
             ((text (or (assq-ref annot 'footnote-text)
                        (assq-ref annot 'message)))
-             (mark (assq-ref annot 'footnote-mark))
-             ;; chose *first* or *single* element as target
-             (target (if (assq-ref annot 'is-postevent?)
-                         mus
-                         (first (ly:music-property mus 'elements)))))
+             (mark (assq-ref annot 'footnote-mark)))
             (if mark
                 ;; specify footnote mark
-                (footnote mark offset (string-append mark " " text) target)
+                (footnote mark offset (string-append mark " " text) anchor)
                 ;; use auto-incremented footnote number
-                (footnote offset text target)))))))
+                (footnote offset text anchor)))))))
 
 % TODO: Adapt this to the new structure:
 #(define make-balloon
-   (define-void-function (mus annot) (ly:music? list?)
+   (define-void-function (mus anchor annot) (ly:music? ly:music? list?)
      ))
 
 % Predicate for the type of editorial markup.
@@ -102,7 +98,8 @@
              reading        ;; <rdg>, alternative reading from different source
              addition       ;; <add>, addition *in the source*
              deletion       ;; <del>, deletion *in the source*
-             restoration    ;; <restore>, restoration of a deleted text *in the source*
+             restoration    ;; <restore>, restoration of a deleted text
+                            ;;           *in the source*
              original       ;; <orig>, original (but not erroneous) text
              regularization ;; <reg>, regularized (but not corrected) text
              sic            ;; <sic>, erroneous text in the source
@@ -136,20 +133,13 @@ editorialMarkup =
 #(define-music-function (span-type attrs mus)
    (ed-markup-type? (ly:context-mod?) ly:music?)
    (let*
-    ((annot (make-span-description span-type attrs (*location*) mus))
-     (anchor (if (memq 'sequential-music (ly:music-property mus 'types))
-                 (first (ly:music-property mus 'elements))
-                 mus)))
-    ;; Attach annotation to anchor grob
-    (once (propertyTweak 'input-annotation annot anchor))
-    ;; Store reference for use in \span and enclosing \choice
-    (ly:music-set-property! mus 'anchor anchor)
-    ;; Attach a footnote if requested
-    (make-footnote mus annot)
-    ;; Attach a balloon text if requested
-    ; NOTE: the following function isn't implemented yet
-    (make-balloon mus annot)
-
-    ;; Finally return the updated music expression,
-    ;; after applying formatting/highlighting
-    (format-span annot mus)))
+    ((music (if attrs
+                ;; (span invokes the \span music-function from
+                ;; stylesheets.span, not the Scheme function
+                (span span-type attrs mus)
+                (span span-type mus)))
+     (anchor (ly:music-property music 'anchor))
+     (span-annotation (ly:music-property anchor 'span-annotation)))
+    (make-footnote music anchor span-annotation)
+    (make-balloon music anchor span-annotation)
+    music))
