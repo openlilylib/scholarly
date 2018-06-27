@@ -47,41 +47,8 @@
 \loadModule stylesheets.span
 \loadModule scholarly.annotate
 
-#(set-object-property! 'anchor 'music-type? ly:music?)
-#(set-object-property! 'anchor 'music-doc
-   "Pointer to the music element the annotation is attached to")
+\include "config.ily"
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Functions to modify the music expression
-%
-% The following functions modify the music expression *in-place*,
-% effectively adding elements to it.
-
-
-% Create and attach a footnote if one is requested.
-% - Footnote is created when 'footnote-offset is set
-% - If 'footnote-text is set this is used as footnote text
-%   else the 'message is copied to the footnote.
-#(define make-footnote
-   (define-void-function (mus anchor annot) (ly:music? ly:music? list?)
-     (let ((offset (assq-ref annot 'footnote-offset)))
-       (if offset
-           (let*
-            ;; Determine footnote text
-            ((text (or (assq-ref annot 'footnote-text)
-                       (assq-ref annot 'message)))
-             (mark (assq-ref annot 'footnote-mark)))
-            (if mark
-                ;; specify footnote mark
-                (footnote mark offset (string-append mark " " text) anchor)
-                ;; use auto-incremented footnote number
-                (footnote offset text anchor)))))))
-
-% TODO: Adapt this to the new structure:
-#(define make-balloon
-   (define-void-function (mus anchor annot) (ly:music? ly:music? list?)
-     ))
 
 % Predicate for the type of editorial markup.
 % While \span generally can accept arbitrary names
@@ -99,7 +66,7 @@
              addition       ;; <add>, addition *in the source*
              deletion       ;; <del>, deletion *in the source*
              restoration    ;; <restore>, restoration of a deleted text
-                            ;;           *in the source*
+             ;;           *in the source*
              original       ;; <orig>, original (but not erroneous) text
              regularization ;; <reg>, regularized (but not corrected) text
              sic            ;; <sic>, erroneous text in the source
@@ -114,32 +81,14 @@
 \loadModule scholarly.attributes
 
 % Encode a source finding or editorial decision
-% - span-type (mandatory)
-%   specify the type of case, has to be a value from the list in ed-markup-type?
-% - attrs (optional)
-%   \with {} block with further specification of the case.
-%   if this contains an ann-type entry there will be a proper annotation,
-%   generated in the AnnotationCollector engraver.
-% - mus (mandatory)
-%   the music to be annotated
-%
-% The function works as a standalone music function or as a post-event.
-%
-% Optionally a footnote can be created
-% (BalloonText has to be reimplmented)
-% If present a highlighting function is applied, with simple coloring
-% as the fallback solution.
+% This is a thin wrapper around \span from the stylesheets.span module
+% that essentially is limited to a set of predefined span classes
+% while providing colors and (some) default styling functions
 editorialMarkup =
-#(define-music-function (span-type attrs mus)
+#(define-music-function (span-class attrs mus)
    (ed-markup-type? (ly:context-mod?) ly:music?)
-   (let*
-    ((music (if attrs
-                ;; (span invokes the \span music-function from
-                ;; stylesheets.span, not the Scheme function
-                (span span-type attrs mus)
-                (span span-type mus)))
-     (anchor (ly:music-property music 'anchor))
-     (span-annotation (ly:music-property anchor 'span-annotation)))
-    (make-footnote music anchor span-annotation)
-    (make-balloon music anchor span-annotation)
-    music))
+   (if attrs
+       ;; (span invokes the \span music-function from
+       ;; stylesheets.span, not the Scheme function
+       (tagSpan span-class attrs mus)
+       (tagSpan span-class mus)))
