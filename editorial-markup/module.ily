@@ -33,16 +33,7 @@
 % - http://music-encoding.org/guidelines/v3/content/critapp.html
 % - http://music-encoding.org/guidelines/v3/content/edittrans.html
 %
-% \editorialMarkup marks up single or sequential music expressions,
-% also accessible as post-event for \tweak-able items.
-% Optionally it can
-% - create annotations
-% - call styling functions
-% - create
-%   - footnotes
-%   - balloonText (currently broken)
-%   - music examples (wish)
-
+% It is a thin wrapper around stylesheets.span
 
 \loadModule stylesheets.span
 \loadModule scholarly.annotate
@@ -59,20 +50,21 @@
 % Also, the attributes module implements checks for
 % the interdependency of types and attributes.
 #(define (ed-markup-type? obj)
-   (and (symbol? obj)
-        (member obj
-          '(lemma            ;; <lem>, preferred reading
-             reading        ;; <rdg>, alternative reading from different source
-             addition       ;; <add>, addition *in the source*
-             deletion       ;; <del>, deletion *in the source*
-             restoration    ;; <restore>, restoration of a deleted text
-             ;;           *in the source*
-             original       ;; <orig>, original (but not erroneous) text
-             regularization ;; <reg>, regularized (but not corrected) text
-             sic            ;; <sic>, erroneous text in the source
-             gap            ;; <gap>, missing material
-             emendation     ;; <corr>, editorial emendation
-             ))))
+   (and
+    (symbol? obj)
+    (member obj
+      '(lemma           ;; <lem>, preferred reading
+         reading        ;; <rdg>, alternative reading from different source
+         addition       ;; <add>, addition *in the source*
+         deletion       ;; <del>, deletion *in the source*
+         restoration    ;; <restore>, restoration of a deleted text *in the source*
+         original       ;; <orig>, original (but not erroneous) text
+         regularization ;; <reg>, regularized (but not corrected) text
+         gap            ;; <gap>, missing material
+         sic            ;; <sic>, erroneous text in the source
+         unclear        ;; <unclear>, unclear text
+         correction     ;; <corr>, editorial emendation
+         ))))
 
 % Load data about the different span-types:
 % - default styling colors
