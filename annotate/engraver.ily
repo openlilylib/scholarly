@@ -76,7 +76,7 @@ annotationCollector =
                      (assq-ref annotation 'ann-type)
                      ;; filter annotations the user has excluded
                      (not (member
-                           (assq-ref annotation 'type)
+                           (assq-ref annotation 'ann-type)
                            (getOption '(scholarly annotate ignored-types)))))
                 ;; add more properties that are only now available
                 (begin
