@@ -148,7 +148,10 @@
     ;; compose the resulting string list
     (append-to-output-stringlist
      (string-append
-      (or (assq-ref annotation-type-latex-commands (assq-ref ann 'type))
+      (or (getChildOptionWithFallback
+           '(scholarly annotate export latex commands)
+           (assq-ref ann 'ann-type)
+           #f)
           "\\annotation")
       "[\n"
       (string-join assignments ",\n")
