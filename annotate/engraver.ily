@@ -56,10 +56,12 @@
          (getChildOption '(scholarly annotate colors) ann-type))))
 
 
-%%%%%%%%%%%%%%%%%%%%%
-% Annotation engraver
-% - Original stub provided by David Nalesnik
-% - Adapted to the existing \annotation function by Urs Liska
+%%%%%%%%%%%%%%%%%%%%%%%%
+% Annotation engraver(s)
+%
+% annotationCollector and annotationProcessor work together,
+% the Collector being \consist-ed on all necessary Staff-level contexts,
+% the Processor being \consist-ed in the Score context.
 
 % Collector acknowledges annotations and appends them
 % to the global annotations object
