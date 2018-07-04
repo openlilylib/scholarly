@@ -64,90 +64,91 @@
 % Collector acknowledges annotations and appends them
 % to the global annotations object
 annotationCollector =
-#(lambda (context)
-   (let* ((annotated-grobs '())
-          (all-grobs '()))
-     (make-engraver
-      (acknowledgers
-       ((grob-interface engraver grob source-engraver)
-        ;; 'input-annotation property is only visible in process-acknowledged,
-        ;; therefore we have to record *all* grobs here
-        (set! all-grobs (cons grob all-grobs))))
-      ((process-acknowledged translator)
-       (for-each
-        (lambda (grob)
-          (let*
-           ((annotation (ly:grob-property grob 'input-annotation))
-            (ann-type (assq-ref annotation 'ann-type))
-            (is-annotation
-             ;; A grob is to be accepted when 'annotation *does* have some content
-             ;; and is not marked as ignored.
-             (and ann-type
-                  (not (member ann-type
-                         (getOption '(scholarly annotate ignored-types)))))))
-           (if is-annotation
-               (let*
-                ((do-process
-                  (or (getOption '(scholarly annotate print))
-                      (not (null? (getOption '(scholarly annotate export-targets)))))))
-                ;; Coloring is done regardless of annotation export
-                (color-anchor grob ann-type)
-                (if do-process
-                    ;; Enrich the annotation with information that is only available now.
-                    (let*
-                     ((_context-id
-                       ;; Set _context-id to
-                       ;; a) an explicit 'context' attribute
-                       ;; b) an implicit context name through the named Staff context or
-                       ;; c) the directory.file as determined by \tagSpan
-                       (or (assq-ref annotation 'context)
-                           (let ((actual-context-id (ly:context-id context)))
-                             (if (not (member actual-context-id (list "" "\\new")))
-                                 actual-context-id #f))
-                           (assq-ref annotation 'context-id)))
-                      (context-id
-                       ;; Look up a context-name label from the options if one is set,
-                       ;; otherwise use the retrieved context-name.
-                       (getChildOptionWithFallback '(scholarly annotate context-names)
-                         (string->symbol _context-id)
-                         _context-id))
-                      (score-id
-                       ;; Recursively determine the name of the 'Score context.
-                       ;; If that is \new (no explicit name) set to #f instead
-                       (letrec
-                        ((score-ctx
-                          (lambda (ctx)
-                            (let ((parent (ly:context-parent ctx)))
-                              (if parent
-                                  (if (eq? (ly:context-name parent) 'Score)
-                                      (ly:context-id parent)
-                                      (score-ctx parent))
-                                  "")))))
-                        (let ((id (score-ctx context)))
-                          (if (string=? id "\\new") #f id))))
-                      (grob-type (grob::name grob))
-                      )
-                     ;; 'context-id is already present so we overwrite it
-                     (assq-set! annotation 'context-id context-id)
-                     ;; Add the new properties to the annotation
-                     (append! annotation
-                       `((grob-type . ,grob-type)
-                         (score-id . ,score-id)))
-                     ;; record annotated grob
-                     (set! annotated-grobs (cons grob annotated-grobs))
-                     ;; reset list to prevent multiple processing.
-                     ;
-                     ; TODO: I don't understand why I can kill *all* the list
-                     ; after having processed *one* grob.
-                     ; What happens to any other annotated grobs (at the same time)?
-                     ; I know it is possible to annotate multiple post-events, for example.
-                     (set! all-grobs '())))))))
-        all-grobs))
+#(let*
+  ((annotated-grobs '())
+   (all-grobs '()))
+  (lambda (context)
+    (make-engraver
+     (acknowledgers
+      ((grob-interface engraver grob source-engraver)
+       ;; 'input-annotation property is only visible in process-acknowledged,
+       ;; therefore we have to record *all* grobs here
+       (set! all-grobs (cons grob all-grobs))))
+     ((process-acknowledged translator)
+      (for-each
+       (lambda (grob)
+         (let*
+          ((annotation (ly:grob-property grob 'input-annotation))
+           (ann-type (assq-ref annotation 'ann-type))
+           (is-annotation
+            ;; A grob is to be accepted when 'annotation *does* have some content
+            ;; and is not marked as ignored.
+            (and ann-type
+                 (not (member ann-type
+                        (getOption '(scholarly annotate ignored-types)))))))
+          (if is-annotation
+              (let*
+               ((do-process
+                 (or (getOption '(scholarly annotate print))
+                     (not (null? (getOption '(scholarly annotate export-targets)))))))
+               ;; Coloring is done regardless of annotation export
+               (color-anchor grob ann-type)
+               (if do-process
+                   ;; Enrich the annotation with information that is only available now.
+                   (let*
+                    ((_context-id
+                      ;; Set _context-id to
+                      ;; a) an explicit 'context' attribute
+                      ;; b) an implicit context name through the named Staff context or
+                      ;; c) the directory.file as determined by \tagSpan
+                      (or (assq-ref annotation 'context)
+                          (let ((actual-context-id (ly:context-id context)))
+                            (if (not (member actual-context-id (list "" "\\new")))
+                                actual-context-id #f))
+                          (assq-ref annotation 'context-id)))
+                     (context-id
+                      ;; Look up a context-name label from the options if one is set,
+                      ;; otherwise use the retrieved context-name.
+                      (getChildOptionWithFallback '(scholarly annotate context-names)
+                        (string->symbol _context-id)
+                        _context-id))
+                     (score-id
+                      ;; Recursively determine the name of the 'Score context.
+                      ;; If that is \new (no explicit name) set to #f instead
+                      (letrec
+                       ((score-ctx
+                         (lambda (ctx)
+                           (let ((parent (ly:context-parent ctx)))
+                             (if parent
+                                 (if (eq? (ly:context-name parent) 'Score)
+                                     (ly:context-id parent)
+                                     (score-ctx parent))
+                                 "")))))
+                       (let ((id (score-ctx context)))
+                         (if (string=? id "\\new") #f id))))
+                     (grob-type (grob::name grob))
+                     )
+                    ;; 'context-id is already present so we overwrite it
+                    (assq-set! annotation 'context-id context-id)
+                    ;; Add the new properties to the annotation
+                    (append! annotation
+                      `((grob-type . ,grob-type)
+                        (score-id . ,score-id)))
+                    ;; record annotated grob
+                    (set! annotated-grobs (cons grob annotated-grobs))
+                    ;; reset list to prevent multiple processing.
+                    ;
+                    ; TODO: I don't understand why I can kill *all* the list
+                    ; after having processed *one* grob.
+                    ; What happens to any other annotated grobs (at the same time)?
+                    ; I know it is possible to annotate multiple post-events, for example.
+                    (set! all-grobs '())))))))
+       all-grobs))
 
-      ;; Iterate over collected grobs and produce a list of annotations
-      ;; (when annotations are neither printed nor logged the list is empty).
-      ((finalize trans)
-       (setOption '(scholarly annotations)
+     ;; Iterate over collected grobs and produce a list of annotations
+     ;; (when annotations are neither printed nor logged the list is empty).
+     ((finalize trans)
+      (setOption '(scholarly annotations)
         (map
          (lambda (g)
            (let*
