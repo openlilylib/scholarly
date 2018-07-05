@@ -6,7 +6,6 @@
 \markup \bold { Usage examples for \typewriter "\\editorialMarkup" }
 \markup \vspace #1
 
-
 \markup \justify {
   Apply \typewriter "\\editorialMarkup sic" to a sequential expression. Default
   coloring but no further behaviour
@@ -39,21 +38,24 @@
 \relative {
   \editorialMarkup lemma \with {
     item = Accidental
+    source = OE
   }
   cis'
 }
 
+
 \markup \justify {
-  Apply \typewriter "\\editorialMarkup emendation" to a single music expression,
+  Apply \typewriter "\\editorialMarkup correction" to a single music expression,
   applied as a post-event to address the articulation.
   Creating a \typewriter "\\musicalIssue" annotation.
 }
 
 \relative {
-  c' -\editorialMarkup emendation \with {
+  c' -\editorialMarkup correction \with {
     author = UL
     message = "Articulation added, cf. violin."
     ann-type = musical-issue
+    type = substitution
   } -!
 }
 
@@ -65,6 +67,7 @@
 \relative {
 \editorialMarkup gap \with {
     message = "Hey"
+    reason = damage
     footnote-offset = #'(2 . -2)
     %footnote-mark = \markup "*"
   }
@@ -72,7 +75,7 @@
   d4 e
 }
 
-#(define style-emendation-seq
+#(define style-correction-seq
    (define-styling-function
      #{
        \slurDashed
@@ -81,12 +84,25 @@
      #}))
 
 
-\setSpanFuncs emendation #style-emendation-seq #style-noop
-\setOption stylesheets.span.use-colors ##f
+\setSpanFunc correction #style-correction-seq
+%\setOption stylesheets.span.use-colors ##f
 
 \relative {
-  \editorialMarkup emendation \with {
+  \editorialMarkup correction \with {
     item = Slur
+    type = substitution
   }
   { c' ( d e ) f }
 }
+
+\relative {
+  c'1
+  \editorialMarkup sic \with {
+    footnote-offset = #'(2 . 1)
+    footnote-text = "Hey"
+  } { c d }
+}
+
+%\relative {
+%  <c' \span test e g>4
+%}
