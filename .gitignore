@@ -27,3 +27,5 @@
 *.out
 *.toc
 
+# temporary files from the documentation
+documentation/tmp-ly/*
