@@ -85,11 +85,10 @@
 % \registerOption scholarly.annotate.colors.<type> <default>
 \registerOption scholarly.annotate.colors
 #`((critical-remark . ,darkgreen)
-   (musical-issue . ,green)
-   (lilypond-issue . ,red)
-   (question . ,blue)
-   (todo . ,magenta))
-
+   (musical-issue   . ,green)
+   (lilypond-issue  . ,red)
+   (question        . ,blue)
+   (todo            . ,magenta))
 annotateSetColor =
 #(define-void-function (type color)(symbol? color?)
    (setChildOption '(scholarly annotate colors) type color))
@@ -106,23 +105,18 @@ annotateSetColors =
 \registerOption scholarly.annotate.use-colors ##t
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% Handling of annotation types for plain text output
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Annotation type labels
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % For retrieving values and registering custom annotation types
 % see above at the coloring section
-% For custom annotation types this alist has to be extended using
-% \setOption scholarly.annotate.export.plaintext.labels
-%  #(assq-set! (getOption '(scholarly annotage export plaintext labels))
-%    <annotation-type> <label>)
 \registerOption scholarly.annotate.type-labels
 #`((critical-remark . "Critical Remark:")
-   (musical-issue . "Musical Issue:")
-   (lilypond-issue . "LilyPond Issue:")
-   (question . "Question:")
-   (todo . "TODO:"))
-
+   (musical-issue   . "Musical Issue:")
+   (lilypond-issue  . "LilyPond Issue:")
+   (question        . "Question:")
+   (todo            . "TODO:"))
 annotateSetTypeLabel =
 #(define-void-function (type label) (symbol? string?)
    (setChildOption '(scholarly annotate type-labels) type label))
@@ -138,7 +132,6 @@ annotateSetTypeLabels =
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Concise or verbose attribute output
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 % List of attributes that are suppressed for non-verbose output
 \registerOption scholarly.annotate.skip-attributes
@@ -157,14 +150,18 @@ annotateSetTypeLabels =
    style-type
    )
 
+% Returns a list with to-be-skipped attribute keys.
+% if <latex> is #t then determine the toggle value for LaTeX output,
+% otherwise for general output.
+% Depending on that value return either the skip-list or an empty list
 #(define (get-skipped-attributes latex)
-   (let ((show-all
-           (if latex
-               (getOption '(scholarly annotate export latex all-attributes))
-               (getOption '(scholarly annotate export all-attributes)))))
-     (if show-all '()
-         (getOption '(scholarly annotate skip-attributes)))
-     ))
+   (let
+    ((show-all
+      (if latex
+          (getOption '(scholarly annotate export latex all-attributes))
+          (getOption '(scholarly annotate export all-attributes)))))
+    (if show-all '()
+        (getOption '(scholarly annotate skip-attributes)))))
 
 % Export all attributes?
 % By default this is set to ##t, otherwise suppress attributes
@@ -179,23 +176,22 @@ annotateSetTypeLabels =
 % Default labels for annotation properties
 % Used for console printing and plain text  export
 \registerOption scholarly.annotate.attribute-labels
-#`((ann-footnote . "Annotation Footnote")
-   (ann-type . "Annotation Type")
-   (author . "Author(s)")
-   (context-id . "Context (original)")
+#`((ann-footnote  . "Annotation Footnote")
+   (ann-type      . "Annotation Type")
+   (author        . "Author(s)")
+   (context-id    . "Context (original)")
    (context-label . "Context")
-   (grob-type . "Affected Item (original)")
-   (grob-label . "Affected Item")
+   (grob-type     . "Affected Item (original)")
+   (grob-label    . "Affected Item")
    (grob-location . "Musical time (details)")
-   (item . "Explicit target item")
-   (location . "Input location")
-   (message . "Message")
-   (score-id . "Score (original)")
-   (score-label . "Score")
-   (source . "Affected Source")
-   (span-class . "Span Class")
-   (style-type . "Application")
-   )
+   (item          . "Explicit target item")
+   (location      . "Input location")
+   (message       . "Message")
+   (score-id      . "Score (original)")
+   (score-label   . "Score")
+   (source        . "Affected Source")
+   (span-class    . "Span Class")
+   (style-type    . "Application"))
 
 annotateSetAttributeLabel =
 #(define-void-function (name label)(symbol? string?)
@@ -209,10 +205,9 @@ annotateSetAttributeLabels =
     mappings))
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% Handling of labels for voice/context names
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Handling of labels for context/score/grob names
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % \annotate tries to determine the best labels for the
 % musical context, either one
@@ -222,8 +217,8 @@ annotateSetAttributeLabels =
 %
 % With this option one can map these values to more speaking
 % labels that can for example be used to create localized output.
-
 \registerOption scholarly.annotate.context-names #'()
+
 annotateSetContextName =
 #(define-void-function (context display-name)(symbol? string?)
    (setChildOption '(scholarly annotate context-names) context display-name))
@@ -235,6 +230,7 @@ annotateSetContextNames =
     mappings))
 
 \registerOption scholarly.annotate.score-names #'()
+
 annotateSetScoreName =
 #(define-void-function (score display-name)(symbol? string?)
    (setChildOption '(scholarly annotate score-names) score display-name))
@@ -246,6 +242,7 @@ annotateSetScoreNames =
     mappings))
 
 \registerOption scholarly.annotate.grob-names #'()
+
 annotateSetGrobName =
 #(define-void-function (grob-type display-name)(symbol? string?)
    (setChildOption '(scholarly annotate grob-names) grob-type display-name))
@@ -256,6 +253,7 @@ annotateSetGrobNames =
       (setChildOption '(scholarly annotate grob-names) (car grob-type) (cdr grob-type)))
     mappings))
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Handling of annotation types for LaTeX output
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -264,18 +262,16 @@ annotateSetGrobNames =
 % Used for LaTeX export
 \registerOption scholarly.annotate.export.latex.commands
 #`((critical-remark . "\\criticalRemark")
-   (musical-issue . "\\musicalIssue")
-   (lilypond-issue . "\\lilypondIssue")
-   (question . "\\annotateQuestion")
-   (todo . "\\annotateTodo"))
+   (musical-issue   . "\\musicalIssue")
+   (lilypond-issue  . "\\lilypondIssue")
+   (question        . "\\annotateQuestion")
+   (todo            . "\\annotateTodo"))
 
 % There is no implementation of convenience commands because this should
 % not actually be necessary. The LaTeX implementation is designed to work
 % together with the LaTeX package, so it should not be configured on user level.
 % If the functionality has to be adapted to a given project the above alist
 % can be modified directly.
-% An additional advantage is that with LaTeX export no special treatment of
-% custom anntotation types is necessary, as these simply map to \annotation
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % using lilyglyphs for grob-location
@@ -283,8 +279,9 @@ annotateSetGrobNames =
 % If set the grob location is formatted as a lilyglyphs command
 \registerOption scholarly.annotate.export.latex.use-lilyglyphs ##f
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Export all attributes to LaTeX?
+
 % By default this is set to ##t, otherwise suppress attributes
 % listed in scholarly.annotate.internal.skip-attributes
 \registerOption scholarly.annotate.export.latex.all-attributes ##t
-
