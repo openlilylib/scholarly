@@ -40,14 +40,16 @@
 #(cond ((not (defined? 'annotate-export-stringlist))
         (define annotate-export-stringlist '())))
 
+% Variable holding the string list to export
+\registerOption scholarly.annotate.export.strings #'()
+
 % Append a single string or a stringlist
 % to the stringlist that is used for export
 #(define (append-to-output-stringlist msg)
-   (set! annotate-export-stringlist
-         (append annotate-export-stringlist
-           (if (list? msg)
-               msg
-               (list msg)))))
+   (setOption '(scholarly annotate export strings)
+     (if (list? msg)
+         (append (reverse msg) (getOption '(scholarly annotate export strings)))
+         (cons msg (getOption '(scholarly annotate export strings))))))
 
 % Same as append-to-output-stringlist but
 % operate on a given 'messages' argument.
@@ -77,29 +79,23 @@
     msgs))
 
 % create a basename string to be used when building output file names
-#(define annotation-out-basename "")
-setAnnotationOutputBasename =
-#(define-void-function ()()
-   (set! annotation-out-basename (ly:parser-output-name (*parser*))))
-\setAnnotationOutputBasename
+\registerOption scholarly.annotate.internal.basename
+#(ly:parser-output-name (*parser*))
 
-
-% Take the stringlist 'annotate-export-stringlist
+% Take the stringlist scholarly.annotate.export.strings
 % and write it out to a file
 #(define (write-output-file ext)
-   ;
-   ; TODO
-   ; remove "messages" here and directly use the global object
-   ;
-   ; TODO
-   ; Make the file name configurable and let it respect the target format
-   ;
-   (let* ((logfile (format "~a.annotations.~a" annotation-out-basename ext)))
-     (ly:message "writing '~a' ..." logfile)
-     (with-output-to-file logfile
-       (lambda ()
-         (write-lines annotate-export-stringlist display-line)))
-     (set! annotate-export-stringlist '())))
+   (let*
+    ((logfile
+      (format "~a.annotations.~a"
+        (getOption '(scholarly annotate internal basename)) ext)))
+    (ly:message "writing '~a' ..." logfile)
+    (with-output-to-file logfile
+      (lambda ()
+        (write-lines
+         (reverse
+          (getOption '(scholarly annotate export strings))) display-line)))
+    (setOption '(scholarly annotate export strings) '())))
 
 % Format the rhythmic location of an annotation to a string
 % used when printing to the console or exporting to plain text
