@@ -41,7 +41,7 @@
 
 \version "2.19.22"
 
-\include "module.ily"
+\include "common-with-legacy.ily"
 
 % Include `editorial-functions` module
 %\include "../editorial-functions/__main__.ily"

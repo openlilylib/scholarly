@@ -39,46 +39,76 @@
   - provide an infrastructure for custom annotation types
 %}
 
-\version "2.19.22"
+\version "2.19.80"
 
-\loadModule oll-core.util.consist-to-contexts
-\loadModule oll-core.util.grob-location
+\include "common-with-legacy.ily"
+\loadModule stylesheets.span
 
-% Global object storing all annotations
-\registerOption scholarly.annotations #'()
+% Color an annotation in the annotation type's color
+% (if option is active)
+#(define color-annotation
+   (define-styling-function
+    (let*
+     ((ann-type (assq-ref span-annotation 'ann-type))
+      (color (getChildOption '(scholarly annotate colors) (string->symbol ann-type))))
+     (if (getOption '(scholarly annotate use-colors))
+         (case style-type
+           ((wrap)
+            (if item
+                (colorMusic (list item) color music)
+                (colorMusic color music)))
+           ((tweak)
+            (let ((target (if item (list item 'color) 'color)))
+              (propertyTweak target color music)))
+           ((once)
+            (make-sequential-music
+             (list
+              (once (overrideProperty (append item (list 'color)) color))
+              music))))
+         music))))
+\setSpanFunc annotation #color-annotation
 
-% Include implementation
-\include "config.ily"
-\include "sort.ily"
-\include "format.ily"
-\include "export.ily"
-\include "export-latex.ily"
-\include "export-plaintext.ily"
-\include "engraver.ily"
+% Helper function to merge the annotation type into the annotation
+#(define (add-type mods type)
+   (let ((new-mods
+          (append
+           (ly:get-context-mods mods)
+           (list `(assign ann-type ,type)))))
+     (ly:make-context-mod new-mods)))
+
+% Validator to verify the encoding of \tagSpan annotation
+#(define validate-scholarly-annotation
+   (define-span-validator
+    (let ((valid
+           (let ((ann-type (assq-ref annotation 'ann-type)))
+             (and ann-type
+                  (memq (string->symbol ann-type)
+                    '(critical-remark musical-issue lilypond-issue question todo))))))
+      (if (not valid)
+          (set! warning-message "Missing or invalid attribute 'ann-type'.
+Valid types: '(critical-remark musical-issue lilypond-issue question todo)"))
+      valid)))
+\setChildOption stylesheets.span.validators annotation #validate-scholarly-annotation
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% Set default integration in the layout contexts.
-%%%% All settings can be overridden in individual scores.
+% The actual commands are wrappers around \tagSpan
 
-\consistToContexts #annotationCollector
-#'(Staff
-   DrumStaff
-   RhythmicStaff
-   TabStaff
-   GregorianTranscriptionStaff
-   MensuralStaff
-   VaticanaStaff
-   Dynamics
-   Lyrics
-   FiguredBass)
+criticalRemark =
+#(define-music-function (attrs music)(ly:context-mod? ly:music?)
+   (tagSpan 'annotation (add-type attrs "critical-remark") music))
 
-\layout {
-  \context {
-    \Score
-    % The annotation processor living in the Score context
-    % processes the annotations and outputs them to different
-    % targets.
-    \consists \annotationProcessor
-  }
-}
+musicalIssue =
+#(define-music-function (attrs music)(ly:context-mod? ly:music?)
+   (tagSpan 'annotation (add-type attrs "musical-issue") music))
+
+lilypondIssue =
+#(define-music-function (attrs music)(ly:context-mod? ly:music?)
+   (tagSpan 'annotation (add-type attrs "lilypond-issue") music))
+
+question =
+#(define-music-function (attrs music)(ly:context-mod? ly:music?)
+   (tagSpan 'annotation (add-type attrs "question") music))
+
+todo =
+#(define-music-function (attrs music)(ly:context-mod? ly:music?)
+   (tagSpan 'annotation (add-type attrs "todo") music))
