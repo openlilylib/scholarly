@@ -56,6 +56,29 @@
          (getChildOption '(scholarly annotate colors) ann-type))))
 
 
+% Get a context name, recursively going up the hierarchy
+% until the 'Score. If <score-only> is #t then *only* the score's
+% id is considered.
+#(define (get-context-id context score-only)
+   (if (and (not score-only)
+            (not (member (ly:context-id context) '("" "\\new"))))
+       (ly:context-id context)
+       (letrec
+        ((score-ctx
+          (lambda (ctx)
+            (let ((parent (ly:context-parent ctx)))
+              (if parent
+                  (if (or (and score-only
+                               (eq? (ly:context-name parent) 'Score))
+                          (not (or score-only
+                                   (member (ly:context-id parent) '("" "\\new")))))
+                      (ly:context-id parent)
+                      (score-ctx parent))
+                  "")))))
+        (let ((id (score-ctx context)))
+          (if (member id '("" "\\new"))
+              #f id)))))
+
 %%%%%%%%%%%%%%%%%%%%%%%%
 % Annotation engraver(s)
 %
@@ -98,44 +121,41 @@ annotationCollector =
                (if do-process
                    ;; Enrich the annotation with information that is only available now.
                    (let*
-                    ((_context-id
-                      ;; Set _context-id to
+                    ((context-id
+                      ;; Set context-id to
                       ;; a) an explicit 'context' attribute
-                      ;; b) an implicit context name through the named Staff context or
+                      ;; b) an implicit context name through a named context or
                       ;; c) the directory.file as determined by \tagSpan
                       (or (assq-ref annotation 'context)
-                          (let ((actual-context-id (ly:context-id context)))
-                            (if (not (member actual-context-id (list "" "\\new")))
-                                actual-context-id #f))
+                          (get-context-id context #f)
                           (assq-ref annotation 'context-id)))
-                     (context-id
-                      ;; Look up a context-name label from the options if one is set,
-                      ;; otherwise use the retrieved context-name.
+                     ;; Look up a context-name label from the options if one is set,
+                     ;; otherwise use the retrieved context-name.
+                     (context-label
                       (getChildOptionWithFallback '(scholarly annotate context-names)
-                        (string->symbol _context-id)
-                        _context-id))
-                     (score-id
-                      ;; Recursively determine the name of the 'Score context.
-                      ;; If that is \new (no explicit name) set to #f instead
-                      (letrec
-                       ((score-ctx
-                         (lambda (ctx)
-                           (let ((parent (ly:context-parent ctx)))
-                             (if parent
-                                 (if (eq? (ly:context-name parent) 'Score)
-                                     (ly:context-id parent)
-                                     (score-ctx parent))
-                                 "")))))
-                       (let ((id (score-ctx context)))
-                         (if (string=? id "\\new") #f id))))
+                        (string->symbol context-id) context-id))
+                     ;; Retrieve name of score if explicitly given
+                     (score-id (get-context-id context #t))
+                     ;; Look up score-label.
+                     ;; If no score-id or no lookup-value is present use "" instead
+                     (score-label
+                      (if score-id
+                          (getChildOptionWithFallback '(scholarly annotate score-names)
+                            (string->symbol score-id) score-id)
+                          ""))
                      (grob-type (grob::name grob))
+                     (grob-label
+                      (getChildOptionWithFallback
+                       '(scholarly annotate grob-names) grob-type (symbol->string grob-type)))
                      )
                     ;; 'context-id is already present so we overwrite it
                     (assq-set! annotation 'context-id context-id)
                     ;; Add the new properties to the annotation
                     (append! annotation
-                      `((grob-type . ,grob-type)
-                        (score-id . ,score-id)))
+                      `((context-label . ,context-label)
+                        (score-id . ,score-id)
+                        (score-label . ,score-label)(grob-type . ,grob-type)
+                        (grob-label . ,grob-label)))
                     ;; record annotated grob
                     (set! annotated-grobs (cons grob annotated-grobs))
                     ;; reset list to prevent multiple processing.
@@ -176,11 +196,8 @@ annotationProcessor =
         (setOption '(scholarly annotations)
           (sort-annotations (getOption '(scholarly annotations))
             (assq-ref annotation-comparison-predicates s))))
-      (reverse (getOption '(scholarly annotate sort-criteria))))
+      (reverse (getOption '(scholarly annotate sort-by))))
 
-     ;; Optionally print annotations
-     (if (getOption '(scholarly annotate print))
-         (do-print-annotations))
      ;; Export iterating over all entries in the
      ;; annotation-export-targets configuration list
      (for-each

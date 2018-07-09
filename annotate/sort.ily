@@ -56,14 +56,28 @@
 % compare by annotation type
 #(define (annotation-less-than-by-type? ann-a ann-b)
    (string<?
-    (assq-ref ann-a 'type)
-    (assq-ref ann-b 'type)))
+    (assq-ref ann-a 'ann-type)
+    (assq-ref ann-b 'ann-type)))
+
+% compare by score id
+#(define (annotation-less-than-by-score? ann-a ann-b)
+   (symbol<?
+    (assq-ref ann-a 'score-id)
+    (assq-ref ann-b 'score-id)))
+
+% compare by context id
+#(define (annotation-less-than-by-context? ann-a ann-b)
+   (string<?
+    (assq-ref ann-a 'context-id)
+    (assq-ref ann-b 'context-id)))
 
 % Lookup list from which the predicate procedures are retrieved
 #(define annotation-comparison-predicates
    `((rhythmic-location . ,annotation-earlier?)
      (author . ,annotation-less-than-by-author?)
-     (type . ,annotation-less-than-by-type?)))
+     (type . ,annotation-less-than-by-type?)
+     (score . ,annotation-less-than-by-score?)
+     (context . ,annotation-less-than-by-context?)))
 
 % Return a sorted list of annotations
 %

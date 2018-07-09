@@ -36,7 +36,6 @@
 % It is a thin wrapper around stylesheets.span
 
 \loadModule stylesheets.span
-\loadModule scholarly.annotate
 
 \include "config.ily"
 
@@ -64,13 +63,14 @@
          sic            ;; <sic>, erroneous text in the source
          unclear        ;; <unclear>, unclear text
          correction     ;; <corr>, editorial emendation
+         annotation     ;; general-purpose annotation
          ))))
 
 % Load data about the different span-types:
 % - default styling colors
 % - default styling functions (?)
 % - rules about allowed combinations
-\loadModule scholarly.attributes
+%\loadModule scholarly.attributes
 
 % Encode a source finding or editorial decision
 % This is a thin wrapper around \span from the stylesheets.span module

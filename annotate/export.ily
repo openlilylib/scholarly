@@ -116,11 +116,7 @@ setAnnotationOutputBasename =
            (assq-ref ann 'location))
          (format "Measure ~a, beat ~a"
            (assq-ref props 'measure-no)
-           (let*
-            ((beat-fraction (assq-ref props 'beat-fraction))
-             (our-beat (assq-ref props 'our-beat))
-             (beat-string (beat-string props)))
-            beat-string)))))
+           (beat-string props)))))
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -128,7 +124,9 @@ setAnnotationOutputBasename =
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Print annotations to the console
-#(define (do-print-annotations)
+%#(define (do-print-annotations)
+\register-export-routine console
+#(lambda ()
    (for-each
     (lambda (ann)
       (begin
@@ -136,7 +134,7 @@ setAnnotationOutputBasename =
        (ly:message (format "    ~a" (format-location ann)))
        (write-lines
         (format-property-messages ann
-          '(context type location input-file-name grob grob-location))
+          (get-skipped-attributes #f))
         ly:message)
        (ly:message "")))
     (getOption '(scholarly annotations))))

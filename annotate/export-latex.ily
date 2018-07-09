@@ -128,7 +128,10 @@
       ;; all properties except 'grob-location (which is a list of sub-props)
       (filter
        (lambda (p)
-         (not (member (car p) '(grob-location grob))))
+         (not (member (car p) 
+                (append
+                 (get-skipped-attributes #t)
+                 '(grob-location grob)))))
        ann))
      ;; The sub-list of 'grob-location
      (location-props

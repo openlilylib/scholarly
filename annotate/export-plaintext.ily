@@ -62,12 +62,12 @@
       ;; add annotation type
       (append-to-output-stringlist
        (getChildOption
-          '(scholarly annotate export plaintext labels)
-          (assq-ref ann 'type)))
+          '(scholarly annotate type-labels)
+          (assq-ref ann 'ann-type)))
       ;; print properties list
       (append-to-output-stringlist
        (format-property-messages ann
-         (list "type" "input-file-name" "location" "grob" "grob-location")))
+         (get-skipped-attributes #f)))
       ;; add newline to annotation entry
       (append-to-output-stringlist " "))
     (getOption '(scholarly annotations)))
