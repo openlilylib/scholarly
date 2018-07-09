@@ -28,8 +28,8 @@
 
 % scholarly.choice module
 
-\loadModule stylesheets.span
 \loadModule scholarly.editorial-markup
+\loadModule scholarly.annotate
 
 \include "validate.ily"
 \include "choose.ily"
