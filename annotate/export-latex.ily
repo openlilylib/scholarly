@@ -128,7 +128,7 @@
       ;; all properties except 'grob-location (which is a list of sub-props)
       (filter
        (lambda (p)
-         (not (member (car p) 
+         (not (member (car p)
                 (append
                  (get-skipped-attributes #t)
                  '(grob-location grob)))))
@@ -161,14 +161,13 @@
       "]\n"))))
 
 % Generate and write annotations to a LaTeX input file
-\register-export-routine latex
-#(lambda ()
-   ;; process annotations, adding lines to 'annotate-export-stringlist'
-   (for-each
-    (lambda (ann)
-      (format-annotation ann))
-    (getOption '(scholarly annotations)))
+#(register-export-routine 'latex
+   (lambda ()
+     ;; process annotations, adding lines to 'annotate-export-stringlist'
+     (for-each
+      (lambda (ann)
+        (format-annotation ann))
+      (getOption '(scholarly annotations)))
 
-   ;; write to output file
-   (write-output-file "inp"))
-
+     ;; write to output file
+     (write-output-file "inp")))

@@ -125,18 +125,16 @@ setAnnotationOutputBasename =
 
 % Print annotations to the console
 %#(define (do-print-annotations)
-\register-export-routine console
-#(lambda ()
-   (for-each
-    (lambda (ann)
-      (begin
-       (ly:input-message (assq-ref ann 'location) "\nAnnotation:")
-       (ly:message (format "    ~a" (format-location ann)))
-       (write-lines
-        (format-property-messages ann
-          (get-skipped-attributes #f))
-        ly:message)
-       (ly:message "")))
-    (getOption '(scholarly annotations))))
-
-
+#(register-export-routine 'console
+   (lambda ()
+     (for-each
+      (lambda (ann)
+        (begin
+         (ly:input-message (assq-ref ann 'location) "\nAnnotation:")
+         (ly:message (format "    ~a" (format-location ann)))
+         (write-lines
+          (format-property-messages ann
+            (get-skipped-attributes #f))
+          ly:message)
+         (ly:message "")))
+      (getOption '(scholarly annotations)))))

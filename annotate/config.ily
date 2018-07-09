@@ -33,13 +33,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%
-% Console output
-
-% By default annotations are printed
-\registerOption scholarly.annotate.print ##t
-
-%%%%%%%%%%%%%
-% File export
+% Export targets
 
 % By default annotations are not exported
 \registerOption scholarly.annotate.export-targets #'(console)
@@ -48,10 +42,7 @@
 % Convenience method for registering routines
 #(define register-export-routine
    (define-void-function (name proc)(symbol? procedure?)
-     (let ((opt (getOption '(scholarly annotate internal export-routines))))
-       (set! opt
-             (assq-set! opt name proc))
-       (setOption '(scholarly annotate internal export-routines) opt))))
+     (setChildOption '(scholarly annotate internal export-routines) name proc)))
 
 
 %%%%%%%%%%%%%%%%%
