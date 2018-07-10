@@ -1,5 +1,7 @@
 \include "oll-core/package.ily"
 \loadModule scholarly.annotate
+\setOption scholarly.annotate.export-targets #'(console plaintext)
+\setOption scholarly.annotate.export.all-attributes ##t
 \markup "Annotating a single note, with and without attached elements."
 \new Score = "basic"
 \new Staff = "basic-staff" \relative {
