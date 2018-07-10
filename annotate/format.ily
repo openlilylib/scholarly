@@ -36,21 +36,19 @@
 % These are used for displaying custom properties.
 #(define (format-ly-music music)
    (if (ly:music? music)
-       (cond
-        ((eq? 'TimeSignatureMusic (ly:music-property music 'name))
-         (format "\\time ~a/~a"
-           (ly:music-property music 'numerator)
-           (ly:music-property music 'denominator)))
-        ((eq? 'KeyChangeEvent (ly:music-property music 'name))
-         (format "Key: ~a" (ly:music-property music 'tonic)))
-        (else "(LilyPond Music)"))
+       (case  (ly:music-property music 'name)
+         ((TimeSignatureMusic)
+          (format "\\time ~a/~a"
+            (ly:music-property music 'numerator)
+            (ly:music-property music 'denominator)))
+         ((KeyChangeEvent)
+          (format "Key: ~a" (ly:music-property music 'tonic)))
+         (else "(LilyPond Music)"))
        "No music found"))
 
-% Compose a message from the properties of an annotation
-% The 'cmd' argument should be
-% - ly:message or
-% - append-message
-% flt is a list of property names that should *not* be rendered
+% Returns a string with a single attribute.
+% Simple formatting, not configurable yet
+% Uses attribute-labels lookup if available
 #(define (format-property-message prop)
    (let
     ((prop-key (car prop))
@@ -58,24 +56,18 @@
     (format "    ~a: ~a"
       (or (getChildOptionWithFallback '(scholarly annotate attribute-labels) prop-key #f)
           prop-key)
-      ;; display a placeholder for music expressions
-      ;; because these are cluttering the output.
-      ;
-      ; TODO
-      ; maybe improve handling in the future
-      ; and format messages for supported types like key signatures
-      ;
+      ; keep that a (cond) expression because there might be more special types to come
       (cond
        ((ly:music? prop-value)
         (format-ly-music prop-value))
        (else prop-value)))))
 
+% Return a list of formatted properties.
+% Suppresses attributes in a filter list
+% Sorts by the resulting strings
 #(define (format-property-messages ann flt)
-   (map (lambda (prop)
-          (if (not (member (car prop) flt))
-              (format-property-message prop)
-              ""))
-     (sort ann
-       (lambda (a b)
-         (symbol<? (car a) (car b))))))
-
+   (let
+    ((accepted (filter (lambda (prop) (not (member (car prop) flt))) ann)))
+    (sort
+     (map (lambda (prop) (format-property-message prop)) accepted)
+     (lambda (a b) (string<? (string-downcase a) (string-downcase b))))))
