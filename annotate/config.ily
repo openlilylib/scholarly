@@ -148,6 +148,11 @@ annotateSetTypeLabels =
    score-id
    span-class
    style-type
+   ; attributes from stylesheets.span
+   example-alignment
+   example-direction
+   footnote-mark
+   footnote-offset
    )
 
 % Returns a list with to-be-skipped attribute keys.
@@ -191,7 +196,22 @@ annotateSetTypeLabels =
    (score-label   . "Score")
    (source        . "Affected Source")
    (span-class    . "Span Class")
-   (style-type    . "Application"))
+   (style-type    . "Application")
+   ;; attributes from scholarly.editorial-markup
+   (agent         . "Agent")
+   (certainty     . "Certainty")
+   (reason        . "Reason")
+   (responsible   . "Responsible Entity")
+   (source        . "Source")
+   (type          . "Type (of something)")
+   ;; attributes from stylesheets.span
+   (example       . "Music Example")
+   (example-alignment . "Horizontal Example Alignment")
+   (example-direction. "Vertical Example Direction")
+   (footnote-mark . "Footnote Mark")
+   (footnote-offset . "Footnote Offset")
+   (footnote-text . "Footnote Text")
+   )
 
 annotateSetAttributeLabel =
 #(define-void-function (name label)(symbol? string?)
