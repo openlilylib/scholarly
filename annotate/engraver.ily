@@ -112,13 +112,10 @@ annotationCollector =
                  (not (member ann-type
                         (getOption '(scholarly annotate ignored-types)))))))
           (if is-annotation
-              (let*
-               ((do-process
-                 (or (getOption '(scholarly annotate print))
-                     (not (null? (getOption '(scholarly annotate export-targets)))))))
+              (begin
                ;; Coloring is done regardless of annotation export
                (color-anchor grob ann-type)
-               (if do-process
+               (if (not (null? (getOption '(scholarly annotate export-targets))))
                    ;; Enrich the annotation with information that is only available now.
                    (let*
                     ((context-id
