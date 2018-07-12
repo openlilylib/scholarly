@@ -41,7 +41,7 @@
 
 \version "2.19.22"
 
-\include "common-with-legacy.ily"
+\loadModule scholarly.annotate.common
 
 % Include `editorial-functions` module
 %\include "../editorial-functions/__main__.ily"

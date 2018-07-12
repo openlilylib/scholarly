@@ -41,7 +41,7 @@
 
 \version "2.19.80"
 
-\include "common-with-legacy.ily"
+\loadModule scholarly.annotate.common
 \loadModule stylesheets.span
 
 % Color an annotation in the annotation type's color
