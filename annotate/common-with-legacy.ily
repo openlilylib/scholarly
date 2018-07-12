@@ -40,8 +40,6 @@
 %}
 
 \version "2.19.22"
-
-\loadModule oll-core.util.consist-to-contexts
 \loadModule oll-core.util.grob-location
 
 % Global object storing all annotations
