@@ -122,7 +122,7 @@
 % Print annotations to the console
 %#(define (do-print-annotations)
 #(register-export-routine 'console
-   (lambda ()
+   (lambda (annotations)
      (for-each
       (lambda (ann)
         (begin
@@ -133,4 +133,4 @@
             (get-skipped-attributes #f))
           ly:message)
          (ly:message "")))
-      (getOption '(scholarly annotations)))))
+      annotations)))

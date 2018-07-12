@@ -31,7 +31,7 @@
 % Export routine for plaintext files
 % produces a very simple and straightforward file
 #(register-export-routine 'plaintext
-   (lambda ()
+   (lambda (annotations)
      (for-each
       (lambda (ann)
         ;; start entry with rhythmic-location
@@ -44,7 +44,7 @@
          (format-property-messages ann (get-skipped-attributes #f)))
         ;; add newline to annotation entry
         (append-to-output-stringlist " "))
-      (getOption '(scholarly annotations)))
+      annotations)
 
      ;; write to output file
      (write-output-file "log")))

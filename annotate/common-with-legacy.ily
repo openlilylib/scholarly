@@ -56,35 +56,9 @@
 \include "export-plaintext.ily"
 \include "engraver.ily"
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% Set default integration in the layout contexts.
-%%%% All settings can be overridden in individual scores.
-
-% annotationCollecter is included in all Bottom contexts
-\consistToContexts #annotationCollector
-#'(ChordNames
-   CueVoice
-   DrumVoice
-   Dynamics
-   FiguredBass
-   GregorianTranscriptionVoice
-   KievanVoice
-   Lyrics
-   MensuralVoice
-   NoteNames
-   NullVoice
-   PetrucciVoice
-   TabVoice
-   VaticanaVoice
-   Voice)
-
 \layout {
   \context {
     \Score
-    % The annotation processor living in the Score context
-    % processes the annotations and outputs them to different
-    % targets.
-    \consists \annotationProcessor
+    \consists \annotationEngraver
   }
 }

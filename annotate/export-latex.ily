@@ -162,12 +162,12 @@
 
 % Generate and write annotations to a LaTeX input file
 #(register-export-routine 'latex
-   (lambda ()
+   (lambda (annotations)
      ;; process annotations, adding lines to 'annotate-export-stringlist'
      (for-each
       (lambda (ann)
         (format-annotation ann))
-      (getOption '(scholarly annotations)))
+      annotations)
 
      ;; write to output file
      (write-output-file "inp")))
