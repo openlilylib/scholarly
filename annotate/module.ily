@@ -68,11 +68,12 @@
          music))))
 \setSpanFunc annotation #color-annotation
 
-% Helper function to merge the annotation type into the annotation
+% Helper function to merge the annotation type into the annotation.
+% If no <mods> are passed into the function a bare mod is created
 #(define (add-type mods type)
    (let ((new-mods
           (append
-           (ly:get-context-mods mods)
+           (if mods (ly:get-context-mods mods) '())
            (list `(assign ann-type ,type)))))
      (ly:make-context-mod new-mods)))
 
@@ -94,21 +95,21 @@ Valid types: '(critical-remark musical-issue lilypond-issue question todo)"))
 % The actual commands are wrappers around \tagSpan
 
 criticalRemark =
-#(define-music-function (attrs music)(ly:context-mod? ly:music?)
+#(define-music-function (attrs music)((ly:context-mod?) ly:music?)
    (tagSpan 'annotation (add-type attrs "critical-remark") music))
 
 musicalIssue =
-#(define-music-function (attrs music)(ly:context-mod? ly:music?)
+#(define-music-function (attrs music)((ly:context-mod?) ly:music?)
    (tagSpan 'annotation (add-type attrs "musical-issue") music))
 
 lilypondIssue =
-#(define-music-function (attrs music)(ly:context-mod? ly:music?)
+#(define-music-function (attrs music)((ly:context-mod?) ly:music?)
    (tagSpan 'annotation (add-type attrs "lilypond-issue") music))
 
 question =
-#(define-music-function (attrs music)(ly:context-mod? ly:music?)
+#(define-music-function (attrs music)((ly:context-mod?) ly:music?)
    (tagSpan 'annotation (add-type attrs "question") music))
 
 todo =
-#(define-music-function (attrs music)(ly:context-mod? ly:music?)
+#(define-music-function (attrs music)((ly:context-mod?) ly:music?)
    (tagSpan 'annotation (add-type attrs "todo") music))
