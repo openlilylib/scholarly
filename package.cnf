@@ -23,7 +23,7 @@ maintainers: [
   Urs Liska <ul@openlilylib.org>
   Jeffery Shivers <jefferyshivers@gmail.com>
   ]
-version: 0.0.1
+version: 0.6.0
 license: GPL3
 website: https://github.com/openlilylib/scholarly
 repository: https://github.com/openlilylib/scholarly.git
