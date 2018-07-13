@@ -90,7 +90,7 @@
       ; project). As this may become useful one day we'll keep it here.
       (set! props (assq-set! props 'input-file-name input-file-name))
       ;; Check if valid annotation, then process
-      (if (input-annotation? props)
+      (if (alist? props)
           ;; Apply annotation object as override, depending on input syntax
           (let*
            ((col (getChildOption '(scholarly annotate colors) type))
