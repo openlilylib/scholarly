@@ -73,7 +73,7 @@
      (map
       (lambda (expr)
         (let*
-         ((anchor (ly:music-property expr 'anchor))
+         ((anchor (get-anchor expr))
           (span-annotation (ly:music-property anchor 'span-annotation))
           (span-class (assq-ref span-annotation 'span-class)))
          (cons span-class expr)))

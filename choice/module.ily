@@ -41,7 +41,7 @@
 % content expression overwrites \choice.
 #(define (merge-annotations props music)
    (let*
-    ((anchor (ly:music-property music 'anchor))
+    ((anchor (get-anchor music))
      (span-annotation (ly:music-property anchor 'span-annotation)))
     (for-each
      (lambda (prop)
