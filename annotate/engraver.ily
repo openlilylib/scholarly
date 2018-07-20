@@ -47,7 +47,7 @@
 % until the 'Score. If <score-only> is #t then *only* the score's
 % id is considered.
 #(define (get-context-id context score-only)
-   (if (and (not score-only)
+   (if (and (or (eq? (ly:context-name context) 'Score) (not score-only))
             (not (member (ly:context-id context) '("" "\\new"))))
        (ly:context-id context)
        (letrec
