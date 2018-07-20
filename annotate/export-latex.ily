@@ -128,7 +128,10 @@
       ;; all properties except 'grob-location (which is a list of sub-props)
       (filter
        (lambda (p)
-         (not (member (car p) '(grob-location grob))))
+         (not (member (car p)
+                (append
+                 (get-skipped-attributes #t)
+                 '(grob-location grob)))))
        ann))
      ;; The sub-list of 'grob-location
      (location-props
@@ -148,21 +151,23 @@
     ;; compose the resulting string list
     (append-to-output-stringlist
      (string-append
-      (or (assq-ref annotation-type-latex-commands (assq-ref ann 'type))
+      (or (getChildOptionWithFallback
+           '(scholarly annotate export latex commands)
+           (assq-ref ann 'ann-type)
+           #f)
           "\\annotation")
       "[\n"
       (string-join assignments ",\n")
       "]\n"))))
 
 % Generate and write annotations to a LaTeX input file
-\register-export-routine latex
-#(lambda ()
-   ;; process annotations, adding lines to 'annotate-export-stringlist'
-   (for-each
-    (lambda (ann)
-      (format-annotation ann))
-    (getOption '(scholarly annotations)))
+#(register-export-routine 'latex
+   (lambda (annotations)
+     ;; process annotations, adding lines to 'annotate-export-stringlist'
+     (for-each
+      (lambda (ann)
+        (format-annotation ann))
+      annotations)
 
-   ;; write to output file
-   (write-output-file "inp"))
-
+     ;; write to output file
+     (write-output-file "inp")))

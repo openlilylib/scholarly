@@ -20,54 +20,43 @@
 % along with ScholarLY.  If not, see <http://www.gnu.org/licenses/>.          %
 %                                                                             %
 % ScholarLY is maintained by Urs Liska, ul@openlilylib.org                    %
-% Copyright Urs Liska, 2015                                                   %
+% Copyright Urs Liska, 2018                                                   %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%{
-  Helper utilities to format annotation output
-%}
+\version "2.19.80"
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% General routines for formatting output
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% scholarly.choice module
 
-% Define string representations for selected ly:music? data types.
-% These are used for displaying custom properties.
-#(define (format-ly-music music)
-   (if (ly:music? music)
-       (case  (ly:music-property music 'name)
-         ((TimeSignatureMusic)
-          (format "\\time ~a/~a"
-            (ly:music-property music 'numerator)
-            (ly:music-property music 'denominator)))
-         ((KeyChangeEvent)
-          (format "Key: ~a" (ly:music-property music 'tonic)))
-         (else "(LilyPond Music)"))
-       "No music found"))
+\loadModule scholarly.editorial-markup
+\loadModule scholarly.annotate
 
-% Returns a string with a single attribute.
-% Simple formatting, not configurable yet
-% Uses attribute-labels lookup if available
-#(define (format-property-message prop)
-   (let
-    ((prop-key (car prop))
-     (prop-value (cdr prop)))
-    (format "    ~a: ~a"
-      (or (getChildOptionWithFallback '(scholarly annotate attribute-labels) prop-key #f)
-          prop-key)
-      ; keep that a (cond) expression because there might be more special types to come
-      (cond
-       ((ly:music? prop-value)
-        (format-ly-music prop-value))
-       (else prop-value)))))
+\include "validate.ily"
+\include "choose.ily"
+\include "config.ily"
 
-% Return a list of formatted properties.
-% Suppresses attributes in a filter list
-% Sorts by the resulting strings
-#(define (format-property-messages ann flt)
-   (let
-    ((accepted (filter (lambda (prop) (not (member (car prop) flt))) ann)))
-    (sort
-     (map (lambda (prop) (format-property-message prop)) accepted)
-     (lambda (a b) (string<? (string-downcase a) (string-downcase b))))))
+% Merge the annotation attributes from the \choice
+% with that of the chosen music expression.
+% If an attribute is set in both annotations
+% content expression overwrites \choice.
+#(define (merge-annotations props music)
+   (let*
+    ((anchor (ly:music-property music 'anchor))
+     (span-annotation (ly:music-property anchor 'span-annotation)))
+    (for-each
+     (lambda (prop)
+       (let*
+        ((is-set (assq (car prop) span-annotation)))
+        (if (not is-set)
+            (set! span-annotation (append span-annotation (list prop))))))
+     props)
+    (make-input-annotation span-annotation anchor)))
+
+choice =
+#(define-music-function (choice-type attrs music)
+   (symbol? (ly:context-mod?) choice-music?)
+   (let*
+    ((props (if attrs (context-mod->props attrs) '()))
+     (chosen (choose-element choice-type props music)))
+    (merge-annotations props chosen)
+    chosen))

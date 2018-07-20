@@ -1,9 +1,9 @@
 \version "2.19.42"
 
+% This file is deprecated and is only kept for historical purposes.
+
 \include "oll-core/package.ily"
-\loadPackage \with {
-  modules = annotate
-} scholarly
+\loadModule scholarly.annotate.legacy
 
 % \setOption scholarly.editorial.functions.apply ##f
 

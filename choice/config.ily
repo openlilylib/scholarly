@@ -20,54 +20,56 @@
 % along with ScholarLY.  If not, see <http://www.gnu.org/licenses/>.          %
 %                                                                             %
 % ScholarLY is maintained by Urs Liska, ul@openlilylib.org                    %
-% Copyright Urs Liska, 2015                                                   %
+% Copyright Urs Liska, 2018                                                   %
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%{
-  Helper utilities to format annotation output
-%}
+\version "2.19.80"
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% General routines for formatting output
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Configuration for the scholarly.choice module
 
-% Define string representations for selected ly:music? data types.
-% These are used for displaying custom properties.
-#(define (format-ly-music music)
-   (if (ly:music? music)
-       (case  (ly:music-property music 'name)
-         ((TimeSignatureMusic)
-          (format "\\time ~a/~a"
-            (ly:music-property music 'numerator)
-            (ly:music-property music 'denominator)))
-         ((KeyChangeEvent)
-          (format "Key: ~a" (ly:music-property music 'tonic)))
-         (else "(LilyPond Music)"))
-       "No music found"))
+% Validator functions for the built-in choice types.
+% Custom functions have to be created using the (define-choice-validator) macro
+\registerOption scholarly.choice.choice-type-validators
+#`((variants . ,validate-variants)
+   (normalization . ,validate-normalization)
+   (substitution . ,validate-substitution)
+   (emendation . ,validate-emendation))
 
-% Returns a string with a single attribute.
-% Simple formatting, not configurable yet
-% Uses attribute-labels lookup if available
-#(define (format-property-message prop)
-   (let
-    ((prop-key (car prop))
-     (prop-value (cdr prop)))
-    (format "    ~a: ~a"
-      (or (getChildOptionWithFallback '(scholarly annotate attribute-labels) prop-key #f)
-          prop-key)
-      ; keep that a (cond) expression because there might be more special types to come
-      (cond
-       ((ly:music? prop-value)
-        (format-ly-music prop-value))
-       (else prop-value)))))
+% Default preferences for the built-in choice types
+\registerOption scholarly.choice.preferences
+#`((variants . lemma)
+   (normalization . regularization)
+   (substitution . new)
+   (emendation . new))
 
-% Return a list of formatted properties.
-% Suppresses attributes in a filter list
-% Sorts by the resulting strings
-#(define (format-property-messages ann flt)
-   (let
-    ((accepted (filter (lambda (prop) (not (member (car prop) flt))) ann)))
-    (sort
-     (map (lambda (prop) (format-property-message prop)) accepted)
-     (lambda (a b) (string<? (string-downcase a) (string-downcase b))))))
+% Chooser functions for the built-in choice types.
+% Custom functions have to be created using the (define-span-chooser) macro
+\registerOption scholarly.choice.choosers
+#`((variants . ,choose-variants)
+   (normalization . ,choose-normalization)
+   (substitution . ,choose-substitution)
+   (emendation . ,choose-emendation))
+
+% store a single validator function
+setChoiceValidator =
+#(define-void-function (choice-type validator)(symbol? procedure?)
+   (setChildOption
+    '(scholarly choice choice-type-validators) choice-type validator))
+
+% store multiple validator functions at once
+setChoiceValidators =
+#(define-void-function (validators)(validator-list?)
+   (for-each
+    (lambda (validator)
+      (setChildOption '(scholarly choice choice-type-validators)
+        (car validator)(cdr validator)))
+    validators))
+
+setSpanChooser =
+#(define-void-function (choice-type chooser)(symbol? procedure?)
+   (setChildOption '(stylesheets choice choosers) choice-type chooser))
+
+setChoicePreference =
+#(define-void-function (choice-type preference)(symbol? scheme?)
+   (setChildOption '(scholarly choice preferences) choice-type preference))

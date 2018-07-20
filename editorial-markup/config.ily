@@ -24,50 +24,58 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%{
-  Helper utilities to format annotation output
-%}
+\version "2.19.80"
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% General routines for formatting output
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Configuration options for scholarly.editorial-markup
 
-% Define string representations for selected ly:music? data types.
-% These are used for displaying custom properties.
-#(define (format-ly-music music)
-   (if (ly:music? music)
-       (case  (ly:music-property music 'name)
-         ((TimeSignatureMusic)
-          (format "\\time ~a/~a"
-            (ly:music-property music 'numerator)
-            (ly:music-property music 'denominator)))
-         ((KeyChangeEvent)
-          (format "Key: ~a" (ly:music-property music 'tonic)))
-         (else "(LilyPond Music)"))
-       "No music found"))
+% Default colors for the different types of editorialMarkup
+\setChildOptions stylesheets.span.span-colors
+#`((lemma . ,darkgreen)
+   (reading . ,darkblue)
+   (addition . ,darkyellow)
+   (deletion . ,(x11-color 'DarkRed))
+   (restoration . ,darkcyan)
+   (original . ,(x11-color 'DarkGoldenrod))
+   (regularization . ,(x11-color 'chocolate))
+   (sic . ,red)
+   (unclear . ,(x11-color 'orange))
+   (gap . ,(x11-color 'PaleGoldenrod))
+   (correction . ,(x11-color 'RoyalBlue)))
 
-% Returns a string with a single attribute.
-% Simple formatting, not configurable yet
-% Uses attribute-labels lookup if available
-#(define (format-property-message prop)
-   (let
-    ((prop-key (car prop))
-     (prop-value (cdr prop)))
-    (format "    ~a: ~a"
-      (or (getChildOptionWithFallback '(scholarly annotate attribute-labels) prop-key #f)
-          prop-key)
-      ; keep that a (cond) expression because there might be more special types to come
-      (cond
-       ((ly:music? prop-value)
-        (format-ly-music prop-value))
-       (else prop-value)))))
+% Validators for the different \editorialMarkup annotations
 
-% Return a list of formatted properties.
-% Suppresses attributes in a filter list
-% Sorts by the resulting strings
-#(define (format-property-messages ann flt)
-   (let
-    ((accepted (filter (lambda (prop) (not (member (car prop) flt))) ann)))
-    (sort
-     (map (lambda (prop) (format-property-message prop)) accepted)
-     (lambda (a b) (string<? (string-downcase a) (string-downcase b))))))
+% Validator function for lemma and reading
+#(define validate-variant
+   (define-span-validator
+    (let ((valid (assq-ref annotation 'source)))
+      (if (not valid)
+          (set! warning-message "Missing attribute 'source'."))
+      valid)))
+\setChildOption stylesheets.span.validators lemma #validate-variant
+\setChildOption stylesheets.span.validators reading #validate-variant
+
+#(define validate-gap
+   (define-span-validator
+    (let ((valid (assq-ref annotation 'reason)))
+      (if (not valid)
+          (set! warning-message "Missing attribute 'reason'."))
+      valid)))
+\setChildOption stylesheets.span.validators gap #validate-gap
+
+#(define validate-correction
+   (define-span-validator
+    (let*
+     ((type
+       (let ((original-type (assq-ref annotation 'type)))
+         (if (and original-type (string? original-type))
+             (string->symbol original-type)
+             original-type)))
+      (valid
+       (and type
+            (memq type '(addition deletion substitution)))))
+     (if (not valid)
+         (set! warning-message "Missing or invalid attribute 'type'.
+Allowed values: 'addition', 'deletion', 'substitution'"))
+     valid)))
+\setChildOption stylesheets.span.validators correction #validate-correction
+

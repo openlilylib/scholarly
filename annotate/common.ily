@@ -1,3 +1,4 @@
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                                                             %
 % This file is part of ScholarLY,                                             %
@@ -24,50 +25,38 @@
 %                                                                             %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
 %{
-  Helper utilities to format annotation output
+  \annotate - main file
+  This file contains the "collector" and "processor" engravers for annotations
+  and the interface music functions to enter annotations in LilyPond input files.
+  TODO:
+  - generate clickable links when writing to file
+  - enable the music function to apply editorial functions
+    to the affected grob (e.g. dashing slurs, parenthesizing etc.).
+    This has to be controlled by extra annotation properties
+    and be configurable to a high degree (this is a major task).
+  - provide an infrastructure for custom annotation types
 %}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% General routines for formatting output
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\version "2.19.22"
+\loadModule oll-core.util.grob-location
 
-% Define string representations for selected ly:music? data types.
-% These are used for displaying custom properties.
-#(define (format-ly-music music)
-   (if (ly:music? music)
-       (case  (ly:music-property music 'name)
-         ((TimeSignatureMusic)
-          (format "\\time ~a/~a"
-            (ly:music-property music 'numerator)
-            (ly:music-property music 'denominator)))
-         ((KeyChangeEvent)
-          (format "Key: ~a" (ly:music-property music 'tonic)))
-         (else "(LilyPond Music)"))
-       "No music found"))
+% Global object storing all annotations
+\registerOption scholarly.annotations #'()
 
-% Returns a string with a single attribute.
-% Simple formatting, not configurable yet
-% Uses attribute-labels lookup if available
-#(define (format-property-message prop)
-   (let
-    ((prop-key (car prop))
-     (prop-value (cdr prop)))
-    (format "    ~a: ~a"
-      (or (getChildOptionWithFallback '(scholarly annotate attribute-labels) prop-key #f)
-          prop-key)
-      ; keep that a (cond) expression because there might be more special types to come
-      (cond
-       ((ly:music? prop-value)
-        (format-ly-music prop-value))
-       (else prop-value)))))
+% Include implementation
+\include "config.ily"
+\include "sort.ily"
+\include "format.ily"
+\include "export.ily"
+\include "export-latex.ily"
+\include "export-plaintext.ily"
+\include "engraver.ily"
 
-% Return a list of formatted properties.
-% Suppresses attributes in a filter list
-% Sorts by the resulting strings
-#(define (format-property-messages ann flt)
-   (let
-    ((accepted (filter (lambda (prop) (not (member (car prop) flt))) ann)))
-    (sort
-     (map (lambda (prop) (format-property-message prop)) accepted)
-     (lambda (a b) (string<? (string-downcase a) (string-downcase b))))))
+\layout {
+  \context {
+    \Score
+    \consists \annotationEngraver
+  }
+}
