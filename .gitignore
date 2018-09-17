@@ -29,3 +29,4 @@
 
 # temporary files from the documentation
 documentation/tmp-ly/*
+*tex2pdf*
