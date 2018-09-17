@@ -57,6 +57,10 @@ choice =
    (symbol? (ly:context-mod?) choice-music?)
    (let*
     ((props (if attrs (context-mod->props attrs) '()))
+     (ann-type (assq-ref props 'ann-type))
      (chosen (choose-element choice-type props music)))
+    (if ann-type
+        (assq-set! props 'ann-type
+          (if (string? ann-type) (string->symbol ann-type) ann-type)))
     (merge-annotations props chosen)
     chosen))
