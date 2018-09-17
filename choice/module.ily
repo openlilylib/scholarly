@@ -50,7 +50,7 @@
         (if (not is-set)
             (set! span-annotation (append span-annotation (list prop))))))
      props)
-    (make-input-annotation span-annotation anchor)))
+    (make-input-annotation span-annotation music anchor)))
 
 choice =
 #(define-music-function (choice-type attrs music)
