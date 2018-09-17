@@ -50,7 +50,10 @@
    (define-styling-function
     (let*
      ((ann-type (assq-ref span-annotation 'ann-type))
-      (color (getChildOption '(scholarly annotate colors) (string->symbol ann-type))))
+      (color (getChildOption '(scholarly annotate colors) 
+               (if (string? ann-type)
+                   (string->symbol ann-type)
+                   ann-type))))
      (if (getOption '(scholarly annotate use-colors))
          (case style-type
            ((wrap)
@@ -83,7 +86,7 @@
     (let ((valid
            (let ((ann-type (assq-ref annotation 'ann-type)))
              (and ann-type
-                  (memq (string->symbol ann-type)
+                  (memq ann-type
                     '(critical-remark musical-issue lilypond-issue question todo))))))
       (if (not valid)
           (set! warning-message "Missing or invalid attribute 'ann-type'.
