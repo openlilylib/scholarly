@@ -50,7 +50,7 @@
    (define-styling-function
     (let*
      ((ann-type (assq-ref span-annotation 'ann-type))
-      (color (getChildOption '(scholarly annotate colors) 
+      (color (getChildOption '(scholarly annotate colors)
                (if (string? ann-type)
                    (string->symbol ann-type)
                    ann-type))))
@@ -95,24 +95,36 @@ Valid types: '(critical-remark musical-issue lilypond-issue question todo)"))
 \setChildOption stylesheets.span.validators annotation #validate-scholarly-annotation
 
 
+
+% Shorthand to be able to use a simple string as argument to an annotation
+% In that case the string will be converted to 'message' as the only attribute
+#(define (context-mod-or-string? obj)
+   (or (ly:context-mod? obj)
+       (string? obj)))
+
+#(define (check-attrs value)
+   (if (ly:context-mod? value)
+       value
+       #{ \with { message = #value } #}))
+
 % The actual commands are wrappers around \tagSpan
 
 criticalRemark =
-#(define-music-function (attrs music)((ly:context-mod?) ly:music?)
-   (tagSpan 'annotation (add-type attrs "critical-remark") music))
+#(define-music-function (attrs music)((context-mod-or-string?) ly:music?)
+   (tagSpan 'annotation (add-type (check-attrs attrs) "critical-remark") music))
 
 musicalIssue =
-#(define-music-function (attrs music)((ly:context-mod?) ly:music?)
-   (tagSpan 'annotation (add-type attrs "musical-issue") music))
+#(define-music-function (attrs music)((context-mod-or-string?) ly:music?)
+   (tagSpan 'annotation (add-type (check-attrs attrs) "musical-issue") music))
 
 lilypondIssue =
-#(define-music-function (attrs music)((ly:context-mod?) ly:music?)
-   (tagSpan 'annotation (add-type attrs "lilypond-issue") music))
+#(define-music-function (attrs music)((context-mod-or-string?) ly:music?)
+   (tagSpan 'annotation (add-type (check-attrs attrs) "lilypond-issue") music))
 
 question =
-#(define-music-function (attrs music)((ly:context-mod?) ly:music?)
-   (tagSpan 'annotation (add-type attrs "question") music))
+#(define-music-function (attrs music)((context-mod-or-string?) ly:music?)
+   (tagSpan 'annotation (add-type (check-attrs attrs) "question") music))
 
 todo =
-#(define-music-function (attrs music)((ly:context-mod?) ly:music?)
-   (tagSpan 'annotation (add-type attrs "todo") music))
+#(define-music-function (attrs music)((context-mod-or-string?) ly:music?)
+   (tagSpan 'annotation (add-type (check-attrs attrs) "todo") music))
