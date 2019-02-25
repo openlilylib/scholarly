@@ -574,6 +574,19 @@ In the following example the same music is annotated in three different ways:
 \lilypondfile{annotate-color.ly}
 
 
+\ollOption{scholarly.annotate.color-anchors}{\#\#t}
+
+Setting this option to `##f` will suppress the coloring of anchors described
+above. This takes effect when a specific item is selected for annotation.
+Suppressing the coloring of the annotation anchor can be useful when coloring is
+used as a highlighting mechanism in the final edition as well, as opposed to
+only having it switched on during editing.
+
+```{.lilypond include=color-anchor.ly}
+```
+\lilypondfile{color-anchor.ly}
+
+
 \ollOption{scholarly.annotate.colors}{\dots}
 \ollLilyfuncdef{annotateSetColor}{type color}{}
 \ollLilyfuncdef{annotateSetColors}{mappings}{}
