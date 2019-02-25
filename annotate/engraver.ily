@@ -38,9 +38,12 @@
 
 % Produce highlighting for the anchor of an annotation
 #(define (color-anchor grob ann-type)
-   (if (getOption '(scholarly annotate use-colors))
-       (ly:grob-set-property! grob 'color
-         (getChildOption '(scholarly annotate colors) ann-type))))
+   (if
+    (and
+     (getOption '(scholarly annotate use-colors))
+     (getOption '(scholarly annotate color-anchor)))
+    (ly:grob-set-property! grob 'color
+      (getChildOption '(scholarly annotate colors) ann-type))))
 
 
 % Get a context name, recursively going up the hierarchy

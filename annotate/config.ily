@@ -104,6 +104,11 @@ annotateSetColors =
 % Only for publication one will want to turn it off
 \registerOption scholarly.annotate.use-colors ##t
 
+% By default the annotation *anchor* will also be colored
+% (when coloring is on). Setting this option to ##f will
+% leave the anchor uncolored.
+\registerOption scholarly.annotate.color-anchor ##t
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Annotation type labels
