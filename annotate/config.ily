@@ -145,10 +145,7 @@ annotateSetTypeLabels =
    grob-location
    grob-type
    input-file-name
-   is-chord?
-   is-post-event?
-   is-rhythmic-event?
-   is-sequential?
+   music-type
    location
    score-id
    span-class
