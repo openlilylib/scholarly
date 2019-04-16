@@ -16,14 +16,19 @@ editorialFunction =
 #(define-music-function (type item mus)
    (symbol? symbol-list? ly:music?)
    (let ((edit (getChildOptionWithFallback
-		`(scholarly editorial functions ,type)
-		(last item)
-		#f)))
-     (if (and edit
-	      (getOption `(scholarly editorial functions apply)))
-         (if (ly:music-function? edit)
-             (edit mus)
-             #{ \once #edit #mus #})
+                  `(scholarly editorial-functions ,type)
+                    (last item)
+                  #f))
+         (apply-edits (getOption `(scholarly editorial-functions apply)))
+         (ignored-type (memq type (getOption
+                                      `(scholarly editorial-functions ignored-types)))))
+     (if edit
+         (if (and apply-edits
+                  (not ignored-type))
+             (if (ly:music-function? edit)
+                 (edit mus)
+                 #{ \once #edit #mus #})
+             mus)
          (begin
            (oll:warn "Editorial command ~a not set for ~a." edit (car item))
            mus))))

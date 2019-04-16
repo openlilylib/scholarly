@@ -5,7 +5,7 @@
 \include "oll-core/package.ily"
 \loadModule scholarly.annotate.legacy
 
-% \setOption scholarly.editorial.functions.apply ##f
+% \setOption scholarly.editorial-functions.apply ##f
 
 
 %{
@@ -13,7 +13,7 @@
 %   (commented out to verify that options load
 %   from editorial-functions/config [y])
 
-\setOption scholarly.editorial.functions.addition #`(
+\setOption scholarly.editorial-functions.addition #`(
   (Slur . ,slurDashed)
   (NoteHead . ,parenthesize))
 %}
@@ -25,7 +25,7 @@ longerfunction =
 #(define-music-function (mus) (ly:music?)
    #{ \once \set fontSize = -4 \parenthesize #mus #})
 
-\setOption scholarly.editorial.functions.deletion #`(
+\setOption scholarly.editorial-functions.deletion #`(
   (NoteHead . ,longerfunction))
 
 
@@ -33,7 +33,7 @@ longerfunction =
 % options can also be expressed in lilypond code blocks
 % (if they don't contain music functions):
 
-\setOption scholarly.editorial.functions.emendation #`(
+\setOption scholarly.editorial-functions.emendation #`(
   (Slur .
     ,#{
     \slurDotted \shape #'((0 . -0.5) (0 . -1.5) (0 . -3.5) (0 . -0.5)) Slur
