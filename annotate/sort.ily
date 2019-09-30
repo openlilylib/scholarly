@@ -72,8 +72,8 @@
    (let ((a (assq-ref ann-a 'score-id))
          (b (assq-ref ann-b 'score-id)))
      (cond
-      ((symbol<? a b) '<)
-      ((symbol<? b a) '>)
+      ((string<? a b) '<)
+      ((string<? b a) '>)
       (else '=))))
 
 % compare by score id
