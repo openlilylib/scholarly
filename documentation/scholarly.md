@@ -1077,9 +1077,11 @@ type's rules) the *first* encountered music expression is chosen.
 
 ### `variants`
 
-\cmd{choice variants} is used to encode alternative readings from different
-sources. It must contain exactly one span of class \option{lemma} and one or
-multiple \option{reading} span(s). Other span classes are not allowed.
+\cmd{choice variants} is used to encode alternative readings from
+different sources. It must contain zero or one span of class
+\option{lemma} and one or more \option{reading} span(s). Other span
+classes are not allowed. If no \option{lemma} is given at least two
+\option{reading} elements are required.
 
 By default the \option{lemma} span is engraved, otherwise the `preference`
 option must be set to the desired reading's mandatory \option{source} attribute.

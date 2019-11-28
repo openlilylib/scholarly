@@ -116,14 +116,16 @@ Expect follow-up errors!" choice-type classes warning-message))
    (define-choice-validator
     (let
      ((is-valid
-       ;; One lemma and at least one reading
+       ;; Zero or one lemma and at least one reading
        (if
         (and
          (every (lambda (c) (memq c '(lemma reading))) classes)
-         (single 'lemma)
+         (> (length classes) 1)
+         (optional 'lemma)
          (memq 'reading classes)) #t #f)))
      (if (not is-valid)
-         (set! warning-message "Expects one 'lemma and an arbitrary number of 'reading spans."))
+         (set! warning-message "Expects zero or one 'lemma and an arbitrary number of 'reading spans.
+Must include at least two spans"))
      is-valid)))
 
 #(define validate-normalization
