@@ -62,7 +62,8 @@
          gap            ;; <gap>, missing material
          sic            ;; <sic>, erroneous text in the source
          unclear        ;; <unclear>, unclear text
-         correction     ;; <corr>, editorial emendation
+         correction     ;; <corr>, editorial emendation (taken from an original source)
+         conjecture     ;; <?>, editorial conjecture
          annotation     ;; general-purpose annotation
          ))))
 

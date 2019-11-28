@@ -159,8 +159,8 @@ Expect follow-up errors!" choice-type classes warning-message))
             ;; one correction and one [gap|sic|unclear]
             (and
              (= (length classes) 2)
-             (single 'correction)
-             (every (lambda (c) (memq c '(gap sic unclear correction))) classes))
+             (or (single 'correction) (single 'conjecture))
+             (every (lambda (c) (memq c '(gap sic unclear conjecture correction))) classes))
             #t #f)))
       (if (not is-valid)
           (set! warning-message "Expects one 'correction and one ['gap|'sic|'unclear] span."))

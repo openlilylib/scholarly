@@ -40,7 +40,8 @@
    (sic . ,red)
    (unclear . ,(x11-color 'orange))
    (gap . ,(x11-color 'PaleGoldenrod))
-   (correction . ,(x11-color 'RoyalBlue)))
+   (correction . ,(x11-color 'RoyalBlue))
+   (conjecture . ,blue))
 
 % Validators for the different \editorialMarkup annotations
 

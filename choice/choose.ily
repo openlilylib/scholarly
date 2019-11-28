@@ -72,11 +72,11 @@ Fall back to first encoded variant" preference)
      ((is-first
        (cond
         ((eq? preference 'new)
-         (eq? (car (first expressions)) 'correction))
+         (memq (car (first expressions)) '(conjecture correction)))
         ((eq? preference 'old)
-         (eq? (car (second expressions)) 'correction))
+         (memq (car (second expressions)) '(conjecture correction)))
         (else
-         (oll:warn "Unknown preference for 'substitution'. First subexpression selected")
+         (oll:warn "Unknown preference for 'emendation'. First subexpression selected")
          #t)
         )))
      (if is-first (first expressions) (second expressions)))))
