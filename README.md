@@ -5,7 +5,7 @@ with (mainly) GNU LilyPond.
 It belongs to *openLilyLib*, LilyPond's community library system.
 Therefore getting and installing *ScholarLY* is automatically handled by
 preparing *openLilyLib*.
-See its [home page](https://github.com/openlilylib/openlilylib) for details.
+See its [Wiki page](https://github.com/openlilylib/oll-core/wiki) for details.
 
 As part of *openLilyLib*, this library is released under the
 GNU General Public License. See *openLilyLib*'s license for details.
