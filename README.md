@@ -1,18 +1,21 @@
-# ScholarLY
+# scholarLY
 
-*ScholarLY* is a toolbox for creating scholarly editions of musical scores
+*scholarLY* is a toolbox for creating scholarly editions of musical scores
 with (mainly) GNU LilyPond.
 It belongs to *openLilyLib*, LilyPond's community library system.
-Therefore getting and installing *ScholarLY* is automatically handled by
-preparing *openLilyLib*.
-See its [Wiki page](https://github.com/openlilylib/oll-core/wiki) for details.
+
+In order to use *scholarLY* it is necessary to install *openLilyLib*, as described in
+*oll-core*'s [Wiki page](https://github.com/openlilylib/oll-core/wiki).
+
+In addition to the *oll-core* package *scholarLY* itself and the *stylesheets* package
+(on which it depends) have to be installed too.
 
 As part of *openLilyLib*, this library is released under the
 GNU General Public License. See *openLilyLib*'s license for details.
 
 ## Overview
 
-*ScholarLY* includes a growing number of features. Currently, `annotate` and `editorial-functions` are implemented. Additionally, an initial version of the *scholarLY* LaTeX package will soon be published.
+*scholarLY* includes a growing number of features. Currently, `annotate` and `editorial-functions` are implemented. Additionally, an initial version of the *scholarLY* LaTeX package will soon be published.
 
 See the `README`s located in the respective subdirectories for more information on those utilities.
 
