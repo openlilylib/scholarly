@@ -1,0 +1,538 @@
+%%
+%% This is file `scholarLY.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% scholarLY.dtx  (with options: `package')
+%% 
+%% Copyright (C) 2016 by Jeffery Shivers <jefferyshivers@gmail.com>
+%% 
+%% This file may be distributed and/or modified under the conditions of
+%% the LaTeX Project Public License, either version 1.2 of this license
+%% or (at your option) any later version.  The latest version of this
+%% license is in:
+%% 
+%%    http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.2 or later is part of all distributions of LaTeX version
+%% 1999/12/01 or later.
+%% 
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{scholarLY}
+    [2016/08/01 1.0 Package for typesetting annotations for critical editions
+    compiled by LilyPond with the OpenLilyLib ScholarLY library.]
+\RequirePackage{ifthen}
+\RequirePackage{enumitem}
+\RequirePackage{xstring}
+\RequirePackage{keyval}
+\RequirePackage{titlecaps}
+\def\annName{}
+\def\annType{}
+\def\annMeasure{}
+\def\annBeat{}
+\def\annVoice{}
+\def\annVoiceO{}
+\def\annAffected{}
+\def\annAffectedO{}
+\def\annMessage{}
+\def\annMessageO{}
+\def\annMessageOO{}
+\define@key{annStyles}{type}{\def\annType{#1}}
+\define@key{annStyles}{measure}{\def\annMeasure{#1}}
+\define@key{annStyles}{beat}{\def\annBeat{#1}}
+\define@key{annStyles}{voice}{\def\annVoice{#1}}
+\define@key{annStyles}{voice-2nd}{\def\annVoiceO{#1}}
+\define@key{annStyles}{affected}{\def\annAffected{#1}}
+\define@key{annStyles}{affected-2nd}{\def\annAffectedO{#1}}
+\define@key{annStyles}{message}{\def\annMessage{#1}}
+\define@key{annStyles}{message-2nd}{\def\annMessageO{#1}}
+\define@key{annStyles}{message-3rd}{\def\annMessageOO{#1}}
+\def\customdraft{}
+\newcommand\annSetDraft[1]{
+  \def\customdraft{#1}}
+\def\customfinal{}
+\newcommand\annSetFinal[1]{
+  \def\customfinal{#1}}
+\newcommand{\finalfordraft}{\def\customdraft{\customfinal}}
+\newcommand{\letAnnBreakornot}{\par\nobreak}
+\newcommand{\annBreakAllow}
+  {\renewcommand{\letAnnBreakornot}{\par}}
+\newcommand{\annBreakAvoid}
+  {\renewcommand{\letAnnBreakornot}{\par\nobreak}}
+\newcommand{\enumOptions}{}
+\newcommand{\setEnumOptions}[1]{\renewcommand{\enumOptions}{#1}}
+\newcommand{\skipornot}{}
+\newcommand{\typeSkipornot}{}
+\newcommand{\annInline}{%
+  \renewcommand{\skipornot}{, }
+  \renewcommand{\typeSkipornot}{}}
+\newcommand{\annStacked}{%
+  \renewcommand{\skipornot}{\letAnnBreakornot}
+  \renewcommand{\typeSkipornot}{\letAnnBreakornot}}
+\define@key{scholarLYann}{type}{\def\lytype{#1}}
+\def\prependType{}
+\def\appendType{}
+\def\annType{}
+\newcommand{\annHideType}{%
+  \def\annName{}
+  \renewcommand{\typeSkipornot}{}}
+\newcommand{\annShowType}{%
+  \def\annName{{\annType\annTypeName }}
+  \ifthenelse{\equal{\skipornot}{\letAnnBreakornot}}
+    {\renewcommand{\typeSkipornot}{\letAnnBreakornot}}
+    {\renewcommand{\typeSkipornot}{}}}
+\input{default-stylesheet.inp}
+\def\annStyleMode{}
+\def\annRevisit{}
+\newif\ifdraft
+  \DeclareOption{draft}{\drafttrue}
+  \DeclareOption{final}{\draftfalse}
+\newif\ifdefault
+  \DeclareOption{default}{\defaulttrue}
+  \DeclareOption{custom}{\defaultfalse}
+\ProcessOptions*
+\ifdraft
+  {\def\annStyleMode{\customdraft}
+  \def\annRevisit{\revisitDraftorNot}}
+\else
+  {\def\annStyleMode{\customfinal}
+  \def\annRevisit{\revisitFinalorNot}}
+\fi
+\ifdefault
+  {\def\revisitFinalorNot{\defaultFinal}
+  \def\revisitDraftorNot{\defaultDraft}}
+\else
+  {\def\revisitFinalorNot{}
+  \def\revisitDraftorNot{}}
+\fi
+\def\annPostType{}
+\define@key{annPrefixes}{post-type}{\def\annPostType{#1}}
+\def\annTypePrePrefix{}
+\define@key{annPrefixes}{pre-type}{\def\annTypePrePrefix{#1}}
+\def\annArgsPrePrefix{}
+\define@key{annPrefixes}{pre-args}{\def\annArgsPrePrefix{#1}}
+\def\prependMessage{}
+\def\appendMessage{}
+\def\aMWSep{/}
+\newcommand\annMessageWrapSep[1]{\def\aMWSep{#1}}
+\newcommand\annMessageWrap[1]{
+  \expandarg\IfSubStr{#1}{\aMWSep}
+    {\StrCut{#1}{\aMWSep}\prependMessage\appendMessage}
+    {\def\prependMessage{#1}
+    \def\appendMessage{#1}}}
+\def\prependMessageFirst{}
+\def\appendMessageLast{}
+\def\aMWOSep{/}
+\newcommand\annMessageWrapOuterSep[1]{\def\aMWOSep{#1}}
+\newcommand\annMessageWrapOuter[1]{
+  \expandarg\IfSubStr{#1}{\aMWOSep}
+    {\StrCut{#1}{\aMWOSep}\prependMessageFirst\appendMessageLast}
+    {\def\prependMessageFirst{#1}
+    \def\appendMessageLast{#1}}}
+\def\prependType{}
+\def\appendType{}
+\def\aTWSep{/}
+\newcommand\annTypeWrapSep[1]{\def\aTWSep{#1}}
+\newcommand\annTypeWrap[1]{
+  \expandarg\IfSubStr{#1}{\aTWSep}
+    {\StrCut{#1}{\aTWSep}\prependType\appendType}
+    {\def\prependType{#1}
+    \def\appendType{#1}}}
+\def\annEnumerateOn{
+  \def\itemornot{\item}
+  \def\begEnumerate{\begin{enumerate}[mode=boxed]\enumOptions}
+  \def\endEnumerate{\end{enumerate}}}
+\def\annEnumerateOff{
+  \def\itemornot{}
+  \def\begEnumerate{}
+  \def\endEnumerate{}}
+\annEnumerateOn
+\newcommand{\annotations}[1]
+{\begEnumerate\annStyleMode\annRevisit\input{#1}\endEnumerate}
+\define@key{scholarLYann}{grob}{\def\lygrob{#1}}
+\define@key{scholarLYann}{grob-location}{\def\lygroblocation{#1}}
+\define@key{scholarLYann}{grob-type}{\def\lygrobtype{#1}}
+\define@key{scholarLYann}{input-file-name}{\def\lyinputfilename{#1}}
+\define@key{scholarLYann}{context-id}{\def\lycontextid{#1}}
+\define@key{scholarLYann}{location}{\def\lylocation{#1}}
+\define@key{scholarLYann}{message}{\def\lymessage{#1}}
+\define@key{scholarLYann}{type}{\def\lyanntype{#1}}
+\define@key{scholarLYann}{context}{\def\lycontext{#1}}
+\define@key{scholarLYann}{ann-footnote}{\def\lyannfootnote{#1}}
+\def\resetkeys{
+  \setkeys{scholarLYann}{%
+    grob = no value given,
+    grob-location = no value given,
+    grob-type = no value given,
+    input-file-name = no value given,
+    context-id = no value given,
+    location = no value given,
+    type = no value given,
+    message = no value given,
+    context = no value given,
+    ann-footnote = {no value given}
+  }
+}
+\def\noMessError{\color{red}
+    Oops! No message has been entered for this annotation.}
+\def\annGrobPrx{}
+\def\annGrobLocationPfx{}
+\def\annGrobTypePfx{}
+\def\lyinputfilenamePfx{}
+\def\lycontextidPfx{}
+\def\annLocationPfx{}
+\def\annTypePfx{}
+\def\annMessagePfx{}
+\def\annContextPfx{}
+\def\annMeasurePfx{M.}
+\def\annBeatPfx{beat }
+\define@key{annPrefixes}{grob}{\def\annGrobPfx{#1}}
+\define@key{annPrefixes}{grob-location}{\def\annGrobLocationPfx{#1}}
+\define@key{annPrefixes}{grob-type}{\def\annGrobTypePfx{#1}}
+\define@key{annPrefixes}{input-file-name}{\def\annInputFileNamePfx{#1}}
+\define@key{annPrefixes}{context-id}{\def\annContextIDPfx{#1}}
+\define@key{annPrefixes}{location}{\def\annLocationPfx{#1}}
+\define@key{annPrefixes}{type}{\def\annTypePfx{#1}}
+\define@key{annPrefixes}{message}{\def\annMessagePfx{#1}}
+\define@key{annPrefixes}{context}{\def\annContextPfx{#1}}
+\define@key{annPrefixes}{measure}{\def\annMeasurePfx{#1}}
+\define@key{annPrefixes}{beat}{\def\annBeatPfx{#1}}
+\def\processGrobLocation{
+  \StrBetween[1,1]{\lygroblocation}
+    {(beat-string .}{)}[\lybeatstring]
+    \StrDel{\lybeatstring}{ }[\lybeatstring]
+  \StrBetween[1,2]{\lygroblocation}
+    {(beat-fraction .}{)}[\lybeatfraction]
+    \StrDel{\lybeatfraction}{ }[\lybeatfraction]
+  \StrBetween[1,3]{\lygroblocation}
+    {(beat-part .}{)}[\lybeatpart]
+    \StrDel{\lybeatpart}{ }[\lybeatpart]
+  \StrBetween[1,4]{\lygroblocation}
+    {(our-beat .}{)}[\lyourbeat]
+    \StrDel{\lyourbeat}{ }[\lyourbeat]
+    \StrDel{\lyourbeat}{ }[\lyourbeatPrev]
+  \StrBetween[1,5]{\lygroblocation}
+    {(measure-pos .}{)}[\lymeasurepos]
+    \StrDel{\lymeasurepos}{ }[\lymeasurepos]
+  \StrBetween[1,6]{\lygroblocation}
+    {(measure-no .}{)}[\lymeasureno]
+    \StrDel{\lymeasureno}{ }[\lymeasureno]
+  \StrBetween[1,7]{\lygroblocation}
+    {(rhythmic-location }{)}[\lyrhythmiclocation]}
+\def\previousMeasure{0}
+\def\currentMeasure{0}
+\def\sameMeasureStub{---}
+\define@key{annExtras}{same-measure}{\def\sameMeasureStub{#1}}
+\def\previousBeat{0}
+\def\currentBeat{0}
+\def\sameBeatStub{{---}\unskip}
+\define@key{annExtras}{same-beat}{\def\sameBeatStub{#1}}
+\def\sameLocationLoose{
+  \ifthenelse{\equal{\currentBeat}{\previousBeat}}
+    {\ifthenelse{\equal{\currentMeasure}{\previousMeasure}}
+      {\def\thisMeasure{\sameMeasureStub}
+      \def\thisBeat{}}
+      {\def\thisMeasure{\annMeasurePfx\currentMeasure,}
+      \def\thisBeat{\annBeatPfx\currentBeat}}}
+    {\ifthenelse{\equal{\currentMeasure}{\previousMeasure}}
+        {\def\thisMeasure{\sameMeasureStub}
+        \def\thisBeat{\annBeatPfx\currentBeat}}
+        {\def\thisMeasure{\annMeasurePfx\currentMeasure,}
+        \def\thisBeat{\annBeatPfx\currentBeat}}}}
+\def\sameLocationStrict{
+  \ifthenelse{\equal{\currentMeasure}{\previousMeasure}}
+    {\ifthenelse{\equal{\currentBeat}{\previousBeat}}
+      {\def\thisMeasure{\sameMeasureStub}
+      \def\thisBeat{\unskip}}
+      {\def\thisMeasure{\annMeasurePfx\currentMeasure,}
+      \def\thisBeat{\annBeatPfx\currentBeat}}}
+    {\def\thisMeasure{\annMeasurePfx\currentMeasure,}
+    \def\thisBeat{\annBeatPfx\currentBeat}}}
+\def\annSameLocationStrict{\def\testLocation{\sameLocationStrict}}
+\def\sameLocationShow{
+  \def\thisMeasure{\annMeasurePfx\currentMeasure,}
+  \def\thisBeat{\annBeatPfx\currentBeat}}
+\def\annSameLocationShow{\def\testLocation{\sameLocationShow}}
+\def\annSameLocationLoose{\def\testLocation{\sameLocationLoose}}
+\annSameLocationLoose
+\def\customFootsParse{
+  \StrCount{\bigmessage}{-txt=}[\howmanytxt]
+  \StrCount{\bigmessage}{ann-footnote=}[\howmanyannfn]
+  \ifthenelse{\equal{\howmanyannfn}{0}}{
+    \ifthenelse{\equal{\howmanytxt}{0}}
+      {}
+      {\ifthenelse{\equal{\howmanytxt}{1}}
+        {\StrBehind[1]{\bigmessage}
+          {-txt=}[\resultOne]}
+        {\ifthenelse{\equal{\howmanytxt}{2}}
+          {\StrBetween[1,2]{\bigmessage}
+            {-txt=}{fn-}[\resultOne]
+            \StrGobbleRight{\resultOne}{2}[\resultOne]
+          \StrBehind[2]{\bigmessage}
+            {-txt=}[\resultTwo]}
+          {\ifthenelse{\equal{\howmanytxt}{3}}
+            {\StrBetween[1,2]{\bigmessage}
+              {-txt=}{fn-}[\resultOne]
+              \StrGobbleRight{\resultOne}{2}[\resultOne]
+            \StrBetween[2,3]{\bigmessage}
+              {-txt=}{fn-}[\resultTwo]
+              \StrGobbleRight{\resultTwo}{2}[\resultTwo]
+            \StrBehind[3]{\bigmessage}
+              {-txt=}[\resultThree]}
+            {\ifthenelse{\equal{\howmanytxt}{4}}
+              {\StrBetween[1,2]{\bigmessage}
+                {-txt=}{fn-}[\resultOne]
+                \StrGobbleRight{\resultOne}{2}[\resultOne]
+              \StrBetween[2,3]{\bigmessage}
+                {-txt=}{fn-}[\resultTwo]
+                \StrGobbleRight{\resultTwo}{2}[\resultTwo]
+              \StrBetween[3,4]{\bigmessage}
+                {-txt=}{fn-}[\resultThree]
+                \StrGobbleRight{\resultThree}{2}[\resultThree]
+              \StrBehind[4]{\bigmessage}
+                {-txt=}[\resultFour]}
+              {\ifthenelse{\equal{\howmanytxt}{5}}
+                {\StrBetween[1,2]{\bigmessage}
+                  {-txt=}{fn-}[\resultOne]
+                  \StrGobbleRight{\resultOne}{2}[\resultOne]
+                \StrBetween[2,3]{\bigmessage}
+                  {-txt=}{fn-}[\resultTwo]
+                  \StrGobbleRight{\resultTwo}{2}[\resultTwo]
+                \StrBetween[3,4]{\bigmessage}
+                  {-txt=}{fn-}[\resultThree]
+                  \StrGobbleRight{\resultThree}{2}[\resultThree]
+                \StrBetween[4,5]{\bigmessage}
+                  {-txt=}{fn-}[\resultFour]
+                  \StrGobbleRight{\resultFour}{2}[\resultFour]
+                \StrBehind[5]{\bigmessage}
+                  {-txt=}[\resultFive]}
+                {}}}}}}}
+    {\ifthenelse{\equal{\howmanytxt}{0}}
+      {}
+      {\ifthenelse{\equal{\howmanytxt}{1}}
+        {\StrBetween[1,1]{\bigmessage}
+          {-txt=}{, ann-footnote}[\resultOne]}
+        {\ifthenelse{\equal{\howmanytxt}{2}}
+          {\StrBetween[1,2]{\bigmessage}
+            {-txt=}{fn-}[\resultOne]
+          \StrBetween[2,1]{\bigmessage}
+            {-txt=}{ann-footnote}[\resultTwo]}
+          {\ifthenelse{\equal{\howmanytxt}{3}}
+            {\StrBetween[1,2]{\bigmessage}
+              {-txt=}{fn-}[\resultOne]
+            \StrBetween[2,3]{\bigmessage}
+              {-txt=}{fn-}[\resultTwo]
+            \StrBetween[3,1]{\bigmessage}
+              {-txt=}{ ann-footnote}[\resultThree]}
+            {\ifthenelse{\equal{\howmanytxt}{4}}
+              {\StrBetween[1,2]{\bigmessage}
+                {-txt=}{, fn-}[\resultOne]
+              \StrBetween[2,3]{\bigmessage}
+                {-txt=}{, fn-}[\resultTwo]
+              \StrBetween[3,4]{\bigmessage}
+                {-txt=}{, fn-}[\resultThree]
+              \StrBetween[4,1]{\bigmessage}
+                {-txt=}{, ann-footnote}[\resultFour]}
+              {\ifthenelse{\equal{\howmanytxt}{5}}
+                {\StrBetween[1,2]{\bigmessage}
+                  {-txt=}{, fn-}[\resultOne]
+                \StrBetween[2,3]{\bigmessage}
+                  {-txt=}{, fn-}[\resultTwo]
+                \StrBetween[3,4]{\bigmessage}
+                  {-txt=}{, fn-}[\resultThree]
+                \StrBetween[4,5]{\bigmessage}
+                  {-txt=}{, fn-}[\resultFour]
+                \StrBetween[5,1]{\bigmessage}
+                  {-txt=}{, ann-footnote}[\resultFive]}
+                {}}}}}}}}
+\def\extractFNnames{%
+  \expandarg\StrCount{\bigmessage}{fn-}[\theFNnum]
+  \ifthenelse{\equal{\theFNnum}{0}}
+    {}
+    {\ifthenelse{\equal{\theFNnum}{1}}
+      {\StrBetween{\bigmessage}
+        {fn-}{-txt=}[\resultOneMacro]
+        \StrDel{\resultOneMacro}{-}[\resultOneMacro]}
+      {\ifthenelse{\equal{\theFNnum}{2}}
+        {\StrBetween{\bigmessage}
+          {fn-}{-txt=}[\resultOneMacro]
+          \StrDel{\resultOneMacro}{-}[\resultOneMacro]
+        \StrBetween[2,2]{\bigmessage}
+          {fn-}{-txt=}[\resultTwoMacro]
+          \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]}
+        {\ifthenelse{\equal{\theFNnum}{3}}
+          {\StrBetween{\bigmessage}
+            {fn-}{-txt=}[\resultOneMacro]
+            \StrDel{\resultOneMacro}{-}[\resultOneMacro]
+          \StrBetween[2,2]{\bigmessage}
+            {fn-}{-txt=}[\resultTwoMacro]
+            \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]
+          \StrBetween[3,3]{\bigmessage}
+            {fn-}{-txt=}[\resultThreeMacro]
+            \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]}
+          {\ifthenelse{\equal{\theFNnum}{4}}
+            {\StrBetween{\bigmessage}
+              {fn-}{-txt=}[\resultOneMacro]
+              \StrDel{\resultOneMacro}{-}[\resultOneMacro]
+            \StrBetween[2,2]{\bigmessage}
+              {fn-}{-txt=}[\resultTwoMacro]
+              \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]
+            \StrBetween[3,3]{\bigmessage}
+              {fn-}{-txt=}[\resultThreeMacro]
+              \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]
+            \StrBetween[4,4]{\bigmessage}
+              {fn-}{-txt=}[\resultFourMacro]
+              \StrDel{\resultFourMacro}{-}[\resultFourMacro]}
+            {\ifthenelse{\equal{\theFNnum}{5}}
+              {\StrBetween{\bigmessage}
+                {fn-}{-txt=}[\resultOneMacro]
+                \StrDel{\resultOneMacro}{-}[\resultOneMacro]
+              \StrBetween[2,2]{\bigmessage}
+                {fn-}{-txt=}[\resultTwoMacro]
+                \StrDel{\resultTwoMacro}{-}[\resultTwoMacro]
+              \StrBetween[3,3]{\bigmessage}
+                {fn-}{-txt=}[\resultThreeMacro]
+                \StrDel{\resultThreeMacro}{-}[\resultThreeMacro]
+              \StrBetween[4,4]{\bigmessage}
+                {fn-}{-txt=}[\resultFourMacro]
+                \StrDel{\resultFourMacro}{-}[\resultFourMacro]
+              \StrBetween[5,5]{\bigmessage}
+                {fn-}{-txt=}[\resultFiveMacro]
+                \StrDel{\resultFiveMacro}{-}[\resultFiveMacro]}
+              {}}}}}}}
+\def\makeFNmacros{
+  \ifthenelse{\equal{\theFNnum}{0}}
+    {}
+    {\ifthenelse{\equal{\theFNnum}{1}}
+      {\expandafter\def\csname fn\resultOneMacro\endcsname{%
+        \footnote{\resultOne} }}
+      {\ifthenelse{\equal{\theFNnum}{2}}
+        {\expandafter\def\csname fn\resultOneMacro\endcsname{%
+          \footnote{\resultOne} }
+        \expandafter\def\csname fn\resultTwoMacro\endcsname{%
+          \footnote{\resultTwo} }}
+        {\ifthenelse{\equal{\theFNnum}{3}}
+          {\expandafter\def\csname fn\resultOneMacro\endcsname{%
+            \footnote{\resultOne} }
+          \expandafter\def\csname fn\resultTwoMacro\endcsname{%
+            \footnote{\resultTwo} }
+          \expandafter\def\csname fn\resultThreeMacro\endcsname{%
+            \footnote{\resultThree} }}
+          {\ifthenelse{\equal{\theFNnum}{4}}
+            {\expandafter\def\csname fn\resultOneMacro\endcsname{%
+              \footnote{\resultOne} }
+            \expandafter\def\csname fn\resultTwoMacro\endcsname{%
+              \footnote{\resultTwo} }
+            \expandafter\def\csname fn\resultThreeMacro\endcsname{%
+              \footnote{\resultThree} }
+            \expandafter\def\csname fn\resultFourMacro\endcsname{%
+              \footnote{\resultFour} }}
+            {\ifthenelse{\equal{\theFNnum}{5}}
+              {\expandafter\def\csname fn\resultOneMacro\endcsname{%
+                \footnote{\resultOne} }
+              \expandafter\def\csname fn\resultTwoMacro\endcsname{%
+                \footnote{\resultTwo} }
+              \expandafter\def\csname fn\resultThreeMacro\endcsname{%
+                \footnote{\resultThree} }
+              \expandafter\def\csname fn\resultFourMacro\endcsname{%
+                \footnote{\resultFour} }
+              \expandafter\def\csname fn\resultFiveMacro\endcsname{%
+                \footnote{\resultFive} }}
+              {}}}}}}}
+\def\annMessagePunct{}
+\newcommand{\testMessagePunct}{%
+  \IfEndWith{\lymessage}{.}
+    {\def\annMessagePunct{.}}
+    {\IfEndWith{\lymessage}{?}
+      {\def\annMessagePunct{?}}
+      {\IfEndWith{\lymessage}{!}
+        {\def\annMessagePunct{!}}
+        {\def\annMessagePunct{\unskip}}}}}
+\newcommand{\annMessageParse}{%
+  \IfEndWith{\lymessage}{.}
+    {\StrGobbleRight{\lymessage}{1}[\lymessage]
+      \annMessageOO{\annMessageO{%
+        \annMessage{\prependMessage\lymessage}}}\nobreak}
+    {\IfEndWith{\lymessage}{?}
+      {\StrGobbleRight{\lymessage}{1}[\lymessage]
+        \annMessageOO{\annMessageO{%
+          \annMessage{\prependMessage\lymessage}}}\nobreak}
+      {\IfEndWith{\lymessage}{!}
+        {\StrGobbleRight{\lymessage}{1}[\lymessage]
+          \annMessageOO{\annMessageO{%
+            \annMessage{\prependMessage\lymessage}}}\nobreak}
+        {\ifthenelse{\equal{\lymessage}
+          {no value given}}{\unskip\noMessError}
+          {\ifthenelse{\equal{\lymessage}{}}{\unskip\noMessError}
+            {\annMessageOO{\annMessageO{%
+              \annMessage{\prependMessage\lymessage}}}\nobreak}}}}}}
+\newcommand{\annMessTail}{%
+  \annMessageOO{\annMessageO{%
+    \annMessage{\annMessagePunct\appendMessage}}}}
+\newcommand{\annMessPunctAppend}{%
+  \renewcommand{\annMessTail}{%
+    \annMessageOO{\annMessageO{%
+      \annMessage{\annMessagePunct\unskip\appendMessage}}}}}
+\newcommand{\annMessAppendPunct}{%
+  \renewcommand{\annMessTail}{%
+    \annMessageOO{\annMessageO{%
+      \annMessage{\appendMessage\unskip\annMessagePunct}}}}}
+\def\annTypeName{%
+  \StrSubstitute{\lyanntype}{-}{ }[\annTypeCleaned]
+  \prependType\titlecap{\annTypeCleaned}\appendType}
+\let\KV@errx@ORI\KV@errx
+\newcommand\annotationParse[1]{
+  \resetkeys
+    \let\KV@errx\@gobble
+    \setkeys{scholarLYann}{#1}
+    \let\KV@errx\KV@errx@ORI
+\saveexpandmode\expandarg
+  \def\bigmessage{#1}
+    \customFootsParse
+    \extractFNnames
+    \makeFNmacros
+  \testMessagePunct
+  \processGrobLocation
+  \def\currentMeasure{\lymeasureno}
+  \def\currentBeat{\lyourbeat}
+  \testLocation
+  \itemornot
+    \annTypePrePrefix\annTypePfx
+      \annName\annPostType\typeSkipornot
+    {\annArgsPrePrefix\annLocationPfx
+      {\annMeasure{\thisMeasure}}}
+    {\annBeat{\thisBeat}\skipornot}
+    \ifthenelse{\equal{\lycontextid}{}}
+      {\unskip{}}
+      {\annArgsPrePrefix\annContextPfx
+        \annVoiceO{\annVoice{\lycontextid}}\skipornot}
+    \ifthenelse{\equal{\lygrobtype}{}}
+      {\unskip{}}
+      {\annArgsPrePrefix\annGrobTypePfx
+        \annAffectedO{\annAffected{\lygrobtype}}\skipornot}
+    \annArgsPrePrefix\annMessagePfx{{{%
+      \prependMessageFirst\annMessageParse
+        \unskip\annMessTail}\unskip}
+      \ifthenelse{\equal{\lyannfootnote}{no value given}}
+        {}
+        {\unskip{\footnote{\lyannfootnote}}}\appendMessageLast}
+  \StrDel{\lymeasureno}{ }[\previousMeasure]
+  \StrDel{\lyourbeat}{ }[\previousBeat]}
+\newcommand{\criticalRemark}[1][]{\annotationParse{#1}}
+\newcommand{\musicalIssue}[1][]{\annotationParse{#1}}
+\newcommand{\lilypondIssue}[1][]{\annotationParse{#1}}
+\newcommand{\annotateQuestion}[1][]{\annotationParse{#1}}
+\newcommand{\annotateTodo}[1][]{\annotationParse{#1}}
+\newcommand{\annotation}[1][]{\annotationParse{#1}}
+\newcommand{\setCustomAnn}[1]{\def\customAnnParse{#1}}
+\newcommand\useCustomAnn{%
+  \renewcommand\criticalRemark[1][]{\customAnnParse}
+  \renewcommand\musicalIssue[1][]{\customAnnParse}
+  \renewcommand\lilypondIssue[1][]{\customAnnParse}
+  \renewcommand\annotateQuestion[1][]{\customAnnParse}
+  \renewcommand\annotateTODO[1][]{\customAnnParse}
+  \renewcommand\annotation[1][]{\customAnnParse}}
+\endinput
+%%
+%% End of file `scholarLY.sty'.

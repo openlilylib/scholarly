@@ -3,6 +3,9 @@
 \include "oll-core/package.ily"
 \loadModule scholarly.annotate
 
+\setOption scholarly.annotate.use-colors ##t
+\setOption stylesheets.span.use-colors ##f
+
 music = \relative c'{
   c4 d e
   \criticalRemark \with {

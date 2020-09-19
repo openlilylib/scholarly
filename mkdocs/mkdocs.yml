@@ -1,0 +1,16 @@
+theme:
+  name: 'material'
+  language: 'en'
+  palette:
+    primary: 'Teal'
+    accent: 'Teal'
+markdown_extensions:
+  - codehilite
+  - admonition
+
+site_name: scholarLY
+nav:
+  - Home: 'index.md'
+  - Setup: 'setup.md'
+  - scholarly.annotate:
+    - Introduction: 'annotate/index.md'

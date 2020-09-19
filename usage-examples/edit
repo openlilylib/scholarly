@@ -1,0 +1,36 @@
+\version "2.19.80"
+
+\include "oll-core/package.ily"
+\loadModule scholarly.annotate
+
+%\setOption scholarly.edit.use-highlighting ##f
+
+%  A few samples:
+{
+  % mark up up a sequential music expression
+  \edit sic \with { 
+%    item = Beam 
+    message = "A footnote"
+%    footnote-text = "Directly written footnote"
+    footnote-offset = #'(3 . -1)
+  } { c' \p c'8 
+      \musicalIssue \with {
+        message = "Hey"
+      } NoteHead
+      d' e'4 } c'4 |
+  % mark up two elements as post-event tweaks
+  <c' -\edit corr ~ ~ es' ~> q c' -\edit sic -! \p c' |
+  % markup up a tweak and a standalone command
+  % (affecting the note head)
+  c' -\edit corr \with {
+    message = "Hey"
+    footnote-offset = #'(1 . -2)
+  } \p d' \edit sic \with { item = Accidental } eis' f |
+    \musicalIssue \with {
+    message = "musical issue"
+  } NoteHead
+  \lilypondIssue \with {
+    message = "Lilypond issue"
+  } DynamicText
+  f'1 \p
+}

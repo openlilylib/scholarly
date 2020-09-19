@@ -97,6 +97,8 @@ annotationEngraver =
             ;; A grob is annotated when 'annotation *does* have some content,
             ;; ann-type is set, and it is not marked as ignored.
             (and ann-type (not (member ann-type ignored-types)))))
+;          (ly:message "Grob: ~a" grob)
+;          (ly:message "has annotation? ~a" annotation)
           (if is-annotation
               (begin
                ;; Coloring is done regardless of annotation export
