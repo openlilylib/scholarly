@@ -82,7 +82,7 @@
 #(define (write-output-file ext)
    (let*
     ((logfile
-      (format "~a.annotations.~a"
+      (format #f "~a.annotations.~a"
         (getOption '(scholarly annotate internal basename)) ext)))
     (ly:message "writing '~a' ..." logfile)
     (with-output-to-file logfile
@@ -103,9 +103,9 @@
          ;; workaround for a problem that sometimes the paperColumn gets
          ;; lost along the way. In that case the location is manually
          ;; set to measure zero - which is impossible.
-         (format "Sorry, rhythmic position could not be determined.\nInput location at ~a"
+         (format #f "Sorry, rhythmic position could not be determined.\nInput location at ~a"
            (assq-ref ann 'location))
-         (format "Measure ~a, beat ~a"
+         (format #f "Measure ~a, beat ~a"
            (assq-ref props 'measure-no)
            (beat-string props)))))
 
@@ -122,7 +122,7 @@
       (lambda (ann)
         (begin
          (ly:input-message (assq-ref ann 'location) "\nAnnotation:")
-         (ly:message (format "    ~a" (format-location ann)))
+         (ly:message (format #f "    ~a" (format-location ann)))
          (write-lines
           (format-property-messages ann
             (get-skipped-attributes #f))

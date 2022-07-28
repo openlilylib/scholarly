@@ -177,5 +177,5 @@ annotationEngraver =
               target)))
            ;; skip invalid entries
            (if er (er annotations)
-               (ly:warning (format "Invalid annotation export target: ~a. Skipping!" target)))))
+               (ly:warning (format #f "Invalid annotation export target: ~a. Skipping!" target)))))
         (getOption '(scholarly annotate export-targets))))))))

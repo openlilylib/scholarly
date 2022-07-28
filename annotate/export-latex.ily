@@ -62,7 +62,7 @@
        ; Currently we don't provide any intelligent handling of
        ; values that are not in the above list.
        (begin
-        (ly:warning (format "Did not find a lilyglyphs representation for ~a" frac))
+        (ly:warning (format #f "Did not find a lilyglyphs representation for ~a" frac))
         "NA")))
 
 % If requested format the measure position using lilyglyphs commands
@@ -72,17 +72,17 @@
      (beat-length (/ 1 (cdr meter)))
      (beat-lily (lilyglyphs-lookup beat-length))
      (our-beat (assq-ref loc-props 'our-beat))
-     (beat-string (format "~a.\\,~a" our-beat beat-lily))
+     (beat-string (format #f "~a.\\,~a" our-beat beat-lily))
      (beat-fraction (assq-ref loc-props 'beat-fraction))
      (beat-part (assq-ref loc-props 'beat-part)))
 
     (if (= 0 beat-fraction)
         beat-string
-        (format "~a,\\,~a" beat-string
+        (format #f "~a,\\,~a" beat-string
           (let*
            ((part-numerator (+ 1 (ly:moment-main-numerator beat-part)))
             (sub-beat-length (/ 1 (ly:moment-main-denominator beat-part))))
-           (format "~a. ~a" part-numerator
+           (format #f "~a. ~a" part-numerator
              (lilyglyphs-lookup sub-beat-length)))))))
 
 
@@ -99,7 +99,7 @@
         ;; handle known keys
         ((input-file-name) (car val))
         ((rhythmic-location)
-         (format "~a,~a" (car val) (ly:moment-main (cdr val))))
+         (format #f "~a,~a" (car val) (ly:moment-main (cdr val))))
         ((beat-string-lilyglyphs)
          (lilyglyphs-beat-string val))
         (else
@@ -144,7 +144,7 @@
       (map
        (lambda (p)
          (let ((prop (format-property p)))
-           (format "    ~a={~a}" (car prop)(cdr prop))))
+           (format #f "    ~a={~a}" (car prop)(cdr prop))))
        (append regular-props location-props)))
      )
 

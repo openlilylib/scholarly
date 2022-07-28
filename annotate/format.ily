@@ -38,11 +38,11 @@
    (if (ly:music? music)
        (case  (ly:music-property music 'name)
          ((TimeSignatureMusic)
-          (format "\\time ~a/~a"
+          (format #f "\\time ~a/~a"
             (ly:music-property music 'numerator)
             (ly:music-property music 'denominator)))
          ((KeyChangeEvent)
-          (format "Key: ~a" (ly:music-property music 'tonic)))
+          (format #f "Key: ~a" (ly:music-property music 'tonic)))
          (else "(LilyPond Music)"))
        "No music found"))
 
@@ -53,7 +53,7 @@
    (let
     ((prop-key (car prop))
      (prop-value (cdr prop)))
-    (format "    ~a: ~a"
+    (format #f "    ~a: ~a"
       (or (getChildOptionWithFallback '(scholarly annotate attribute-labels) prop-key #f)
           prop-key)
       ; keep that a (cond) expression because there might be more special types to come
