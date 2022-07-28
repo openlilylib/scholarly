@@ -35,11 +35,6 @@
 %%%% General export helper routines
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Provide a global string-list that output functions append their lines to.
-% This is finally used to write to log files.
-#(cond ((not (defined? 'annotate-export-stringlist))
-        (define annotate-export-stringlist '())))
-
 % Variable holding the string list to export
 \registerOption scholarly.annotate.export.strings #'()
 
