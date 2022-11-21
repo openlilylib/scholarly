@@ -111,8 +111,8 @@
               (else
                ;; item is symbol list: annotate the next item of the given grob name
                #{
-                 \once \override #item #'input-annotation = #props
-                 \once \override #item color = #col
+                 \once \override #item . input-annotation = #props
+                 \once \override #item . color = #col
                #}))))
            #{
              #tweak-command

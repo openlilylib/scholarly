@@ -2,6 +2,7 @@
 
 \include "oll-core/package.ily"
 \loadModule scholarly.editorial-markup
+\loadModule scholarly.annotate
 
 \markup \bold { Usage examples for \typewriter "\\editorialMarkup" }
 \markup \vspace #1
