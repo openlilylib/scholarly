@@ -1,4 +1,4 @@
-\version "2.19.56"
+\version "2.23.80"
 
 % This file is deprecated since (at the moment) balloon text only works with
 % the 'legacy module.
@@ -9,7 +9,7 @@
 music = {
   \new Voice \with { \consists "Balloon_engraver" } {
 
-    \once \override BalloonTextItem #'X-extent = ##f
+    \once \override BalloonTextItem.X-extent = ##f
     \criticalRemark
       \with{
         message = "message/balloon-text"
